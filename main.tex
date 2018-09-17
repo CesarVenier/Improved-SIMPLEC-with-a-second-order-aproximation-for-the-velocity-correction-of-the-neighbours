@@ -113,7 +113,7 @@ the particular feature of introducing several corrections to
 
 This work propose \CIP{a slight modification on the SIMPLEC formulation, particularly in the \textit{a priori} approximation of neighbor values, that enhance the convergence of the algorithm significantly}.
 
-The paper is organized as follows: On Section \ref{sec:theory}, the standard SIMPLE (Semi-Implicit Method for Pressure-Linked Equations) is given, explaining how SIMPLEC enhance its performance. Section \ref{sec:SIMPLEC2} presents an extension of the SIMPLEC approach using second-order approximations for neighbours values. In Section \ref{sec:cases}, \COM{X} benchmark cases are solved to evaluate the efficiency of the algorithms. The conclusions of this study are presented in the last section.
+The paper is organized as follows: On Section \ref{sec:theory}, the standard SIMPLE (Semi-Implicit Method for Pressure-Linked Equations) is given, explaining how SIMPLEC enhance its performance. Section \ref{sec:COMPLEX} presents an extension of the SIMPLEC approach using second-order approximations for neighbours values. In Section \ref{sec:cases}, \COM{X} benchmark cases are solved to evaluate the efficiency of the algorithms. The conclusions of this study are presented in the last section.
 
 
 \section{Theoretical background} \label{sec:theory}
@@ -279,24 +279,25 @@ Applying Rhie-Chow interpolation, the pressure equation  is defined as
 
 The only difference between SIMPLE and SIMPLEC are the coefficients in the Corrector step. Nevertheless, this slight modification shows a significant improvement in the stability  and convergence properties of the algorithm \cite{liu}. In the spirit of using better approximation for the neighbors correction values, we propose the following method.
 
-\section{Enhancement of SIMPLEC: the SIMPLEC2 method}
-\label{sec:SIMPLEC2}
+\section{Enhancement of SIMPLEC: the COMPLEX method}
+\label{sec:COMPLEX}
 
-In order to estimate the value of $\boldsymbol{u}_N'$ in Eq. \ref{eq:uprimeDef}, we use a second order Taylor approximation:
+In order to estimate the value of $\boldsymbol{u}_N'$ in Eq.~(\ref{eq:uprimeDef}), we use a second order Taylor approximation:
 \begin{equation}\label{eq:uNTaylor}
-\boldsymbol{u}_N' = \boldsymbol{u}_P' + \boldsymbol{x}_{PN}\cdot \left(\nabla \boldsymbol{u}_P'\right) + \mathcal{}{O}(\boldsymbol{x}_{PN}^2) \rightarrow \boldsymbol{u}_N' \approx \boldsymbol{u}_P' + \boldsymbol{x}_{PN}\cdot \nabla \boldsymbol{u}_P'
+\boldsymbol{u}_N' = \boldsymbol{u}_P' + \boldsymbol{x}_{PN}\cdot 
+\nabla \boldsymbol{u}_f' + \mathcal{}{O}(\boldsymbol{x}_{PN} \cdot \boldsymbol{x}_{PN}) \rightarrow \boldsymbol{u}_N' \approx \boldsymbol{u}_P' + \boldsymbol{x}_{PN}\cdot \nabla \boldsymbol{u}_f'
 \end{equation}
 
-Replacing \ref{eq:uNTaylor} in \ref{eq:uprimeDef}, considering the same velocity gradient for all the neighbor approximations
-\begin{equation}\label{eq:uPrimeSIMPLEC2}
-a_P\,\boldsymbol{u}_P^{'} \approx -\sum_{N} a_{N}\, \left(\boldsymbol{u}_P^{'} + \boldsymbol{x}_{PN}\cdot \nabla \boldsymbol{u}_P'\right)- \nabla p_P^{'}, \qquad \boldsymbol{u}_P^{'} \approx - \frac{\nabla \boldsymbol{u}_P' \cdot \sum_{N} a_{N}\boldsymbol{x}_{PN} + \nabla p_P^{'}}{a_P + \sum_{N} a_{N}} .
+Replacing Eq.~(\ref{eq:uNTaylor}) in (\ref{eq:uprimeDef}), considering the same velocity gradient for all the neighbor approximations
+\begin{equation}\label{eq:uPrimeCOMPLEX}
+a_P\,\boldsymbol{u}_P^{'} \approx -\sum_{N} a_{N}\, \left(\boldsymbol{u}_P^{'} + \boldsymbol{x}_{PN}\cdot \nabla \boldsymbol{u}_f'\right)- \nabla p_P^{'}, \qquad \boldsymbol{u}_P^{'} \approx - \frac{\nabla \boldsymbol{u}_f' \cdot \sum_{N} a_{N}\boldsymbol{x}_{PN} + \nabla p_P^{'}}{a_P + \sum_{N} a_{N}} .
 \end{equation}
 
-\noindent and in \ref{eq:div-free} as well,
+\noindent and in~(\ref{eq:div-free}) as well,
 
-\begin{equation}\label{eq:pEqnSIMPLEC2}
+\begin{equation}\label{eq:pEqnCOMPLEX}
 \begin{split}
-\nabla \cdot \left(\boldsymbol{u}^{*} + \boldsymbol{u}^{'}\right) = 0 \rightarrow
+\nabla \cdot \left(\boldsymbol{u}_P^{*} + \boldsymbol{u}_P^{'}\right) = 0 \implies
 \sum_f \left(\boldsymbol{u}_P^{*} - \frac{\nabla \boldsymbol{u}_P' \cdot \sum_{N} a_{N}\boldsymbol{x}_{PN} + \nabla p_P^{'}}{a_P + \sum_{N} a_{N}}\right)_f \cdot \boldsymbol{S}_f
 = 0 
 \\
@@ -336,13 +337,13 @@ The term $\left(\sum_f \boldsymbol{S}_f\right)$ is zero. The tensor contraction 
 \end{split}
 \end{equation}
 
-Replacing this expression at \ref{eq:pEqnSIMPLEC2} and \ref{eq:uPrimeSIMPLEC2}, the algorithm is completely defined:
+Replacing this expression at \ref{eq:pEqnCOMPLEX} and \ref{eq:uPrimeCOMPLEX}, the algorithm is completely defined:
 
 \begin{enumerate}
 \item Compute velocity prediction from equation \ref{eq:MOMPRED}
 \item Compute the gradient of the velocity correction  from equation \ref{eq:ugradDefFinal}
-\item Solve pressure equation  the gradient of the velocity correction from equation \ref{eq:pEqnSIMPLEC2}
-\item Correct the velocity with equation \ref{eq:uPrimeSIMPLEC2}
+\item Solve pressure equation  the gradient of the velocity correction from equation \ref{eq:pEqnCOMPLEX}
+\item Correct the velocity with equation \ref{eq:uPrimeCOMPLEX}
 \end{enumerate}
 
 \section{Test cases}
