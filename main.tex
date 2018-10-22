@@ -31,7 +31,7 @@
 \newcommand{\COM}[1]{{\color{green} #1}}
 \newcommand{\HA}[1]{{\color{red} #1}}
 \newcommand{\CIP}[1]{{\color{blue} #1}}
-\newcommand{\CMV}[1]{{\color{gray} #1}}
+\newcommand{\CMV}[1]{{\color{orange} #1}}
 
 
 \begin{document}
@@ -162,53 +162,147 @@ One way to solve Eqs. (\ref{eq:mass2}) and (\ref{eq:umom1}) for $\boldsymbol{u}$
 {\color{red}
 \begin{equation} \label{eq:MOMPRED}
 \begin{split}
-a_P\, \boldsymbol{u}_P^{*} + \sum_{N} a_{N}\, \boldsymbol{u}_{N}^{*} = b_P\, \boldsymbol{u}^0_P + \boldsymbol{\Phi}_P - \nabla p_P^{0},
+a_P\, \boldsymbol{u}_P^{*} = \boldsymbol{H}^* - \nabla p_P^{*}%, \\
+%p_P^* &= p_P^0
 \end{split}
 \end{equation}
 
 \CIP{En este punto podríamos meter la definición de H si es que queremos escribir todo "a la FOAM". Me parece más natural escribir en términos de $u$, así se ve más claro cómo entra la aproximación de los vecinos usando el gradiente de velocidad}
 
-\noindent where the superscript $0$ indicates fields that are stored from previous iterations and $*$ are the fields being solved at the current iteration. }
+\noindent where 
+
+\begin{equation}
+\boldsymbol{H}^* = - \sum_N a_N \boldsymbol{u}_N^* + \boldsymbol{\Phi}_P    
+\end{equation}
+
+\noindent and the superscript $0$ indicates fields that are stored from previous iterations and $*$ are the fields being solved at the current iteration. }
 This preliminary result does not satisfy the divergence-free condition in Eq. (\ref{eq:mass2}). In the Corrector step, a pressure correction is computed from an equation based on including the momentum equation, as expressed in Eq. (\ref{eq:uP}), in the mass conservation  Eq. (\ref{eq:mass2}). In this context, the velocity correction can be expressed in the following manner
 
 \CIP{A continuación desarrollo las ecuaciones de forma relativa. Hay que definir si queda así o en términos absoultos (como FOAM). La ventaja del $H$ es que Rhie Chow queda implícito (acá no está hecho) y que FOAM labura así.}
 
-\begin{equation}\label{eq:uprimeDef}
-\begin{split}
-\boldsymbol{u}_P^{n} = \boldsymbol{u}_P^{*} + \boldsymbol{u}_P^{'}, \qquad \boldsymbol{u}_P^{'} = \frac{1}{a_P}\left(-\sum_{N} a_{N}\, \boldsymbol{u}_N^{'}- \nabla p_P^{'}\right).
-\end{split}
-\end{equation}
+\begin{align}\label{eq:uprimeDef}
+\boldsymbol{u}_P^{**} &= \boldsymbol{u}_P^{*} + \boldsymbol{u}_P^{'} \\
+\qquad \boldsymbol{u}_P^{'} &= \frac{1}{a_P}\left(\boldsymbol{H}'- \nabla p_P^{'}\right).
+\end{align}
+
+\noindent where,
+
+\begin{align}
+   \boldsymbol{H}' = - \sum_N a_N \boldsymbol{u}'_N 
+\end{align}
 
 Then, the divergence-free condition can be expressed in terms of the previous expressions
 
-\begin{equation}\label{eq:div-free}
-\begin{split}
-\nabla \cdot \left(\boldsymbol{u}^{*} + \boldsymbol{u}^{'}\right) = 0 ,\qquad  \sum_f \left[\frac{1}{a_P}\left(-\sum_{N} a_{N}\, \boldsymbol{u}_N^{'} - \nabla p_P^{'}\right)\right]_f\cdot \boldsymbol{S}_f = -\sum_f \boldsymbol{u}_f^{*}\cdot \boldsymbol{S}_f.
-\end{split}
+\begin{align} \label{eq:div-free1}
+\nabla \cdot \left(\boldsymbol{u}_P^{*} + \boldsymbol{u}_P^{'}\right) &= 0 \\
+\sum_f \left(\boldsymbol{u_P}'\right)_{f} \cdot \boldsymbol{S}_f &= -\sum_f \left(\boldsymbol{u_P}^{*}\right)_{f} \cdot \boldsymbol{S}_f \label{eq:div-free2} \\
+\sum_f \left[\frac{1}{a_P}\left(\boldsymbol{H}' - \nabla p_P^{'}\right)\right]_f\cdot \boldsymbol{S}_f &= -\sum_f \left[\frac{1}{a_P}\left(\boldsymbol{H}^* - \nabla p_P^{*}\right)\right]_f \cdot \boldsymbol{S}_f \label{eq:div-free3}
+\end{align}
+
+%\noindent where, $\boldsymbol{u}^*_f$ is obtained by linear interpolation of the $\boldsymbol{u}^*_{P}$ values on the cells that shares the same face $f$.
+
+%The system of equations given by \ref{eq:div-free} for all the cells is highly coupled due to the presence of the corrections on the neighbors. To reduce the computational effort, the SIMPLE algorithm introduce the assumption that $\boldsymbol{u}'_N$ are negligible. With this simplification, the system turns to be
+
+The SIMPLE method considers $\boldsymbol{H}'=\boldsymbol{0}$, thus Eq.~(\ref{eq:div-free2}) becomes:
+
+\begin{equation}
+\sum_f 
+\left[
+\frac{1}{a_P}
+\left(
+-
+\nabla p_P^{'}
+\right)
+\right]_f\cdot \boldsymbol{S}_f 
+=
+-\sum_f \left[\frac{1}{a_P}\left(\boldsymbol{H}^* - \nabla p_P^{*}\right)\right]_f \cdot
+\boldsymbol{S}_f.
+\label{eq:div-free4}    
+\end{equation}
+Then, grouping the pressure terms, a relation based on $p^{**}$ is obtained,
+\begin{equation}
+\sum_f 
+\left[
+\frac{1}{a_P}
+\left(
+\nabla p_P^{**}
+\right)
+\right]_f\cdot \boldsymbol{S}_f 
+=
+\sum_f 
+\left[
+\frac{1}{a_P}
+\left(
+\boldsymbol{H}^*
+\right)
+\right]_f
+\cdot
+\boldsymbol{S}_f.
+\label{eq:div-free5}  
 \end{equation}
 
-\noindent where, $\boldsymbol{u}^*_f$ is obtained by linear interpolation of the $\boldsymbol{u}^*_{P}$ values on the cells that shares the same face $f$.
+% \begin{equation}
+% \label{eq:pEqnSIMPLE1}
+% \sum_f \left(\frac{1}{a_P}\right)_f \nabla p_f^{'}  \cdot \boldsymbol{S}_f= \sum_f \left[\frac{1}{a_P}\left(\boldsymbol{H}^* - \nabla p_P^{*}\right)\right]_f \cdot \boldsymbol{S}_f
+% \end{equation}
 
-The system of equations given by \ref{eq:div-free} for all the cells is highly coupled due to the presence of the corrections on the neighbors. To reduce the computational effort, the SIMPLE algorithm introduce the assumption that $\boldsymbol{u}'_N$ are negligible. With this simplification, the system turns to be
+% (acá hay que escribir algun bolazo de porque distribuimos la interpolación en el producto)
 
-\begin{equation}\label{eq:pEqnSIMPLE1}
-\sum_f \left(\frac{\nabla p_P^{'}}{a_P}\right)_f \cdot \boldsymbol{S}_f= \sum_f \boldsymbol{u}_f^{*}\cdot \boldsymbol{S}_f
-\qquad
-\left(\boldsymbol{u}_P^{'} \approx - \frac{\nabla p_P^{'}}{a_P}\right),
+\noindent which is a Poisson problem that has the pressure correction values as unknowns. Nevertheless, solving this system in a straightforward manner may lead to high-frequency oscillations. The Rhie-Chow correction \cite{rhiechow} reduces this effect in collocated grids, 
+
+\begin{equation}
+\label{eq:pEqnSIMPLE2}
+\sum_f 
+\left[
+\frac{1}{a_P}
+\left(
+\nabla p_P^{**}
+\right)
+\right]_f\cdot \boldsymbol{S}_f 
+=
+\sum_f 
+\left[
+\frac{1}{a_P}
+\left(
+\boldsymbol{H}^*
+\right)
+\right]_f
+\cdot
+\boldsymbol{S}_f 
++
+\sum_f  
+\left[
+\left(
+\frac{\nabla p_P^{**}}{a_P}
+\right)_f
+- 
+\left(
+\frac{1}{a_P}
+\right)_f 
+\nabla p_f^{**} 
+\right]
+\cdot 
+\boldsymbol{S}_f 
 \end{equation}
 
-\noindent which is a Poisson problem that has the pressure correction values as unknowns. \CIP{Nevertheless, solving this system in a straightforward manner may lead to high-frequency oscillations. The Rhie-Chow correction \cite{rhiechow} reduces this effect in collocated grids. One possible implementation is to add the pressure gradient terms $\sum_{f} \left( \frac{1}{a_P}\right)_f \left(\nabla p_f\cdotp \textbf{S}_{f}\right)$ on each side of the equation and group them in one summation. To finish Rhie-Chow interpolation, the face summation on the LHS should be computed using the  $\nabla p_f$ face gradient, based on adjacent cell values \cite{jasak}, and the RHS terms should be computed using linear interpolation as done for velocity.} Finally, the pressure equation can be written as:
+ Finally, the pressure equation can be written as:
 
-\begin{equation}\label{eq:pEqnSIMPLE2}
-\sum_f \left[\left(\frac{1}{a_P}\right)_f \nabla p_f^n\right]\cdot \boldsymbol{S}_f = \sum_f \left(\boldsymbol{u}_P^{*} + \frac{\nabla p_P^{0}}{a_P}\right)_f\cdot \boldsymbol{S}_f 
-\qquad
-\qquad \left(\boldsymbol{p}_P^{n} = p_P^{0} + p_P^{'}\right).
+
+
+\begin{equation}\label{eq:pEqnSIMPLE3}
+\sum_f \left(\frac{1}{a_P}\right)_f \nabla p_f^{**} \cdot \boldsymbol{S}_f =  \sum_f \left(\frac{\boldsymbol{H}^*}{a_P}\right)_f \cdot \boldsymbol{S}_f 
+\end{equation}
+
+\noindent where,
+
+\begin{equation}
+ p_P^{'} = p_P^{**} - p_P^{*}
 \end{equation}
 
 The corrected velocity value is then given by
 
 \begin{equation}\label{eq:SIMPLECorr}
-\boldsymbol{u}_P^n = \boldsymbol{u}_P^* - \frac{\nabla p_P'}{a_P}.
+\boldsymbol{u}_P^{**} = \boldsymbol{u}_P^* - \frac{\nabla p_P'}{a_P}.
 \end{equation}
 
 \iffalse
@@ -260,22 +354,79 @@ F_f = \boldsymbol{u}^*_f \cdotp \textbf{S}_{f} -  \left( \frac{1}{a_P}\right)_f 
 Most of the SIMPLE-family algorithms preserve this general structure. In particular, the SIMPLE algorithm \cite{patankar1972}, originally conceived as a steady state flow solver, adds under-relaxation factors to obtain a stable solution. Another variant is the PISO {\color{red}(Pressure-Implicit with Splitting of Operators)} algorithm, which relies on iterating the Corrector step a given number of times to ensure a correct coupling between pressure and velocity for transient flow problems \cite{issa,issa2}. {\color{red} The SIMPLE-PISO combined technique has been largely adopted in several computational codes (e.g. OpenFOAM(R) \cite{ofpg}) to address transient incompressible flow problems due to its beneficial convergence features. It consists on iterating the corrector steps until a certain mass conservation criteria is fulfilled (as in PISO) and iterating the whole sequence (Momentum Predictor and Corrector Step) several times until both mass and momentum equations are verified for each time step. This algorithm will be adopted in the present work.}
 
 \subsection{Improving the neighbor approximation: the SIMPLEC algorithm}
-The assumption applied at \ref{eq:pEqnSIMPLE1} can be improved. In fact, van Doormal and Raithby \cite{vanDoormal} proposed the following approximation:
+The assumption applied at Eq.~(\ref{eq:pEqnSIMPLE1}) can be improved. Instead of neglecting $\boldsymbol{H}'$, van Doormal and Raithby \cite{vanDoormal} proposed the following approximation:
 
-\begin{equation}\label{eq:uPrimeSIMPLEC}
-a_P\,\boldsymbol{u}_P^{'} \approx \left(-\sum_{N} a_{N}\, \boldsymbol{u}_P^{'} - \nabla p_P^{'}\right), \qquad \boldsymbol{u}_P^{'} \approx - \frac{\nabla p_P^{'}}{a_P + \sum_{N} a_{N}}.
+\begin{equation}\label{eq:H_SIMPLEC}
+\boldsymbol{H}'= \left(-\sum_N a_N\right) \boldsymbol{u}'_P
 \end{equation}
 
-The pressure equation and the corrector step are then modified as follows:
+\noindent which can be computed and included in the momentum equation leading to:
 
-\begin{equation}\label{eq:pEqnSIMPLEC}
-\sum_f \left(\frac{\nabla p_P^{'}}{a_P + \sum_{N} a_{N}}\right)_f \cdot \boldsymbol{S}_f= \sum_f \boldsymbol{u}_f^{*}\cdot \boldsymbol{S}_f, \qquad \boldsymbol{u}_P = \boldsymbol{u}_P^* - \frac{\nabla p_P^{'}}{a_P + \sum_{N} a_{N}}.
+\begin{align}\label{eq:uPrimeSIMPLEC}
+a_P\,\boldsymbol{u}_P^{'} &= -\boldsymbol{u}'_P \sum_{N} a_{N}\ - \nabla p_P^{'}
+\end{align}
+
+\noindent and then
+
+\begin{align}\label{eq:uPrimeSIMPLEC2}
+ \boldsymbol{u}_P^{'} &= - \frac{\nabla p_P^{'}}{a_P + \sum_{N} a_{N}}
+\end{align}
+
+Including this expression into Eq.~(\ref{eq:div-free2}):
+
+\begin{align} 
+\sum_f \left(\boldsymbol{u_P}'\right)_{f} \cdot \boldsymbol{S}_f &= -\sum_f \left(\boldsymbol{u_P}^{*}\right)_{f} \cdot \boldsymbol{S}_f \label{eq:div-free4}
+\end{align}
+\noindent the following pressure equation is obtained:
+
+\begin{equation}
+\label{eq:pEqnSIMPLEC1}
+\sum_f 
+\left(
+- \frac
+{
+\nabla p_P^{'}
+}
+{
+a_P + \sum_{N} a_{N}
+}
+\right)
+\cdot 
+\boldsymbol{S}_f
+= 
+\sum_f 
+\left[
+\frac{1}{a_P}
+\left(
+\boldsymbol{H}^* - \nabla p_P^{*}
+\right)
+\right]_f 
+\cdot
+\boldsymbol{S}_f
 \end{equation}
 
-Applying Rhie-Chow interpolation, the pressure equation  is defined as
-\begin{equation}\label{eq:pEqnSIMPLEC-RC}
-\sum_f \left(\frac{1}{a_P + \sum_{N} a_{N}}\right)_f \nabla p_f^{n}\cdot \boldsymbol{S}_f = \sum_f \left(\boldsymbol{u}_P^{*} + \frac{\nabla p_P^{*}}{a_P + \sum_{N} a_{N}}\right)_f\cdot \boldsymbol{S}_f .
+The pressure equation is obtained by including an analogous Rhie-Chow correction:
+
+\begin{equation}\label{eq:pEqnSIMPLEC2}
+\sum_f \left(\frac{1}{a_P + \sum_{N} a_{N}}\right)_f \nabla p_f^{'} \cdot \boldsymbol{S}_f= \sum_f \left[\frac{1}{a_P}\left(\boldsymbol{H}^* - \nabla p_P^{*}\right)\right]_f \cdot \boldsymbol{S}_f + \sum_f  \left[ \left( \frac{\nabla p_P^{*}}{a_P + \sum_{N} a_{N}}\right)_f - \left( \frac{1}{a_P + \sum_{N} a_{N}}\right)_f \nabla p_f^{*} \right] \cdot \boldsymbol{S}_f 
 \end{equation}
+
+The terms may be regrouped to obtain the following pressure equation:
+
+\begin{equation}\label{eq:pEqnSIMPLEC3}
+\sum_f \left(\frac{1}{a_P + \sum_{N} a_{N}}\right)_f \nabla p_f^{**} \cdot \boldsymbol{S}_f= \sum_f \left(\frac{\boldsymbol{H}^*}{a_P}\right)_f \cdot \boldsymbol{S}_f + \sum_f \left[ \left( \frac{1}{a_P + \sum_{N} a_{N}} - \frac{1}{a_P}\right) \nabla p_P^{*}\right]_f \cdot \boldsymbol{S}_f 
+\end{equation}
+
+Then, the velocity correction may be computed as follows:
+
+\begin{equation}\label{eq:uCorrSIMPLEC}
+\boldsymbol{u}^{**}_P = \boldsymbol{u}_P^* - \frac{\nabla p_P^{'}}{a_P + \sum_{N} a_{N}}.
+\end{equation}
+
+%Applying Rhie-Chow interpolation, the pressure equation  is defined as
+%\begin{equation}\label{eq:pEqnSIMPLEC-RC}
+%\sum_f \left(\frac{1}{a_P + \sum_{N} a_{N}}\right)_f \nabla p_f^{n}\cdot \boldsymbol{S}_f = \sum_f \left(\boldsymbol{u}_P^{*} + \frac{\nabla p_P^{*}}{a_P + \sum_{N} a_{N}}\right)_f\cdot \boldsymbol{S}_f .
+%\end{equation}
 
 The only difference between SIMPLE and SIMPLEC are the coefficients in the Corrector step. Nevertheless, this slight modification shows a significant improvement in the stability  and convergence properties of the algorithm \cite{liu}. In the spirit of using better approximation for the neighbors correction values, we propose the following method.
 
@@ -290,7 +441,9 @@ In order to estimate the value of $\boldsymbol{u}_N'$ in Eq.~(\ref{eq:uprimeDef}
 
 Replacing Eq.~(\ref{eq:uNTaylor}) in (\ref{eq:uprimeDef}), considering the same velocity gradient for all the neighbor approximations
 \begin{equation}\label{eq:uPrimeCOMPLEX}
-a_P\,\boldsymbol{u}_P^{'} \approx -\sum_{N} a_{N}\, \left(\boldsymbol{u}_P^{'} + \boldsymbol{x}_{PN}\cdot \nabla \boldsymbol{u}_f'\right)- \nabla p_P^{'}, \qquad \boldsymbol{u}_P^{'} \approx - \frac{\nabla \boldsymbol{u}_f' \cdot \sum_{N} a_{N}\boldsymbol{x}_{PN} + \nabla p_P^{'}}{a_P + \sum_{N} a_{N}} .
+a_P\,\boldsymbol{u}_P^{'} \approx -\sum_{N} a_{N}\, \left(\boldsymbol{u}_P^{'} + \boldsymbol{x}_{PN}\cdot \nabla \boldsymbol{u}_f'\right)- \nabla p_P^{'}, \qquad \boldsymbol{u}_P^{'} \approx - \dfrac{ \sum_{N} a_{N} 
+( \boldsymbol{x}_{PN} \cdot \nabla \boldsymbol{u}_f' ) 
++ \nabla p_P^{'}}{a_P + \sum_{N} a_{N}} .
 \end{equation}
 
 \noindent and in~(\ref{eq:div-free}) as well,
@@ -298,7 +451,9 @@ a_P\,\boldsymbol{u}_P^{'} \approx -\sum_{N} a_{N}\, \left(\boldsymbol{u}_P^{'} +
 \begin{equation}\label{eq:pEqnCOMPLEX}
 \begin{split}
 \nabla \cdot \left(\boldsymbol{u}_P^{*} + \boldsymbol{u}_P^{'}\right) = 0 \implies
-\sum_f \left(\boldsymbol{u}_P^{*} - \frac{\nabla \boldsymbol{u}_P' \cdot \sum_{N} a_{N}\boldsymbol{x}_{PN} + \nabla p_P^{'}}{a_P + \sum_{N} a_{N}}\right)_f \cdot \boldsymbol{S}_f
+\sum_f \left(\boldsymbol{u}_P^{*} - \dfrac{ \sum_{N} a_{N}
+( \boldsymbol{x}_{PN} \cdot \nabla \boldsymbol{u}_f' ) 
++ \nabla p_P^{'}}{a_P + \sum_{N} a_{N}}\right)_f \cdot \boldsymbol{S}_f
 = 0 
 \\
 \\
