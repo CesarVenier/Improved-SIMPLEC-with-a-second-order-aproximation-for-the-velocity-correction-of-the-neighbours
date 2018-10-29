@@ -180,7 +180,8 @@ This preliminary result does not satisfy the divergence-free condition in Eq. (\
 
 \CIP{A continuación desarrollo las ecuaciones de forma relativa. Hay que definir si queda así o en términos absoultos (como FOAM). La ventaja del $H$ es que Rhie Chow queda implícito (acá no está hecho) y que FOAM labura así.}
 
-\begin{align}\label{eq:uprimeDef}
+\begin{align}
+\label{eq:uprimeDef}
 \boldsymbol{u}_P^{**} &= \boldsymbol{u}_P^{*} + \boldsymbol{u}_P^{'} \\
 \qquad \boldsymbol{u}_P^{'} &= \frac{1}{a_P}\left(\boldsymbol{H}'- \nabla p_P^{'}\right).
 \end{align}
@@ -188,6 +189,7 @@ This preliminary result does not satisfy the divergence-free condition in Eq. (\
 \noindent where,
 
 \begin{align}
+\label{eq:HPrima}
    \boldsymbol{H}' = - \sum_N a_N \boldsymbol{u}'_N 
 \end{align}
 
@@ -354,10 +356,17 @@ F_f = \boldsymbol{u}^*_f \cdotp \textbf{S}_{f} -  \left( \frac{1}{a_P}\right)_f 
 Most of the SIMPLE-family algorithms preserve this general structure. In particular, the SIMPLE algorithm \cite{patankar1972}, originally conceived as a steady state flow solver, adds under-relaxation factors to obtain a stable solution. Another variant is the PISO {\color{red}(Pressure-Implicit with Splitting of Operators)} algorithm, which relies on iterating the Corrector step a given number of times to ensure a correct coupling between pressure and velocity for transient flow problems \cite{issa,issa2}. {\color{red} The SIMPLE-PISO combined technique has been largely adopted in several computational codes (e.g. OpenFOAM(R) \cite{ofpg}) to address transient incompressible flow problems due to its beneficial convergence features. It consists on iterating the corrector steps until a certain mass conservation criteria is fulfilled (as in PISO) and iterating the whole sequence (Momentum Predictor and Corrector Step) several times until both mass and momentum equations are verified for each time step. This algorithm will be adopted in the present work.}
 
 \subsection{Improving the neighbor approximation: the SIMPLEC algorithm}
-The assumption applied at Eq.~(\ref{eq:pEqnSIMPLE1}) can be improved. Instead of neglecting $\boldsymbol{H}'$, van Doormal and Raithby \cite{vanDoormal} proposed the following approximation:
+The SIMPLEC~\cite{vanDoormal} algorithm proposes an aproximation of the neighbour velocity correction $\boldsymbol{u}_N'$,
+\begin{equation}
+\label{Eq:simplecAproximation}
+\boldsymbol{u}_N'
+=
+\boldsymbol{u}_P'
+\end{equation}
+Based on last assumption the Eq.~(\ref{eq:HPrima}) may be expressed as,
 
 \begin{equation}\label{eq:H_SIMPLEC}
-\boldsymbol{H}'= \left(-\sum_N a_N\right) \boldsymbol{u}'_P
+\boldsymbol{H}'= \left(-\sum_N a_N\right) \boldsymbol{u}'_P,
 \end{equation}
 
 \noindent which can be computed and included in the momentum equation leading to:
@@ -372,6 +381,28 @@ a_P\,\boldsymbol{u}_P^{'} &= -\boldsymbol{u}'_P \sum_{N} a_{N}\ - \nabla p_P^{'}
  \boldsymbol{u}_P^{'} &= - \frac{\nabla p_P^{'}}{a_P + \sum_{N} a_{N}}
 \end{align}
 
+
+The following equivalence is defined,
+\begin{equation}
+\tilde{a}_p 
+\equiv
+a_P + \sum_{N} a_{N},
+\end{equation}
+Then:
+
+\begin{align}\label{eq:uPrimeSIMPLEC2}
+\boldsymbol{u}_P^{'} 
+=
+- 
+\dfrac
+{
+\nabla p_P^{'}
+}
+{
+\tilde{a_P}
+}
+\end{align}
+
 Including this expression into Eq.~(\ref{eq:div-free2}):
 
 \begin{align} 
@@ -382,15 +413,314 @@ Including this expression into Eq.~(\ref{eq:div-free2}):
 \begin{equation}
 \label{eq:pEqnSIMPLEC1}
 \sum_f 
+\left[
 \left(
-- \frac
+\frac
 {
-\nabla p_P^{'}
+1
 }
 {
-a_P + \sum_{N} a_{N}
+\tilde{a}_P
 }
 \right)
+\nabla p_P^{'}
+\right]_f
+\cdot 
+\boldsymbol{S}_f
+= 
+\sum_f 
+\left[
+\frac{1}{a_P}
+\left(
+\boldsymbol{H}^* - \nabla p_P^{*}
+\right)
+\right]_f 
+\cdot
+\boldsymbol{S}_f.
+\end{equation}
+
+
+Adding the following term  in both terms of previous equation
+\begin{equation}
+\sum_f
+\left[
+\left(
+\dfrac
+{1}
+{\tilde{a}_P}
+\right)
+\nabla p^*
+\right]_f
+ \cdot S_f,
+\end{equation}
+ and grouping the pressure terms,
+\begin{equation}
+\label{eq:pEqnSIMPLEC1}
+\sum_f 
+\left[
+\left(
+\frac
+{
+1
+}
+{
+\tilde{a}_P
+}
+\right)
+\nabla p_P^{**}
+\right]_f
+\cdot 
+\boldsymbol{S}_f
+= 
+\sum_f 
+\left[
+\frac{1}{a_P}
+\left(
+\boldsymbol{H}^*
+\right)
+\right]_f 
+\cdot
+\boldsymbol{S}_f
++
+\left[
+\left(
+\dfrac{1}
+{\tilde{a}_P}
+-
+\dfrac{1}
+{a_P}
+\right)
+\nabla p^*
+\right]_f
+\cdot
+S_f
+\end{equation}
+
+
+The pressure equation is obtained by including an analogous Rhie-Chow correction:
+
+\begin{equation}
+\begin{split}
+\label{eq:pEqnSIMPLEC2}
+\sum_f 
+\left[
+\left(
+\frac
+{
+1
+}
+{
+\tilde{a}_P
+}
+\right)
+\nabla p_P^{**}
+\right]_f
+\cdot 
+\boldsymbol{S}_f
+=
+\\ 
+\sum_f 
+\left[
+\frac{1}{a_P}
+\left(
+\boldsymbol{H}^*
+\right)
+\right]_f 
+\cdot
+\boldsymbol{S}_f
++
+\left[
+\left(
+\dfrac{1}
+{\tilde{a}_P}
+-
+\dfrac{1}
+{a_P}
+\right)
+\nabla p^*
+\right]_f
+\cdot
+S_f
++
+\sum_f
+\left\lbrace
+\left(
+\dfrac
+{
+\nabla p^{**}
+}
+{\tilde{a}_P}
+\right)_f
+-
+\left(
+\dfrac
+{1}
+{\tilde{a}_P}
+\right)_f
+\nabla p^{**}_f
++
+\left(
+\dfrac
+{1}
+{\tilde{a}_P}
+-
+\dfrac
+{1}
+{a_P}
+\right)_f
+\nabla p^{*}_f
+-
+\left[
+\left(
+\dfrac
+{1}
+{\tilde{a}_P}
+-
+\dfrac
+{1}
+{a_P}
+\right)
+\nabla p^*
+\right]_f
+\right\rbrace
+\cdot
+S_f
+\end{split}
+\end{equation}
+Then, simplifying,
+\begin{equation}
+\sum_f
+\left[
+\left(
+\dfrac
+{1}
+{\tilde{a}_P}
+\right)_f
+\nabla p^{**}_f
+\right]
+\cdot 
+\boldsymbol{S}_f
+= 
+\sum_f 
+\left[
+\frac{1}{a_P}
+\left(
+\boldsymbol{H}^*
+\right)
+\right]_f 
+\cdot
+\boldsymbol{S}_f
++
+\left[
+\left(
+\dfrac
+{1}
+{\tilde{a}_P}
+-
+\dfrac
+{1}
+{a_P}
+\right)_f
+\nabla p^{*}_f
+\right]
+\cdot
+S_f
+\end{equation}
+
+
+Then, the velocity correction may be computed as follows:
+
+\begin{equation}\label{eq:uCorrSIMPLEC}
+\boldsymbol{u}^{**}_P = \boldsymbol{u}_P^* - \frac{\nabla p_P^{'}}{\tilde{a}_P}.
+\end{equation}
+
+Last equation may be expressed also by means of the $H^*$ operator,
+\begin{equation}
+\boldsymbol{u}^{**}_P 
+=
+\dfrac
+{\boldsymbol{H}_P^* }
+{a_P}
+- 
+\frac{\nabla p_P^{*}}{a_P}
+- 
+\frac{\nabla p_P^{'}}{\tilde{a}_P}.
+\end{equation}
+which may be considered including absolute pressure values,
+\begin{equation}
+\boldsymbol{u}^{**}_P 
+=
+\dfrac
+{\boldsymbol{H}_P^* }
+{a_P}
+- 
+\frac{\nabla p_P^{**}}{\tilde{a}_P}
++
+\left(
+\dfrac{1}{\tilde{
+a}_P}
+-
+\dfrac{1}{a_P}
+\right)
+\nabla p_P^{*}.
+\end{equation}
+
+
+The only difference between SIMPLE and SIMPLEC are the coefficients in the Corrector step. Nevertheless, this slight modification shows a significant improvement in the stability  and convergence properties of the algorithm \cite{liu}. In the spirit of using better approximation for the neighbors correction values, we propose the following method.
+
+\section{Enhancement of SIMPLEC: the COMPLEX method}
+\label{sec:COMPLEX}
+
+In order to estimate the value of $\boldsymbol{u}_N'$ in Eq.~(\ref{eq:HPrima}), a second order Taylor approximation is proposed,
+\begin{equation}\label{eq:uNTaylor}
+\boldsymbol{u}_N' = \boldsymbol{u}_P' + \boldsymbol{x}_{PN}\cdot 
+\nabla \boldsymbol{u}_f'.
+\end{equation}
+
+Replacing Eq.~(\ref{eq:uNTaylor}) in (\ref{eq:HPrima}), considering the same velocity gradient for all the neighbor approximations
+\begin{align}
+\label{eq:uPrimeCOMPLEX}
+a_P\,\boldsymbol{u}_P^{'} 
+&=
+ -\sum_{N} a_{N}\, \left(\boldsymbol{u}_P^{'} + \boldsymbol{x}_{PN}\cdot \nabla \boldsymbol{u}_f'\right)- \nabla p_P^{'}, 
+\\
+\boldsymbol{u}_P^{'} 
+&=
+- \dfrac{\nabla p_P^{'}}
+{\tilde{a}_P}
+-
+\dfrac
+{
+\sum_{N} a_{N} 
+( 
+\boldsymbol{x}_{PN} 
+\cdot
+\nabla \boldsymbol{u}_f' 
+)
+}
+{\tilde{a}_P}.
+\end{align}
+
+\begin{align} 
+\label{eq:div-free4Again}
+\sum_f \left(\boldsymbol{u_P}'\right)_{f} \cdot \boldsymbol{S}_f &= -\sum_f \left(\boldsymbol{u_P}^{*}\right)_{f} \cdot \boldsymbol{S}_f 
+\end{align}
+
+\begin{equation}
+\label{eq:pEqnCOMPLEX1}
+\sum_f 
+\left[
+\left(
+\frac
+{
+1
+}
+{
+\tilde{a}_P
+}
+\right)
+\nabla p_P^{'}
+\right]_f
 \cdot 
 \boldsymbol{S}_f
 = 
@@ -403,103 +733,133 @@ a_P + \sum_{N} a_{N}
 \right]_f 
 \cdot
 \boldsymbol{S}_f
+-
+\sum_f 
+\left[
+\dfrac
+{
+\sum_{N} a_{N} 
+( 
+\boldsymbol{x}_{PN} 
+\cdot
+\nabla \boldsymbol{u}_f' 
+)
+}
+{\tilde{a}_P}
+\right]_f 
+\cdot
+\boldsymbol{S}_f.
 \end{equation}
 
-The pressure equation is obtained by including an analogous Rhie-Chow correction:
-
-\begin{equation}\label{eq:pEqnSIMPLEC2}
-\sum_f \left(\frac{1}{a_P + \sum_{N} a_{N}}\right)_f \nabla p_f^{'} \cdot \boldsymbol{S}_f= \sum_f \left[\frac{1}{a_P}\left(\boldsymbol{H}^* - \nabla p_P^{*}\right)\right]_f \cdot \boldsymbol{S}_f + \sum_f  \left[ \left( \frac{\nabla p_P^{*}}{a_P + \sum_{N} a_{N}}\right)_f - \left( \frac{1}{a_P + \sum_{N} a_{N}}\right)_f \nabla p_f^{*} \right] \cdot \boldsymbol{S}_f 
-\end{equation}
-
-The terms may be regrouped to obtain the following pressure equation:
-
-\begin{equation}\label{eq:pEqnSIMPLEC3}
-\sum_f \left(\frac{1}{a_P + \sum_{N} a_{N}}\right)_f \nabla p_f^{**} \cdot \boldsymbol{S}_f= \sum_f \left(\frac{\boldsymbol{H}^*}{a_P}\right)_f \cdot \boldsymbol{S}_f + \sum_f \left[ \left( \frac{1}{a_P + \sum_{N} a_{N}} - \frac{1}{a_P}\right) \nabla p_P^{*}\right]_f \cdot \boldsymbol{S}_f 
-\end{equation}
-
-Then, the velocity correction may be computed as follows:
-
-\begin{equation}\label{eq:uCorrSIMPLEC}
-\boldsymbol{u}^{**}_P = \boldsymbol{u}_P^* - \frac{\nabla p_P^{'}}{a_P + \sum_{N} a_{N}}.
-\end{equation}
-
-%Applying Rhie-Chow interpolation, the pressure equation  is defined as
-%\begin{equation}\label{eq:pEqnSIMPLEC-RC}
-%\sum_f \left(\frac{1}{a_P + \sum_{N} a_{N}}\right)_f \nabla p_f^{n}\cdot \boldsymbol{S}_f = \sum_f \left(\boldsymbol{u}_P^{*} + \frac{\nabla p_P^{*}}{a_P + \sum_{N} a_{N}}\right)_f\cdot \boldsymbol{S}_f .
-%\end{equation}
-
-The only difference between SIMPLE and SIMPLEC are the coefficients in the Corrector step. Nevertheless, this slight modification shows a significant improvement in the stability  and convergence properties of the algorithm \cite{liu}. In the spirit of using better approximation for the neighbors correction values, we propose the following method.
-
-\section{Enhancement of SIMPLEC: the COMPLEX method}
-\label{sec:COMPLEX}
-
-In order to estimate the value of $\boldsymbol{u}_N'$ in Eq.~(\ref{eq:uprimeDef}), we use a second order Taylor approximation:
-\begin{equation}\label{eq:uNTaylor}
-\boldsymbol{u}_N' = \boldsymbol{u}_P' + \boldsymbol{x}_{PN}\cdot 
-\nabla \boldsymbol{u}_f' + \mathcal{}{O}(\boldsymbol{x}_{PN} \cdot \boldsymbol{x}_{PN}) \rightarrow \boldsymbol{u}_N' \approx \boldsymbol{u}_P' + \boldsymbol{x}_{PN}\cdot \nabla \boldsymbol{u}_f'
-\end{equation}
-
-Replacing Eq.~(\ref{eq:uNTaylor}) in (\ref{eq:uprimeDef}), considering the same velocity gradient for all the neighbor approximations
-\begin{equation}\label{eq:uPrimeCOMPLEX}
-a_P\,\boldsymbol{u}_P^{'} \approx -\sum_{N} a_{N}\, \left(\boldsymbol{u}_P^{'} + \boldsymbol{x}_{PN}\cdot \nabla \boldsymbol{u}_f'\right)- \nabla p_P^{'}, \qquad \boldsymbol{u}_P^{'} \approx - \dfrac{ \sum_{N} a_{N} 
-( \boldsymbol{x}_{PN} \cdot \nabla \boldsymbol{u}_f' ) 
-+ \nabla p_P^{'}}{a_P + \sum_{N} a_{N}} .
-\end{equation}
-
-\noindent and in~(\ref{eq:div-free}) as well,
-
-\begin{equation}\label{eq:pEqnCOMPLEX}
-\begin{split}
-\nabla \cdot \left(\boldsymbol{u}_P^{*} + \boldsymbol{u}_P^{'}\right) = 0 \implies
-\sum_f \left(\boldsymbol{u}_P^{*} - \dfrac{ \sum_{N} a_{N}
-( \boldsymbol{x}_{PN} \cdot \nabla \boldsymbol{u}_f' ) 
-+ \nabla p_P^{'}}{a_P + \sum_{N} a_{N}}\right)_f \cdot \boldsymbol{S}_f
-= 0 
-\\
-\\
-\sum_f \left(\frac{1}{a_P + \sum_{N} a_{N}}\right)_f \nabla p_f^{n} \cdot \boldsymbol{S}_f
-= \sum_f \left(\boldsymbol{u}_P^{*} + \frac{\nabla p_P^{*}}{a_P + \sum_{N} a_{N}} - \frac{\nabla \boldsymbol{u}_P' \cdot \sum_{N} a_{N}\boldsymbol{x}_{PN}}{a_P + \sum_{N} a_{N}}\right)_f \cdot \boldsymbol{S}_f
-% \\
-% \sum_f \left\lbrace\frac{1}{a_P}\left[-\sum_{N} a_{N}\, \left(\boldsymbol{u}_P^{'} + \boldsymbol{x}_{PN}\cdot \nabla \boldsymbol{u}_P'\right)- \nabla p_P^{'}\right]\right\rbrace_f\cdot \boldsymbol{S}_f = -\sum_f \boldsymbol{u}_f^{*}\cdot \boldsymbol{S}_f,\\
-% \sum_f \left(\frac{\nabla p_P^{'}}{a_P + \sum_{N} a_{N}}\right)_f \cdot \boldsymbol{S}_f= \sum_f \boldsymbol{u}_f^{*}\cdot \boldsymbol{S}_f, \qquad \boldsymbol{u}_P = \boldsymbol{u}_P^* - \frac{\nabla p_P^{'}}{a_P + \sum_{N} a_{N}}.
-\end{split}
-\end{equation}
-
-\noindent here the correction gradient mis still undefined. In order to find an approximation, we apply the same Taylor approximation to compute the face interpolation to compute the velocity correction values in the summations of the divergence free condition:
-
-\begin{equation}\label{eq:ugradDef1}
-\begin{split}
-\sum_f \left(\boldsymbol{u}_P^{'} + \nabla \boldsymbol{u}_P' \cdot \boldsymbol{x}_{Pf}\right)
+\begin{equation}
+\sum_f
+\left[
+\left(
+\dfrac
+{1}
+{\tilde{a}_P}
+\right)_f
+\nabla p^{**}_f
+\right]
+\cdot 
+\boldsymbol{S}_f
+= 
+\sum_f 
+\left[
+\frac{1}{a_P}
+\left(
+\boldsymbol{H}^*
+\right)
+\right]_f 
 \cdot
 \boldsymbol{S}_f
-= -\sum_f \left(\boldsymbol{u}_P^{*}\right)_f \cdot \boldsymbol{S}_f
-\end{split}
++
+\left[
+\left(
+\dfrac
+{1}
+{\tilde{a}_P}
+-
+\dfrac
+{1}
+{a_P}
+\right)_f
+\nabla p^{*}_f
+\right]
+\cdot
+S_f
+-
+\sum_f 
+\left[
+\dfrac
+{
+\sum_{N} a_{N} 
+( 
+\boldsymbol{x}_{PN} 
+\cdot
+\nabla \boldsymbol{u}_f' 
+)
+}
+{\tilde{a}_P}
+\right]_f 
+\cdot
+\boldsymbol{S}_f
 \end{equation}
 
-\noindent where $\boldsymbol{u}_P^{'}$ and $(\nabla \boldsymbol{u}_P^{'})$ are constant values in the summation and can be separated:
+%\noindent and in~(\ref{eq:div-free}) as well,
+%
+%\begin{equation}\label{eq:pEqnCOMPLEX}
+%\begin{split}
+%\nabla \cdot \left(\boldsymbol{u}_P^{*} + \boldsymbol{u}_P^{'}\right) = 0 \implies
+%\sum_f \left(\boldsymbol{u}_P^{*} - \dfrac{ \sum_{N} a_{N}
+%( \boldsymbol{x}_{PN} \cdot \nabla \boldsymbol{u}_f' ) 
+%+ \nabla p_P^{'}}{a_P + \sum_{N} a_{N}}\right)_f \cdot \boldsymbol{S}_f
+%= 0 
+%\\
+%\\
+%\sum_f \left(\frac{1}{a_P + \sum_{N} a_{N}}\right)_f \nabla p_f^{n} \cdot \boldsymbol{S}_f
+%= \sum_f \left(\boldsymbol{u}_P^{*} + \frac{\nabla p_P^{*}}{a_P + \sum_{N} a_{N}} - \frac{\nabla \boldsymbol{u}_P' \cdot \sum_{N} a_{N}\boldsymbol{x}_{PN}}{a_P + \sum_{N} a_{N}}\right)_f \cdot \boldsymbol{S}_f
+%% \\
+%% \sum_f \left\lbrace\frac{1}{a_P}\left[-\sum_{N} a_{N}\, \left(\boldsymbol{u}_P^{'} + \boldsymbol{x}_{PN}\cdot \nabla \boldsymbol{u}_P'\right)- \nabla p_P^{'}\right]\right\rbrace_f\cdot \boldsymbol{S}_f = -\sum_f \boldsymbol{u}_f^{*}\cdot \boldsymbol{S}_f,\\
+%% \sum_f \left(\frac{\nabla p_P^{'}}{a_P + \sum_{N} a_{N}}\right)_f \cdot \boldsymbol{S}_f= \sum_f \boldsymbol{u}_f^{*}\cdot \boldsymbol{S}_f, \qquad \boldsymbol{u}_P = \boldsymbol{u}_P^* - \frac{\nabla p_P^{'}}{a_P + \sum_{N} a_{N}}.
+%\end{split}
+%\end{equation}
+%
+%\noindent here the correction gradient mis still undefined. In order to find an approximation, we apply the same Taylor approximation to compute the face interpolation to compute the velocity correction values in the summations of the divergence free condition:
+%
+%\begin{equation}\label{eq:ugradDef1}
+%\begin{split}
+%\sum_f \left(\boldsymbol{u}_P^{'} + \nabla \boldsymbol{u}_P' \cdot \boldsymbol{x}_{Pf}\right)
+%\cdot
+%\boldsymbol{S}_f
+%= -\sum_f \left(\boldsymbol{u}_P^{*}\right)_f \cdot \boldsymbol{S}_f
+%\end{split}
+%\end{equation}
+%
+%\noindent where $\boldsymbol{u}_P^{'}$ and $(\nabla \boldsymbol{u}_P^{'})$ are constant values in the summation and can be separated:
+%
+%\begin{equation}\label{eq:ugradDef2}
+%\begin{split}
+%\boldsymbol{u}_P' \left(\sum_f \boldsymbol{S}_f\right) + \nabla \boldsymbol{u}_P' \cdot \left(\sum_f \boldsymbol{x}_{Pf} \cdot \boldsymbol{S}_f\right) = -\sum_f \left(\boldsymbol{u}_P^{*}\right)_f \cdot \boldsymbol{S}_f
+%\end{split}
+%\end{equation}
+%
+%The term $\left(\sum_f \boldsymbol{S}_f\right)$ is zero. The tensor contraction in the other term of the LHS can be inverted to finally obtain the velocity correction gradient value at cell $P$:
+%\begin{equation}\label{eq:ugradDefFinal}
+%\begin{split}
+%\nabla \boldsymbol{u}_P' = -
+%\left(\sum_f \boldsymbol{x}_{Pf} \cdot \boldsymbol{S}_f\right)^{-1} \sum_f \left(\boldsymbol{u}_P^{*}\right)_f \cdot \boldsymbol{S}_f
+%\end{split}
+%\end{equation}
+%
+%Replacing this expression at \ref{eq:pEqnCOMPLEX} and \ref{eq:uPrimeCOMPLEX}, the algorithm is completely defined:
 
-\begin{equation}\label{eq:ugradDef2}
-\begin{split}
-\boldsymbol{u}_P' \left(\sum_f \boldsymbol{S}_f\right) + \nabla \boldsymbol{u}_P' \cdot \left(\sum_f \boldsymbol{x}_{Pf} \cdot \boldsymbol{S}_f\right) = -\sum_f \left(\boldsymbol{u}_P^{*}\right)_f \cdot \boldsymbol{S}_f
-\end{split}
-\end{equation}
-
-The term $\left(\sum_f \boldsymbol{S}_f\right)$ is zero. The tensor contraction in the other term of the LHS can be inverted to finally obtain the velocity correction gradient value at cell $P$:
-\begin{equation}\label{eq:ugradDefFinal}
-\begin{split}
-\nabla \boldsymbol{u}_P' = -
-\left(\sum_f \boldsymbol{x}_{Pf} \cdot \boldsymbol{S}_f\right)^{-1} \sum_f \left(\boldsymbol{u}_P^{*}\right)_f \cdot \boldsymbol{S}_f
-\end{split}
-\end{equation}
-
-Replacing this expression at \ref{eq:pEqnCOMPLEX} and \ref{eq:uPrimeCOMPLEX}, the algorithm is completely defined:
-
-\begin{enumerate}
-\item Compute velocity prediction from equation \ref{eq:MOMPRED}
-\item Compute the gradient of the velocity correction  from equation \ref{eq:ugradDefFinal}
-\item Solve pressure equation  the gradient of the velocity correction from equation \ref{eq:pEqnCOMPLEX}
-\item Correct the velocity with equation \ref{eq:uPrimeCOMPLEX}
-\end{enumerate}
+%\begin{enumerate}
+%\item Compute velocity prediction from equation \ref{eq:MOMPRED}
+%\item Compute the gradient of the velocity correction  from equation \ref{eq:ugradDefFinal}
+%\item Solve pressure equation  the gradient of the velocity correction from equation \ref{eq:pEqnCOMPLEX}
+%\item Correct the velocity with equation \ref{eq:uPrimeCOMPLEX}
+%\end{enumerate}
 
 \section{Test cases}
 \label{sec:cases}
