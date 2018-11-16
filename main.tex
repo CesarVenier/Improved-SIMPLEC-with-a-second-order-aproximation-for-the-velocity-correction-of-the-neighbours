@@ -482,6 +482,7 @@ Adding the following term  in both terms of previous equation
 \cdot
 \boldsymbol{S}_f
 +
+\sum_f
 \left[
 \left(
 \dfrac{1}
@@ -493,7 +494,7 @@ Adding the following term  in both terms of previous equation
 \nabla p^*
 \right]_f
 \cdot
-S_f
+\boldsymbol{S}_f
 \end{equation}
 
 
@@ -529,6 +530,7 @@ The pressure equation is obtained by including an analogous Rhie-Chow correction
 \cdot
 \boldsymbol{S}_f
 +
+\sum_f
 \left[
 \left(
 \dfrac{1}
@@ -540,7 +542,7 @@ The pressure equation is obtained by including an analogous Rhie-Chow correction
 \nabla p^*
 \right]_f
 \cdot
-S_f
+\boldsymbol{S}_f
 +
 \sum_f
 \left\lbrace
@@ -611,6 +613,7 @@ Then, simplifying,
 \cdot
 \boldsymbol{S}_f
 +
+\sum_f
 \left[
 \left(
 \dfrac
@@ -624,7 +627,7 @@ Then, simplifying,
 \nabla p^{*}_f
 \right]
 \cdot
-S_f
+\boldsymbol{S}_f
 \end{equation}
 
 
@@ -752,6 +755,7 @@ a_P\,\boldsymbol{u}_P^{'}
 \end{equation}
 
 \begin{equation}
+\label{Eq:complexSemiFinal}
 \sum_f
 \left[
 \left(
@@ -774,6 +778,7 @@ a_P\,\boldsymbol{u}_P^{'}
 \cdot
 \boldsymbol{S}_f
 +
+\sum_f
 \left[
 \left(
 \dfrac
@@ -785,7 +790,7 @@ a_P\,\boldsymbol{u}_P^{'}
 {a_P}
 \right)_f
 \nabla p^{*}_f
-\right]
+\right]_f
 \cdot
 S_f
 -
@@ -806,60 +811,264 @@ S_f
 \boldsymbol{S}_f
 \end{equation}
 
-%\noindent and in~(\ref{eq:div-free}) as well,
-%
-%\begin{equation}\label{eq:pEqnCOMPLEX}
-%\begin{split}
-%\nabla \cdot \left(\boldsymbol{u}_P^{*} + \boldsymbol{u}_P^{'}\right) = 0 \implies
-%\sum_f \left(\boldsymbol{u}_P^{*} - \dfrac{ \sum_{N} a_{N}
-%( \boldsymbol{x}_{PN} \cdot \nabla \boldsymbol{u}_f' ) 
-%+ \nabla p_P^{'}}{a_P + \sum_{N} a_{N}}\right)_f \cdot \boldsymbol{S}_f
-%= 0 
-%\\
-%\\
-%\sum_f \left(\frac{1}{a_P + \sum_{N} a_{N}}\right)_f \nabla p_f^{n} \cdot \boldsymbol{S}_f
-%= \sum_f \left(\boldsymbol{u}_P^{*} + \frac{\nabla p_P^{*}}{a_P + \sum_{N} a_{N}} - \frac{\nabla \boldsymbol{u}_P' \cdot \sum_{N} a_{N}\boldsymbol{x}_{PN}}{a_P + \sum_{N} a_{N}}\right)_f \cdot \boldsymbol{S}_f
-%% \\
-%% \sum_f \left\lbrace\frac{1}{a_P}\left[-\sum_{N} a_{N}\, \left(\boldsymbol{u}_P^{'} + \boldsymbol{x}_{PN}\cdot \nabla \boldsymbol{u}_P'\right)- \nabla p_P^{'}\right]\right\rbrace_f\cdot \boldsymbol{S}_f = -\sum_f \boldsymbol{u}_f^{*}\cdot \boldsymbol{S}_f,\\
-%% \sum_f \left(\frac{\nabla p_P^{'}}{a_P + \sum_{N} a_{N}}\right)_f \cdot \boldsymbol{S}_f= \sum_f \boldsymbol{u}_f^{*}\cdot \boldsymbol{S}_f, \qquad \boldsymbol{u}_P = \boldsymbol{u}_P^* - \frac{\nabla p_P^{'}}{a_P + \sum_{N} a_{N}}.
-%\end{split}
-%\end{equation}
-%
-%\noindent here the correction gradient mis still undefined. In order to find an approximation, we apply the same Taylor approximation to compute the face interpolation to compute the velocity correction values in the summations of the divergence free condition:
-%
-%\begin{equation}\label{eq:ugradDef1}
-%\begin{split}
-%\sum_f \left(\boldsymbol{u}_P^{'} + \nabla \boldsymbol{u}_P' \cdot \boldsymbol{x}_{Pf}\right)
-%\cdot
-%\boldsymbol{S}_f
-%= -\sum_f \left(\boldsymbol{u}_P^{*}\right)_f \cdot \boldsymbol{S}_f
-%\end{split}
-%\end{equation}
-%
-%\noindent where $\boldsymbol{u}_P^{'}$ and $(\nabla \boldsymbol{u}_P^{'})$ are constant values in the summation and can be separated:
-%
-%\begin{equation}\label{eq:ugradDef2}
-%\begin{split}
-%\boldsymbol{u}_P' \left(\sum_f \boldsymbol{S}_f\right) + \nabla \boldsymbol{u}_P' \cdot \left(\sum_f \boldsymbol{x}_{Pf} \cdot \boldsymbol{S}_f\right) = -\sum_f \left(\boldsymbol{u}_P^{*}\right)_f \cdot \boldsymbol{S}_f
-%\end{split}
-%\end{equation}
-%
-%The term $\left(\sum_f \boldsymbol{S}_f\right)$ is zero. The tensor contraction in the other term of the LHS can be inverted to finally obtain the velocity correction gradient value at cell $P$:
-%\begin{equation}\label{eq:ugradDefFinal}
-%\begin{split}
-%\nabla \boldsymbol{u}_P' = -
-%\left(\sum_f \boldsymbol{x}_{Pf} \cdot \boldsymbol{S}_f\right)^{-1} \sum_f \left(\boldsymbol{u}_P^{*}\right)_f \cdot \boldsymbol{S}_f
-%\end{split}
-%\end{equation}
-%
-%Replacing this expression at \ref{eq:pEqnCOMPLEX} and \ref{eq:uPrimeCOMPLEX}, the algorithm is completely defined:
+\subsection{Computation of the face gradient}
+To define the face gradient $\boldsymbol{u}_f$, the face values $\boldsymbol{u_P}'_f$ of the mass balance of Eq.~(\ref{eq:div-free4Again}) are expressed as a  first-order Taylor expansion  using $\boldsymbol{u}_f$,
+\begin{equation}
+\label{Eq:TaylorOnFace}
+\left(
+\boldsymbol{u_P}'
+\right)_f
+=
+\boldsymbol{u_P}'
++
+\boldsymbol{x}_{Pf}
+\cdot 
+\nabla \boldsymbol{u}_P'.
+\end{equation} 
+Subsequently, this last equation is replaced in  Eq.~(\ref{eq:div-free4Again}),
+\begin{align}
+\sum_f 
+\left(
+\boldsymbol{u_P}'
++
+\boldsymbol{x}_{Pf}
+\cdot 
+\nabla \boldsymbol{u}_P'
+\right)
+\cdot 
+\boldsymbol{S}_f 
+&=
+-\sum_f
+\left(
+\boldsymbol{u_P}^{*}
+\right)_{f} 
+\cdot 
+\boldsymbol{S}_f
+\\
+\boldsymbol{u_P}'
+\cdot 
+\sum_f 
+\boldsymbol{S}_f
++
+\sum_f 
+\left(
+\boldsymbol{x}_{Pf}
+\cdot 
+\nabla \boldsymbol{u}_P'
+\right)
+\cdot 
+\boldsymbol{S}_f
+&=
+-\sum_f
+\left(
+\boldsymbol{u_P}^{*}
+\right)_{f} 
+\cdot 
+\boldsymbol{S}_f
+\\
+\label{Eq:Last}
+\sum_f 
+\left(
+\boldsymbol{x}_{Pf}
+\cdot 
+\nabla \boldsymbol{u}_P'
+\right)
+\cdot 
+\boldsymbol{S}_f
+&=
+-\sum_f
+\left(
+\boldsymbol{u_P}^{*}
+\right)_{f} 
+\cdot 
+\boldsymbol{S}_f
+\end{align}
 
-%\begin{enumerate}
-%\item Compute velocity prediction from equation \ref{eq:MOMPRED}
-%\item Compute the gradient of the velocity correction  from equation \ref{eq:ugradDefFinal}
-%\item Solve pressure equation  the gradient of the velocity correction from equation \ref{eq:pEqnCOMPLEX}
-%\item Correct the velocity with equation \ref{eq:uPrimeCOMPLEX}
-%\end{enumerate}
+where,
+\begin{equation}
+\left(
+\boldsymbol{u_P}^{*}
+\right)_{f}
+=
+\left[\frac{1}{a_P}\left(\boldsymbol{H}^* - \nabla p_P^{*}\right)\right]_f
+\end{equation}
+
+Then, a similar form of the Rhie-Chow term given in Eq.~(\ref{eq:pEqnSIMPLE2}) is included,
+\begin{equation}
+\left(
+\boldsymbol{u_P}^{*}
+\right)_{f}
+=
+\left[\frac{1}{a_P}\left(\boldsymbol{H}^* - \nabla p_P^{*}\right)\right]_f
++
+\left[
+\left(
+\frac{\nabla p_P^{*}}{a_P}
+\right)_f
+- 
+\left(
+\frac{1}{a_P}
+\right)_f 
+\nabla p_f^{*} 
+\right]
+\end{equation}
+
+Simplifying, 
+\begin{equation}
+\left(
+\boldsymbol{u_P}^{*}
+\right)_{f}
+=
+ \left(\frac{\boldsymbol{H}^*}{a_P}\right)_f 
+ -
+ \left(\frac{1}{a_P}\right)_f \nabla p_f^{*}
+\end{equation}
+
+Replacing in Eq.~(\ref{Eq:Last}),
+\begin{equation}
+\sum_f 
+\left(
+\boldsymbol{x}_{Pf}
+\cdot 
+\nabla \boldsymbol{u}_P'
+\right)
+\cdot 
+\boldsymbol{S}_f
+=
+-\sum_f
+\left[
+\left(\frac{\boldsymbol{H}^*}{a_P}\right)_f 
+ -
+ \left(\frac{1}{a_P}\right)_f \nabla p_f^{*}
+ \right]
+\cdot 
+\boldsymbol{S}_f
+\end{equation}
+The following assumption is proposed:
+\begin{equation}
+\nabla \boldsymbol{u}_P'
+=
+\alpha
+\boldsymbol{I}
+\end{equation}
+
+Replacing,
+\begin{align}
+\sum_f 
+\left(
+\boldsymbol{x}_{Pf}
+\cdot 
+\alpha
+\boldsymbol{I}
+\right)
+\cdot 
+\boldsymbol{S}_f
+&=
+-\sum_f
+\left[
+\left(\frac{\boldsymbol{H}^*}{a_P}\right)_f 
+ -
+ \left(\frac{1}{a_P}\right)_f \nabla p_f^{*}
+ \right]
+\cdot 
+\boldsymbol{S}_f
+\\
+\alpha
+\sum_f 
+\left(
+\boldsymbol{x}_{Pf}
+\cdot 
+\boldsymbol{I}
+\right)
+\cdot 
+\boldsymbol{S}_f
+&=
+-\sum_f
+\left[
+\left(\frac{\boldsymbol{H}^*}{a_P}\right)_f 
+ -
+ \left(\frac{1}{a_P}\right)_f \nabla p_f^{*}
+ \right]
+\cdot 
+\boldsymbol{S}_f,
+\end{align}
+then
+\begin{equation}
+\alpha
+=
+\dfrac
+{-\sum_f
+\left[
+\left(\frac{\boldsymbol{H}^*}{a_P}\right)_f 
+ -
+ \left(\frac{1}{a_P}\right)_f \nabla p_f^{*}
+ \right]
+\cdot 
+\boldsymbol{S}_f}
+{\sum_f 
+\boldsymbol{x}_{Pf}
+\cdot 
+\boldsymbol{S}_f}
+\end{equation}
+
+Then replacing in Eq.~()
+
+\begin{equation}
+\sum_f
+\left[
+\left(
+\dfrac
+{1}
+{\tilde{a}_P}
+\right)_f
+\nabla p^{**}_f
+\right]
+\cdot 
+\boldsymbol{S}_f
+= 
+\sum_f 
+\left[
+\frac{1}{a_P}
+\left(
+\boldsymbol{H}^*
+\right)
+\right]_f 
+\cdot
+\boldsymbol{S}_f
++
+\sum_f
+\left[
+\left(
+\dfrac
+{1}
+{\tilde{a}_P}
+-
+\dfrac
+{1}
+{a_P}
+\right)_f
+\nabla p^{*}_f
+\right]_f
+\cdot
+S_f
+-
+\sum_f 
+\left[
+\dfrac
+{
+\sum_{N} a_{N} 
+( 
+\boldsymbol{x}_{PN} 
+\cdot
+\nabla \boldsymbol{u}_f' 
+)
+}
+{\tilde{a}_P}
+\right]_f 
+\cdot
+\boldsymbol{S}_f
+\end{equation}
+
 
 \section{Test cases}
 \label{sec:cases}
