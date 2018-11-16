@@ -55,10 +55,7 @@
 
 %Start of abstract
 \begin{abstract}
-In this paper, we present an enhancement of the segregated SIMPLE-like algorithms.
-
-\CIP{Con estos comandos podemos hacer comentarios que después vayamos a borrar}
-
+a
 \end{abstract}
 
 \begin{keyword}
@@ -66,54 +63,8 @@ Segregated algorithms \sep Segregated method \sep Collocated grids \sep Finite V
 \end{keyword}
 \end{frontmatter}
 
-\section*{Graphical abstract}
-\begin{figure}[h]
-\centering
-\includegraphics[width=8cm]{graph_abstract.jpg}
-\end{figure}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
-%In the context of the Finite Volume Method (FVM), segregated algorithms are among the most popular strategies to couple pressure and velocity in Computational Fluid Dynamics (CFD). In these methodologies, the variables of the problem can be stored in the same or different spatial location, which gives place to grid arrangements known as collocated or staggered  respectively. The staggered grids have the advantage of avoiding interpolations and thus prevents the appearance of spurious oscillations on the unknown fields. On the other hand, collocated grid arrangements are more suitable for unstructured meshes which are mandatory to address practical applications involving complex geometries.
-
-%\COM{Acá va un review de los algoritmos segregados: SIMPLE ... IDEAL. Ver papes Xiao y Liu. \\ A continuación hay un extracto de la introducción del paper de Fourier}
-
-The SIMPLE family techniques 
-\cite{patankar1972, patankar1981, vanDoormal, tao, tao2, cheng, issa} are arguably the most 
-widely used pressure-based algorithms to iteratively couple the pressure and 
-velocity fields for incompressible flows in CFD codes nowadays \cite{patankar1980,
-moukalled,ferziger,versteeg,weller,fluent}. The pioneering SIMPLE algorithm of Patankar 
-and Spalding \cite{patankar1972} rely on decoupling the calculation of the pressure and velocity fields. 
-First, an approximation of the velocity field is obtained based on the momentum equation. Then, an equation 
-for the pressure is assembled based on the continuity equation and an explicit velocity expression obtained 
-from the momentum equation. This expression neglects the neighbor velocity corrections contribution which 
-may induce instabilities in the coupling algorithm. The method concludes by solving the pressure field and an 
-updating the velocity field using the explicit expression previously mentioned. This sequence is iterated 
-until a certain convergence criteria is fulfilled. In order to enhance the stability of the method, under-
-relaxation factors are usually employed for the pressure field and the momentum equation. Among them, the 
-SIMPLER algorithm \cite{patankar1981} was conceived as a way to enhance the rate of convergence 
-of the standard SIMPLE algorithm by computing a pressure field 
-separately from the velocity correction sequence. Later on, 
-Van Doormaal and Raithby \cite{vanDoormal} developed the SIMPLEC 
-method, which avoids the pressure 
-under-relaxation by manipulating diagonal and off-diagonal 
-coefficients of the momentum equation to assemble 
-the pressure equation. All these methods were originally 
-developed to 
-address steady state \COM{hydrodynamics} and later extended to 
-time-marching problems employing several 
-iterations per time step. In contrast, the PISO algorithm 
-\cite{issa} was originally conceived as a low-cost transient 
-flow solver, which presents 
-the particular feature of introducing several corrections to 
-\COM{enforce the pressure-velocity coupling at each time step.}
-
-\CIP{En los trabajos anteriores analizamos PISO porque queremos hacer transitorio y lo evaluamos con Fourier. Para este trabajo habría que extender el review anterior sobre las mejoras de SIMPLE, explicando por qué se hicieron y por qué nosotros queremos mejorarlo aún más.}
-
-
-This work propose \CIP{a slight modification on the SIMPLEC formulation, particularly in the \textit{a priori} approximation of neighbor values, that enhance the convergence of the algorithm significantly}.
-
-The paper is organized as follows: On Section \ref{sec:theory}, the standard SIMPLE (Semi-Implicit Method for Pressure-Linked Equations) is given, explaining how SIMPLEC enhance its performance. Section \ref{sec:COMPLEX} presents an extension of the SIMPLEC approach using second-order approximations for neighbours values. In Section \ref{sec:cases}, \COM{X} benchmark cases are solved to evaluate the efficiency of the algorithms. The conclusions of this study are presented in the last section.
 
 
 \section{Theoretical background} \label{sec:theory}
@@ -812,7 +763,14 @@ S_f
 \end{equation}
 
 \subsection{Computation of the face gradient}
-To define the face gradient $\boldsymbol{u}_f$, the face values $\boldsymbol{u_P}'_f$ of the mass balance of Eq.~(\ref{eq:div-free4Again}) are expressed as a  first-order Taylor expansion  using $\boldsymbol{u}_f$,
+The face gradient $\nabla \boldsymbol{u}_f' $ is obtained as a linear interpolation of a cell-centred gradient,
+\begin{equation}
+\label{Eq:UFaceGradient}
+\nabla \boldsymbol{u}_f'
+=
+(\nabla \boldsymbol{u}_P')_f.
+\end{equation}
+To obtain $\nabla \boldsymbol{u}_P'$, the face values $\boldsymbol{u_P}'_f$ of the mass balance of Eq.~(\ref{eq:div-free4Again}) are expressed as a  first-order Taylor expansion,
 \begin{equation}
 \label{Eq:TaylorOnFace}
 \left(
@@ -825,6 +783,8 @@ To define the face gradient $\boldsymbol{u}_f$, the face values $\boldsymbol{u_P
 \cdot 
 \nabla \boldsymbol{u}_P'.
 \end{equation} 
+
+
 Subsequently, this last equation is replaced in  Eq.~(\ref{eq:div-free4Again}),
 \begin{align}
 \sum_f 
@@ -1011,62 +971,12 @@ then
 \boldsymbol{S}_f}
 \end{equation}
 
-Then replacing in Eq.~()
-
+Finally the face gradient~(\ref{Eq:UFaceGradient}) may be computed using the $\alpha$ values on the faces,
 \begin{equation}
-\sum_f
-\left[
-\left(
-\dfrac
-{1}
-{\tilde{a}_P}
-\right)_f
-\nabla p^{**}_f
-\right]
-\cdot 
-\boldsymbol{S}_f
-= 
-\sum_f 
-\left[
-\frac{1}{a_P}
-\left(
-\boldsymbol{H}^*
-\right)
-\right]_f 
-\cdot
-\boldsymbol{S}_f
-+
-\sum_f
-\left[
-\left(
-\dfrac
-{1}
-{\tilde{a}_P}
--
-\dfrac
-{1}
-{a_P}
-\right)_f
-\nabla p^{*}_f
-\right]_f
-\cdot
-S_f
--
-\sum_f 
-\left[
-\dfrac
-{
-\sum_{N} a_{N} 
-( 
-\boldsymbol{x}_{PN} 
-\cdot
-\nabla \boldsymbol{u}_f' 
-)
-}
-{\tilde{a}_P}
-\right]_f 
-\cdot
-\boldsymbol{S}_f
+\nabla \boldsymbol{u}_f'
+=
+\alpha_f
+\boldsymbol{I}.
 \end{equation}
 
 
