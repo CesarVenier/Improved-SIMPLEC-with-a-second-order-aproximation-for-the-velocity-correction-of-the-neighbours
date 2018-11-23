@@ -66,6 +66,12 @@ Segregated algorithms \sep Segregated method \sep Collocated grids \sep Finite V
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 
+\begin{enumerate}
+    \item {\color{red} Introducción a CFD en FVM, metodos de acoplamiento p-v: Monolitico vs Segregados. Relevancia de los metodos segregados.} 
+    \item {\color{red} Establecer problemática de los segregados: costo computacional de iterar. Variantes respecto a SIMPLE y objetivos de cada variante: SIMPLE con relajación de P, SIMPLEC mejora sobre SIMPLE, PISO mejora sobre SIMPLE}
+    \item {\color{red} Introduccion a COMPLEX, que motivo esta propuesta, en que se basa, problematica que viene a solucionar}
+    \item {\color{red} Descripcion de las secciones del paper.}
+\end{enumerate}
 
 \section{Theoretical background} \label{sec:theory}
 
@@ -979,6 +985,39 @@ Finally the face gradient~(\ref{Eq:UFaceGradient}) may be computed using the $\a
 \boldsymbol{I}.
 \end{equation}
 
+\section{Stability Analysis}
+\label{sec:fourier}
+
+In order to investigate the features of the new method, a stability analysis based on a Fourier decomposition of the error is proposed. 
+
+This technique has proven to be a powerful tool to determine the numerical and physical conditions that guarantee a stable solution for linearized equations \cite{hirsch}. Moreover, the methodology is extendable to the analysis of multivariable discrete systems addressed by segregation of the variables. The main feature of this approach is to condense the spatial information into a spectre of frequency where only the frequency for the worst-case scenario (in terms of numerical stability) is considered. In this way, the problem is reduced to the analysis of the variation time of the Fourier amplitudes, as a convergence criteria. 
+
+Many examples can be found in the literature. Miller \cite{miller} used this methodology to investigate the performance of SIMPLE and SIMPLEC on both collocated and staggered grids. On the other hand, Liu et al. \cite{liu} adopted the same technique to study a large number algorithms of the SIMPLE family. More recently, Miller et al. \cite{miller2} extended this technique for studying Eulerian multiphase flow models, while Venier et al. \cite{venier} studied the stability features of the PISO algorithm for addressing transient and steady flow problems.
+
+For the present case, Eqs. (...) are rewritten in terms of the error for SIMPLE, SIMPLEC and COMPLEX methods:
+
+{\color{red}
+MP, PEqn y Ucorr en términos de errores para cada método
+}
+
+Then, the fourier coefficients for each step become:
+
+{\color{red}
+$\alpha$ de cada etapa y de cada método
+}
+
+The stability of each method is defined as...
+
+{\color{red}
+Matrices y factor de amplificación
+}
+
+
+\begin{itemize}
+    \item 2 gráficas $\beta$ vs $\theta$ ($\omega=0.7$) con $Re=0.001$ y $Re=1000$, SIMPLE($\omega_p=1-\omega$)-SIMPLEC-COMPLEX
+    \item 2 gráficas $\beta$ vs $\theta$ con $Re=1$, SIMPLE-SIMPLEC-COMPLEX, $\omega=0.7$ y $\omega=0.95$
+    \item 1 gráfica $\text{max} (\beta)$ vs $\omega$, $Re=1$, SIMPLEC-COMPLEX (y SIMPLE?)
+\end{itemize}
 
 \section{Test cases}
 \label{sec:cases}
