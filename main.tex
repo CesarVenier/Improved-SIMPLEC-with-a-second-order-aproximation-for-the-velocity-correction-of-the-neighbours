@@ -26,7 +26,7 @@
 \providecommand{\norm}[1]{\lVert#1\rVert}
 \setlength\parindent{12pt}		
 
-\linenumbers
+%\linenumbers
 
 \newcommand{\COM}[1]{{\color{green} #1}}
 \newcommand{\HA}[1]{{\color{red} #1}}
@@ -85,7 +85,7 @@ The continuum incompressible Navier-Stokes equations may be presented as:
 \end{equation}
 
 \begin{equation}
-\displaystyle \frac{\partial \boldsymbol{u}}{\partial t} + \nabla \cdotp (\boldsymbol{u} \boldsymbol{u}) = -\nabla p + \nu\, \nabla^2 \boldsymbol{u} + \boldsymbol{\Phi},
+\displaystyle \frac{\partial \boldsymbol{u}}{\partial t} + \nabla \cdotp (\boldsymbol{u} \boldsymbol{u}) = -\nabla p + \nu\, \Delta \boldsymbol{u} + \boldsymbol{\Phi},
 \label{eq:mom1}
 \end{equation}
 
@@ -1076,26 +1076,143 @@ Matrices y factor de amplificación
 \section{Test cases}
 \label{sec:cases}
 
-{\color{red} \subsection{Contexto general}
+\subsection{General framework}
+The COMPLEX method is analysed in the context of incompressible, laminar and stationary Newtonian flows. In this sense, two typical tests for incompressible and stationary flows are studied which are the flow inside a square cavity and the backward facing step channel. The performance of the method is assessed by measuring the convergence rate in comparison with the SIMPLE and SIMPLEC algorithms.
 
-Flujo incompresible, laminar, estacionario.
+\subsection{Error measurement}
+To analyse the rate of convergence of the different algorithms, a unique error measurement is defined. The error is assumed to be the residual of the discretized Navier-Stokes equations. Thus two residuals are computed, the momentum and mass balance residuals as function of the velocity and pressure fields. 
 
-\subsection{Metodología}
+\begin{align}
+R_1
+&=
+\nabla
+\cdot
+\left(
+\boldsymbol{u}
+\boldsymbol{u}
+\right)
++
+\nu\, \Delta \boldsymbol{u}
++
+\nabla p 
+-
+\boldsymbol{\Phi}
+\\
+R_2
+&=
+\nabla
+\cdot
+\boldsymbol{u}
+\end{align}
 
-Criterio de convergencia, error,etc.
+\begin{equation}
+R_1(P)
+=
+\sum_{f}
+\varphi_f\,
+\boldsymbol{u}_p
++
+\nu
+\sum_f
+\nabla \boldsymbol{u}_f
+\cdot
+\boldsymbol{S}_f
++
+\sum_f
+p_f
+\,
+\boldsymbol{S}_f
+-
+\boldsymbol{\Phi}_P \, V_P
+\end{equation}
 
-\subsection{Descripción de casos}
+\begin{equation}
+R_2(P)
+=
+\sum_f
+\boldsymbol{u}_f
+\cdot
+\boldsymbol{S}_f
+\end{equation}
 
-BFS+Cavity
+\begin{equation}
+R_2(P)
+=
+\sum_f 
+\left(
+\frac{1}{a_P}
+\right)_f 
+\nabla p_f
+\cdot
+\boldsymbol{S}_f 
+-
+\sum_f
+\left(
+\frac{\boldsymbol{H}}
+{a_P}
+\right)_f 
+\cdot 
+\boldsymbol{S}_f 
+\end{equation}
 
-\subsection{Resultados}
-
-\begin{itemize}
-    \item 4 mapas 2D (n iter vs ($\% \alpha$, $\omega_u$)) $\rightarrow$ Re altos y bajos, Cav y BFS. Conclusiones: porcentaje ideal de $\alpha$ = 0.25
-    \item 12 gráficas con sombreado de n iter vs $\omega_u$ (cada una con 3 curvas: SIMPLE, SIMPLEC y COMPLEX0.25) $\rightarrow$ Re altos y bajos, malla gruesa, media y fina, Cav y BFS.
-\end{itemize}
-
+\begin{align}
+\overline{R}_1
+&=
+\sqrt
+{
+\sum_P
+R_1(P)^2
 }
+\\
+\overline{R}_2
+&=
+\sqrt
+{
+\sum_P
+R_2(P)^2
+}
+\end{align}
+
+
+
+
+
+
+\subsection{Problem description}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=5cm]{fig/Cases/Cavity.pdf}
+\caption{}
+\label{Fig:Cavity}
+\end{figure}  
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=14cm]{fig/Cases/Geometria3.pdf}
+\caption{}
+\label{Fig:Geometria3}
+\end{figure}  
+
+\subsection{Results}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=17cm]{fig/Results/FactorLowRe.pdf}
+\caption{}
+\label{Fig:Geometria3}
+\end{figure}
+
+%\begin{itemize}
+%    \item 4 mapas 2D (n iter vs ($\% \alpha$, $\omega_u$)) $\rightarrow$ Re altos y bajos, Cav y BFS. Conclusiones: porcentaje ideal de $\alpha$ = 0.25
+%    \item 12 gráficas con sombreado de n iter vs $\omega_u$ (cada una con 3 curvas: SIMPLE, SIMPLEC y COMPLEX0.25) $\rightarrow$ Re altos y bajos, malla gruesa, media y fina, Cav y BFS.
+%\end{itemize}
+
+
+
+
+
+
 
 
 \section{Conclusions}
