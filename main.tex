@@ -918,6 +918,7 @@ The following assumption is proposed:
 =
 \alpha
 \boldsymbol{I}
+\label{eq:gradApprox}
 \end{equation}
 
 Replacing,
@@ -1159,19 +1160,19 @@ Finally, the amplification of the sequence adding the pressure equation is:
 \alpha_u \\
 \alpha_p 
 \end{bmatrix}^{*} +
-[A_4]
+[A^S_4]
 \begin{bmatrix}
 \alpha_u \\
 \alpha_p 
 \end{bmatrix}^{0} =
-([A^S_2] [A_1] + [A_3])
+([A^S_2] [A_1] + [A^S_4])
 \begin{bmatrix}
 \alpha_u \\
 \alpha_p 
 \end{bmatrix}^{0}
 \end{equation}
 
-\noindent and, adding the velocity correction amplification contribution, the total amplification of the error for the SIMPLE algorithm is given by:
+\noindent and, adding the velocity correction amplification contribution, the total amplification matrix ($A^S$) for the SIMPLE algorithm is given by:
 
 \begin{equation}
 \begin{bmatrix}
@@ -1183,16 +1184,21 @@ Finally, the amplification of the sequence adding the pressure equation is:
 \alpha_u \\
 \alpha_p 
 \end{bmatrix}^{**} +
-[A_5]
+[A^S_5]
 \begin{bmatrix}
 \alpha_u \\
 \alpha_p 
 \end{bmatrix}^{0} =
-([A^S_3] [A^S_2] [A_1] + [A^S_3] [A_4] + [A_5])
+([A^S_3] [A^S_2] [A_1] + [A^S_3] [A^S_4] + [A^S_5])
 \begin{bmatrix}
 \alpha_u \\
 \alpha_p 
-\end{bmatrix}^{0}
+\end{bmatrix}^{0} =
+[A^S]
+\begin{bmatrix}
+\alpha_u \\
+\alpha_p 
+\end{bmatrix}^{0} 
 \end{equation}
 
 \noindent where:
@@ -1201,22 +1207,22 @@ Finally, the amplification of the sequence adding the pressure equation is:
 [A^S_2]= 
 \begin{bmatrix}
 1 & 0 \\
-c^S_2 & d_2
+c^S_2 & d^S_2
 \end{bmatrix}
 \; \; \; \; \; \;
 [A^S_3]= 
 \begin{bmatrix}
-a^S_3 & b_3 \\
+a^S_3 & b^S_3 \\
 0 & 1
 \end{bmatrix}
 \; \; \; \; \; \;
-[A_4]= 
+[A^S_4]= 
 \begin{bmatrix}
 0 & 0 \\
-c_4 & 0
+c^S_4 & 0
 \end{bmatrix}
 \; \; \; \; \; \;
-[A_5]= 
+[A^S_5]= 
 \begin{bmatrix}
 a^S_5 & 0 \\
 0 & 0
@@ -1231,52 +1237,72 @@ a^S_5 & 0 \\
                     \left\{ \left(-\dfrac{a_E}{2} \right) \left[\text{exp} (2 i \theta) - 1 \right] +
                             \left(-\dfrac{a_W}{2} \right) \left[1 - \text{exp} (-2 i \theta)\right]
                     \right\} \\
-     d_2 &= (1-\omega_p) \\
+     d^S_2 &= (1-\omega_p) \\
      a^S_3 &= \left[\left(-\dfrac{\omega a_E}{a_P}\right) \text{exp} (i \theta) + \left(- \dfrac{\omega a_W}{a_P}\right) \text{exp} (- i \theta)\right] \\
-     b_3 &= \left\{\left(-\dfrac{\omega S_f}{2 a_P}\right) \left[\text{exp} (i \theta)-\text{exp} (-i \theta)\right] \right\} \\ 
-     c_4 &= \left( \dfrac{\omega_p}{S_f \Sigma} \right) 
+     b^S_3 &= \left\{\left(-\dfrac{\omega S_f}{2 a_P}\right) \left[\text{exp} (i \theta)-\text{exp} (-i \theta)\right] \right\} \\ 
+     c^S_4 &= \left( \dfrac{\omega_p}{S_f \Sigma} \right) 
                     \left\{ \left(\dfrac{1-\omega}{\omega} \right) \left(\dfrac{a_P}{2} \right) \left[\text{exp} (i \theta) - \text{exp} (- i \theta) \right] 
                     \right\} \\
      a^S_5 &= (1-\omega)      
 \end{split}
 \end{equation}
 
-Looking at Eqs. (\ref{eq:})
+For each method, the total amplification matrix is always defined as the product of the matrices of each step following the rule:
 
+\begin{equation}
+[A^m] = ([A^m_3] [A^m_2] [A_1] + [A^m_3] [A^m_4] + [A^m_5])
+\end{equation}
 
-For SIMPLEC and COMPLEX, the only terms that are modified, according to Eqs. ()
+\noindent where the superscript $m$ indicates the coupling method being considered ($S$ for SIMPLE, $C$ for SIMPLEC and $X$ for COMPLEX).
 
+Looking at Eqs. (\ref{eq:pEqnSIMPLEC2}) and (\ref{eq:uCorrSIMPLEC}), and taking into account the relation between $\nabla p_P^*$ and the velocity field after the momentum predictor given by Eq. (\ref{eq:MOMPRED}), the amplification of the error during the pressure equation resolution and the velocity corrector step of SIMPLEC have a few differences compared to the SIMPLE amplification matrices in the following elements:
 
+\begin{equation}
+\begin{split}
+     c^C_2 &= c_2^S + \left(\dfrac{a_E + a_W}{2}\right) [\text{exp} (i    \theta) - \text{exp} (-i \theta)] \\
+     d^C_2 &= 1 \\
+     a^C_3 &= \left(\dfrac{a_P}{\omega \tilde{a}_P}\right) a_3^S + \dfrac{a_E+a_W}{\tilde{a}_P} \\
+     b^C_3 &= \left(\dfrac{a_P}{\omega \tilde{a}_P}\right) b_3^S \\ 
+     c^C_4 &= \dfrac{1}{\omega_P} c^S_4 \\
+     a^C_5 &= \left(\dfrac{a_P}{\omega \tilde{a}_P}\right) a^S_5     
+\end{split}
+\end{equation}
 
-{\color{red}
-MP, PEqn y Ucorr en términos de errores para cada método
-}
+The same procedure may be applied for the COMPLEX method based on Eqs. (\ref{Eq:complexSemiFinal}) and (\ref{eq:uPrimeCOMPLEX}). Here it should be noticed that the issue regarding the definition of the gradient of the velocity correction $\nabla \boldsymbol{u}_P'$ using a single unknown scalar value $\alpha$, is no longer an issue for one-dimensional problems. Eq. (\ref{eq:gradApprox}) now provides mathematical closure for the problem with no assumption needed, since the gradient of a vector field in 1D is, in fact, a scalar value. The amplification matrix elements for COMPLEX now become:
 
-Then, the fourier coefficients for each step become:
+\begin{equation}
+\begin{split}
+     c^X_2 = c_2^C &+ \left(\dfrac{a_E}{8}\right) \left[\text{exp} (3 i \theta) + \text{exp} (2 i \theta) - 2 \text{exp} (i \theta) - 2 + \text{exp} (-i \theta) + \text{exp} (-2 i \theta)\right] \\
+     &+ \left(-\dfrac{a_W}{8}\right) \left[\text{exp} (2 i \theta) + \text{exp} (i \theta) - 2 - 2 \text{exp} (-i \theta) + \text{exp} (-2 i \theta) + \text{exp} (-3 i \theta)\right] \\
+     d^X_2 = d^C_2& \\
+     a^X_3 = a^C_3 &+ \left(\dfrac{a_E}{4}\right) \left[\text{exp} (2 i \theta) + \text{exp} (i \theta) - 1 - \text{exp} (-i \theta) \right] \\
+     &+ \left(-\dfrac{a_W}{4}\right) \left[\text{exp} (i \theta) + 1 - \text{exp} (- i \theta) - \text{exp} (-2 i \theta) \right] \\
+     b^X_3 = b_3^C& \\ 
+     c^X_4 = c^C_4& \\
+     a^X_5 = a^C_5&     
+\end{split}
+\end{equation}
 
-{\color{red}
-$\alpha$ de cada etapa y de cada método
-}
+The von Neumann stability criteria \cite{hirsch} will be applied to determine the range of stability of each method. This criteria for multivariable problems may be expressed as:
 
-The stability of each method is defined as...
+\begin{equation}
+\beta(\theta) = \text{max}_i \{ |\lambda_i(\theta)| \} \leq 1
+\label{eq:AmpCrit}
+\end{equation}
 
-{\color{red}
-Matrices y factor de amplificación
-}
+\noindent where $\beta$ is the amplification factor and $\lambda$ are the eigenvalues of the amplification matrix $[A^m]$. If Eq. (\ref{eq:AmpCrit}) is fulfilled, then the method will be considered numerically stable (under the hypothesis of the Fourier analysis). Moreover, the value of $\beta$ gives a notion about the convergence rate of the method (i.e. if the values are below but close to unity, then the method will probably have a slow convergence rate, while the opposite happens when the values are close to zero).
 
+Fig. (\ref{fig:1a}) shows the amplification factor for each method with a relaxation factor $\omega=0.7$ ($\omega_p=1-\omega$ for SIMPLE) for low and high mesh-Reynolds numbers ($Re_h = \dfrac{h U}{\nu}$). It is observed that SIMPLE has always a higher amplification factor (slower convergance rate) for each frequency and for each $Re_h$ considered. On the other hand, the SIMPLEC method gets slightly affected with the change of $Re_h$ while COMPLEX does not show any significant variation. All methods show a stable behavior under the Fourier conditions. 
 
-\begin{itemize}
-    \item 2 gráficas $\beta$ vs $\theta$ ($\omega=0.7$) con $Re=0.001$ y $Re=1000$, SIMPLE($\omega_p=1-\omega$)-SIMPLEC-COMPLEX
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{fig/Re0001} \hspace{1cm}
+    \includegraphics[width=0.45\textwidth]{fig/Re1000}
+    \caption{Amplification factor for $Re_h=0.001$ (left) and $Re_h=1000$ (right)}
+    \label{fig:1a}
+\end{figure}
     
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=0.49\textwidth]{fig/Re0001}
-        \includegraphics[width=0.49\textwidth]{fig/Re1000}
-        \caption{Amplification factor for $Re_h=0.001$ (left) and $Re_h=1000$ (right)}
-        \label{fig:1a}
-    \end{figure}
-    
-    \item 2 gráficas $\beta$ vs $\theta$ con $Re=1$, SIMPLE-SIMPLEC-COMPLEX, $\omega=0.7$ y $\omega=0.95$
+2 gráficas $\beta$ vs $\theta$ con $Re=1$, SIMPLE-SIMPLEC-COMPLEX, $\omega=0.7$ y $\omega=0.95$
     
     \begin{figure}[H]
         \centering
@@ -1286,7 +1312,7 @@ Matrices y factor de amplificación
         \label{fig:1b}
     \end{figure}    
     
-    \item Mapas de $\beta(\theta,\omega)$, $Re=1$, SIMPLEC-COMPLEX (y SIMPLE?)
+Mapas de $\beta(\theta,\omega)$, $Re=1$, SIMPLEC-COMPLEX (y SIMPLE?)
  
     \begin{figure}[H]
         \centering
@@ -1307,14 +1333,8 @@ Matrices y factor de amplificación
         \label{fig:1c1}
     \end{figure}    
     
-%    \begin{figure}[H]
-%        \centering
-%        \includegraphics[width=0.7\textwidth]{fig/maxAmp}
-%        \caption{Maximum amplification factor for each relaxation of momentum $\omega$}
-%        \label{fig:1c}
-%    \end{figure}      
-    
-    \item 1 gráfica $\text{mean} (\beta)$ vs $\omega$, $Re=1$, SIMPLEC-COMPLEX (y SIMPLE?)
+
+ 1 gráfica $\text{mean} (\beta)$ vs $\omega$, $Re=1$, SIMPLEC-COMPLEX (y SIMPLE?)
 
     \begin{figure}[H]
         \centering
@@ -1323,7 +1343,7 @@ Matrices y factor de amplificación
         \label{fig:1d}
     \end{figure}  
     
-\end{itemize}
+
 
 \section{Test cases}
 \label{sec:cases}
