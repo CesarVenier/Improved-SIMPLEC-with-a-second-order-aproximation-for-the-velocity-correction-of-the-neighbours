@@ -1292,7 +1292,7 @@ The von Neumann stability criteria \cite{hirsch} will be applied to determine th
 
 \noindent where $\beta$ is the amplification factor and $\lambda$ are the eigenvalues of the amplification matrix $[A^m]$. If Eq. (\ref{eq:AmpCrit}) is fulfilled, then the method will be considered numerically stable (under the hypothesis of the Fourier analysis). Moreover, the value of $\beta$ gives a notion about the convergence rate of the method (i.e. if the values are below but close to unity, then the method will probably have a slow convergence rate, while the opposite happens when the values are close to zero).
 
-Fig. (\ref{fig:1a}) shows the amplification factor for each method with a relaxation factor $\omega=0.7$ ($\omega_p=1-\omega$ for SIMPLE) for low and high mesh-Reynolds numbers ($Re_h = \dfrac{h U}{\nu}$). It is observed that SIMPLE has always a higher amplification factor (slower convergance rate) for each frequency and for each $Re_h$ considered. On the other hand, the SIMPLEC method gets slightly affected with the change of $Re_h$ while COMPLEX does not show any significant variation. All methods show a stable behavior under the Fourier conditions. 
+Fig. (\ref{fig:1a}) shows the amplification factor for each method with a relaxation factor $\omega=0.7$ ($\omega_p=1-\omega$ for SIMPLE) for low and high mesh-Reynolds numbers ($Re_h = \dfrac{h U}{\nu}$). It is observed that SIMPLE has always a higher amplification factor (slower convergance rate) for each frequency and for each $Re_h$ considered. On the other hand, the SIMPLEC method gets slightly affected with the change of $Re_h$ while COMPLEX does not show any significant variation. All methods show a stable behavior under the Fourier conditions, while COMPLEX and SIMPLEC show lower amplification factors than SIMPLE. 
 
 \begin{figure}[H]
     \centering
@@ -1302,48 +1302,47 @@ Fig. (\ref{fig:1a}) shows the amplification factor for each method with a relaxa
     \label{fig:1a}
 \end{figure}
     
-2 gráficas $\beta$ vs $\theta$ con $Re=1$, SIMPLE-SIMPLEC-COMPLEX, $\omega=0.7$ y $\omega=0.95$
+Fig. (\ref{fig:1b}) shows the sensitivity of the amplification factor to the momentum relaxation factor for all frequencies and for the three coupling methods. The results are obtained for a $Re_h=1$ and always considering the rule $\omega_P = 1 - \omega$ for SIMPLE. While the SIMPLE algorithm does not show any significant improvement for higher values of $\omega$ (even showing a range of instability for low frequencies at $\omega=0.95$ and $\omega_P=0.05$), the SIMPLEC algorithm shows a depletion in its performance for reducing errors of low frequency with high momentum relaxation factors (tending to unity for $\theta=0$ as $\omega \rightarrow 1$). In this aspect, the COMPLEX algorithm shows a clear advantage over the other two methods by maintaining almost unaltered the overall error damping, even for high momentum relaxation factors.     
     
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=0.49\textwidth]{fig/w07}
-        \includegraphics[width=0.49\textwidth]{fig/w095}
-        \caption{Amplification factor for $\omega=0.7$ (left) and $\omega=0.95$ (right)}
-        \label{fig:1b}
-    \end{figure}    
-    
-Mapas de $\beta(\theta,\omega)$, $Re=1$, SIMPLEC-COMPLEX (y SIMPLE?)
- 
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=0.6\textwidth]{fig/SIMPLE_map}
-        \caption{Amplification factor for SIMPLE for different relaxation factors and frequencies}
-        \label{fig:1c1}
-    \end{figure}  
-    \begin{figure}[H]
-        \centering    
-        \includegraphics[width=0.6\textwidth]{fig/SIMPLEC_map}
-        \caption{Amplification factor for SIMPLEC for different relaxation factors and frequencies}
-        \label{fig:1c1}
-    \end{figure}  
-    \begin{figure}[H]
-        \centering           
-        \includegraphics[width=0.6\textwidth]{fig/COMPLEX_map}
-        \caption{Amplification factor for COMPLEX for different relaxation factors and frequencies}
-        \label{fig:1c1}
-    \end{figure}    
-    
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{fig/w07} \hspace{1cm}
+    \includegraphics[width=0.45\textwidth]{fig/w095}
+    \caption{Amplification factor for $\omega=0.7$ (left) and $\omega=0.95$ (right)}
+    \label{fig:1b}
+\end{figure}    
 
- 1 gráfica $\text{mean} (\beta)$ vs $\omega$, $Re=1$, SIMPLEC-COMPLEX (y SIMPLE?)
+This theoretical advantage (always considering the hyphothesis of the Fourier analysis and one-dimensional problems) is very important since it indicates that the good performance of the method holds up even when the convergence rate to the steady state solution is accelerated by increasing the momentum relaxation factors. In the next section, this advantage will be put to the test for two benchmark tridimensional problems to see how accurate are the a-priori predictions of the Fourier techniques on real CFD problems.
 
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=0.6\textwidth]{fig/meanAmp}
-        \caption{Mean amplification factor for each relaxation of momentum $\omega$}
-        \label{fig:1d}
-    \end{figure}  
+The analysis of the sensitivity to the momentum relaxation factor may be deepened by considering a continuous range as relaxation factors from $0$ to $1$ for the three methods, as shown in Figs. \ref{fig:1c1}, \ref{fig:1c2} and \ref{fig:1c3}. These figures show a clear advantage of SIMPLEC over SIMPLE for almost every relaxation factor considered, and a clear advantage of COMPLEX over SIMPLE for high values of the amplification factor. Here it may be noted that, for very low values of $\omega$ all methods tend to the same stability behavior.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{fig/SIMPLE_map}
+    \caption{Amplification factor for SIMPLE for different relaxation factors and frequencies}
+    \label{fig:1c1}
+\end{figure}  
+\begin{figure}[H]
+    \centering    
+    \includegraphics[width=0.6\textwidth]{fig/SIMPLEC_map}
+    \caption{Amplification factor for SIMPLEC for different relaxation factors and frequencies}
+    \label{fig:1c2}
+\end{figure}  
+\begin{figure}[H]
+    \centering           
+    \includegraphics[width=0.6\textwidth]{fig/COMPLEX_map}
+    \caption{Amplification factor for COMPLEX for different relaxation factors and frequencies}
+    \label{fig:1c3}
+\end{figure}    
     
+A method to quantify the overall error damping for a general problem, where the initial solution is formed by an equally distributed amount of modes (i.e. there is no frequency that is clearly dominant over the others in the initial values of $u$ and $p$ fields), is to consider an average amplification factor over all the frequencies. This is shown in Fig. \ref{fig:1d}, where the mean value of $\beta$ over all frequencies is plotted for all the possible values of the momentum relaxation factors. Here it is also clear that, while all methods are stable under these conditions, the SIMPLEC and COMPLEX algorithms are clearly more efficient in terms of the error damping, and the COMPLEX algorithm outperforms SIMPLEC when the relaxation factor is increased. 
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{fig/meanAmp}
+    \caption{Mean amplification factor for each relaxation of momentum $\omega$}
+    \label{fig:1d}
+\end{figure}  
 
 \section{Test cases}
 \label{sec:cases}
