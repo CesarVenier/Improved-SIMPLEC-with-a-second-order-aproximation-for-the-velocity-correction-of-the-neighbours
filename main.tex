@@ -585,6 +585,7 @@ Then, simplifying,
 \right]
 \cdot
 \boldsymbol{S}_f
+\label{eq:pEqnSIMPLEC}
 \end{equation}
 
 
@@ -623,6 +624,7 @@ a}_P}
 \dfrac{1}{a_P}
 \right)
 \nabla p_P^{*}.
+\label{eq:UCorrSIMPLEC}
 \end{equation}
 
 
@@ -988,13 +990,260 @@ Finally the face gradient~(\ref{Eq:UFaceGradient}) may be computed using the $\a
 \section{Stability Analysis}
 \label{sec:fourier}
 
-In order to investigate the features of the new method, a stability analysis based on a Fourier decomposition of the error is proposed. 
-
-This technique has proven to be a powerful tool to determine the numerical and physical conditions that guarantee a stable solution for linearized equations \cite{hirsch}. Moreover, the methodology is extendable for the analysis of multi-variable discrete systems that are addressed by segregation of the variables. The main feature of this approach is to condense the spatial information into a spectre of frequencies where only the frequency for the worst-case scenario (in terms of numerical stability) is considered. In this way, the problem is reduced to the analysis of the variation time of the Fourier amplitudes, as a convergence criteria. 
+In order to investigate the features of the new method, a stability analysis based on a Fourier decomposition of the error is proposed. This technique has proven to be a powerful tool to determine the numerical and physical conditions that guarantee a stable solution for linearized equations. Moreover, the methodology is extendable for the analysis of multi-variable discrete systems that are addressed by segregation of the variables. The main feature of this approach is to condense the spatial information into a frequency spectrum where only the term of the frequency that produces the highest amplification of the error is taken into account. In this way, the problem is reduced to the analysis of the Fourier coefficients and its evolution in time \cite{hirsch}.
 
 Many examples can be found in the literature. Miller \cite{miller} used this methodology to investigate the performance of SIMPLE and SIMPLEC on both collocated and staggered grids. On the other hand, Liu et al. \cite{liu} adopted the same technique to study a large number algorithms of the SIMPLE family. More recently, Miller et al. \cite{miller2} extended this technique for studying Eulerian multiphase flow models, while Venier et al. \cite{venier} studied the stability features of the PISO algorithm for addressing transient and steady flow problems.
 
-For the present case, Eqs. (...) are rewritten in terms of the error for SIMPLE, SIMPLEC and COMPLEX methods:
+Here, the momentum predictor, pressure equation and velocity corrections are written in its Fourier decomposition (with only the term with the frequency that produces the highest amplification). In order to do so, first, these equations must be written in terms of the errors of the variables (i.e. pressure and velocity). The error is defined as:
+
+\begin{equation}
+    e^k_{\phi,M} = \phi^{exact}_{M}-\phi_M^{k}
+\end{equation}
+
+\noindent where $k$ is a given stage of the iterative process, $\phi$ is a given variable (pressure or velocity) and $M$ represents the spatial location.
+
+Moreover, the present study will be done on a one-dimensional FVM discretization (see Fig. \ref{fig:4a}) to simplify the analysis and arrive to some preliminary conclusions about the stability features of the method. Later on, all the methods will be tested in benchmark problems and the stability and convergence rate will be fully assessed. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{fig/cells.eps}
+    \caption{One-dimensional FVM discretization}
+    \label{fig:4a}
+\end{figure}
+
+First, the Momentum Predictor (Eq. (\ref{eq:MOMPRED})) will be rewritten in terms of the errors in 1D as follows:
+
+\begin{equation}
+    \dfrac{a_P}{\omega} \; u_P^* + a_E \; u_E^* + a_W \; u_W^* = \dfrac{1-\omega}{\omega} \; a_P \; u_P^0 - (\hat{\nabla} p)_P + \Phi_P
+\end{equation}
+
+\begin{equation}
+    \dfrac{a_P}{\omega} \; e_{u,P}^* + a_E \; e_{u,E}^* + a_W \; e_{u,W}^* = \dfrac{1-\omega}{\omega} \; a_P \; e_{u,P}^0 - \dfrac{S_f}{2} (e^0_{p,E}-e^0_{p,W})
+    \label{eq:MPerror}
+\end{equation}
+
+\noindent where $P$, $W$ and $E$ represents the main cell and neighbour cells respectively on this current FVM stencil (see Fig. \ref{fig:4a}).
+
+Now, the errors can be written in terms of the Fourier decomposition as:
+
+\begin{equation}
+    e^k_{\phi,M} = \alpha^k_{\phi} \; \text{exp} \left(i \; \dfrac{x_M \; \theta}{\Delta x}\right)
+    \label{eq:error}
+\end{equation}
+
+\noindent which, for multivariable systems as the present one, it becomes:
+
+\begin{equation}
+\begin{bmatrix}
+e_u \\
+e_p 
+\end{bmatrix}^{k}
+=
+\begin{bmatrix}
+u \\
+p 
+\end{bmatrix}^{n+1}
+-\begin{bmatrix}
+u \\
+p 
+\end{bmatrix}^{k}
+=
+\begin{bmatrix}
+\alpha_u \\
+\alpha_p 
+\end{bmatrix}^{k}
+\; \text{exp}\left[ i \; \theta \; \frac{x_M}{\Delta x}\right]
+\label{eq:fou1}
+\end{equation}
+
+Replacing each error on Eq. (\ref{eq:MPerror}) for its corresponding Fourier decomposition (as given by Eq. (\ref{eq:error})), the following equation is obtained:
+
+\begin{equation}
+    \left[ \dfrac{a_P}{\omega}  + a_E \; \text{exp} (i \theta) + a_W \; \text{exp} (-i \theta) \right] \alpha_u^* = \left( \dfrac{1-\omega}{\omega} \; a_P \right) \; \alpha_u^0 + \left(- \dfrac{S_f}{2} \right) \left(\text{exp} \left(i \; \theta \right) -  \text{exp} \left(-i \; \theta \right) \right) \alpha_p^0
+    \label{eq:MPfou}
+\end{equation}
+
+\noindent where $P_u = \dfrac{a_P}{\omega}  + a_E \; \text{exp} (i \theta) + a_W \; \text{exp} (-i \theta)$, which leads to:
+
+\begin{equation}
+     \alpha_u^* = a_1 \alpha_u^0 + b_1 \alpha_p^0
+    \label{eq:MPfou2}
+\end{equation}
+
+\noindent where:
+
+\begin{equation}
+\begin{split}
+     a_1 &= \dfrac{1-\omega}{\omega} \; a_P \; P_u^{-1} \\
+     b_1 &= - \left( \dfrac{S_f}{2} \right) \left( \text{exp} \left(i \; \theta \right) -  \text{exp} \left(-i \; \theta \right) \right) \; P_u^{-1}
+\end{split}
+\end{equation}
+
+\noindent and since $p^* = p^0$, the following amplification system is obtained for the Momentum Predictor step:
+
+\begin{equation}
+\begin{bmatrix}
+\alpha_u \\
+\alpha_p 
+\end{bmatrix}^{*} =
+\begin{bmatrix}
+a_1 & b_1 \\
+0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+\alpha_u \\
+\alpha_p 
+\end{bmatrix}^{0} =
+[A_1]
+\begin{bmatrix}
+\alpha_u \\
+\alpha_p 
+\end{bmatrix}^{0}
+\end{equation}
+
+This step of the algorithm, the Momentum Predictor, is the same for each one of the methods previously described. The next step, the Pressure Equation and Velocity Corrector, will differ for each algorithm so they will be presented separately. First, the SIMPLE algorithm with pressure relaxation will be presented, followed by the standard SIMPLEC and the current COMPLEX algorithms.
+
+The pressure equation in terms of the errors for the SIMPLE algorithm is obtained from Eq. (\ref{eq:pEqnSIMPLE3}), which leads to:
+
+\begin{equation}
+    S_f (e_{p,E}^{**} - 2 e_{p,P}^{**} + e_{p,W}^{**}) = 
+     -\left(\dfrac{a_E}{2}\right) (e_{u,EE}^* - e_{u,P}^*) 
+    -\left(\dfrac{a_W}{2}\right) (e_{u,P}^* - e_{u,WW}^*)  +
+    \left( \dfrac{1-\omega}{\omega} \right) \left(\dfrac{a_P}{2}\right) (e_{u,E}^0 - e_{u,W}^0)
+\end{equation}
+
+\noindent and the Fourier decomposition of the error (with pressure relaxation) becomes:
+
+\begin{equation}
+\begin{split}
+    \alpha_p^{**} = &\left( \dfrac{\omega_p}{S_f \Sigma} \right) 
+                    \left\{ \left(-\dfrac{a_E}{2} \right) \left[\text{exp} (2 i \theta) - 1 \right] +
+                            \left(-\dfrac{a_W}{2} \right) \left[1 - \text{exp} (-2 i \theta)\right]
+                    \right\} \alpha_u^{*} \\
+                    & + \left( \dfrac{\omega_p}{S_f \Sigma} \right) 
+                    \left\{ \left(\dfrac{1-\omega}{\omega} \right) \left(\dfrac{a_P}{2} \right) \left[\text{exp} (i \theta) - \text{exp} (- i \theta) \right] 
+                    \right\} \alpha_u^{0} \\
+                    & + (1-\omega_p) \alpha_p^*    
+\end{split}
+\end{equation}
+
+\noindent where $\alpha_u^{**} = \alpha_u^{*}$.
+
+\noindent and for the velocity corrector, the equation for the error may be written as:
+
+\begin{equation}
+    e_{u,P}^{***} = -\dfrac{\omega a_E}{a_P} e_{u,E}^{*} -\dfrac{\omega a_W}{a_P} e_{u,W}^{*} +
+                   -\dfrac{\omega S_f}{2 a_P} (e_{p,E}^{**}-e_{p,W}^{**}) +
+                   (1-\omega) \; e_{u,P}^0
+\end{equation}
+
+\noindent which, in Fourier factors, becomes:
+
+\begin{equation}
+    \alpha_{u}^{***} = \left[\left(-\dfrac{\omega a_E}{a_P}\right) \text{exp} (i \theta) + \left(- \dfrac{\omega a_W}{a_P}\right) \text{exp} (- i \theta)\right] \alpha_u^{**} +
+                   \left\{\left(-\dfrac{\omega S_f}{2 a_P}\right) \left[\text{exp} (i \theta)-\text{exp} (-i \theta)\right] \right\} \alpha_p^{**} +
+                   (1-\omega) \; \alpha_u^0
+\end{equation}
+
+\noindent with $\alpha_p^{***}=\alpha_p^{**}$.
+
+Finally, the amplification of the sequence adding the pressure equation is:
+
+\begin{equation}
+\begin{bmatrix}
+\alpha_u \\
+\alpha_p 
+\end{bmatrix}^{**} =
+[A^S_2]
+\begin{bmatrix}
+\alpha_u \\
+\alpha_p 
+\end{bmatrix}^{*} +
+[A_4]
+\begin{bmatrix}
+\alpha_u \\
+\alpha_p 
+\end{bmatrix}^{0} =
+([A^S_2] [A_1] + [A_3])
+\begin{bmatrix}
+\alpha_u \\
+\alpha_p 
+\end{bmatrix}^{0}
+\end{equation}
+
+\noindent and, adding the velocity correction amplification contribution, the total amplification of the error for the SIMPLE algorithm is given by:
+
+\begin{equation}
+\begin{bmatrix}
+\alpha_u \\
+\alpha_p 
+\end{bmatrix}^{***} =
+[A^S_3]
+\begin{bmatrix}
+\alpha_u \\
+\alpha_p 
+\end{bmatrix}^{**} +
+[A_5]
+\begin{bmatrix}
+\alpha_u \\
+\alpha_p 
+\end{bmatrix}^{0} =
+([A^S_3] [A^S_2] [A_1] + [A^S_3] [A_4] + [A_5])
+\begin{bmatrix}
+\alpha_u \\
+\alpha_p 
+\end{bmatrix}^{0}
+\end{equation}
+
+\noindent where:
+
+\begin{equation}
+[A^S_2]= 
+\begin{bmatrix}
+1 & 0 \\
+c^S_2 & d_2
+\end{bmatrix}
+\; \; \; \; \; \;
+[A^S_3]= 
+\begin{bmatrix}
+a^S_3 & b_3 \\
+0 & 1
+\end{bmatrix}
+\; \; \; \; \; \;
+[A_4]= 
+\begin{bmatrix}
+0 & 0 \\
+c_4 & 0
+\end{bmatrix}
+\; \; \; \; \; \;
+[A_5]= 
+\begin{bmatrix}
+a^S_5 & 0 \\
+0 & 0
+\end{bmatrix}
+\end{equation}
+
+\noindent and:
+
+\begin{equation}
+\begin{split}
+     c^S_2 &= \left( \dfrac{\omega_p}{S_f \Sigma} \right) 
+                    \left\{ \left(-\dfrac{a_E}{2} \right) \left[\text{exp} (2 i \theta) - 1 \right] +
+                            \left(-\dfrac{a_W}{2} \right) \left[1 - \text{exp} (-2 i \theta)\right]
+                    \right\} \\
+     d_2 &= (1-\omega_p) \\
+     a^S_3 &= \left[\left(-\dfrac{\omega a_E}{a_P}\right) \text{exp} (i \theta) + \left(- \dfrac{\omega a_W}{a_P}\right) \text{exp} (- i \theta)\right] \\
+     b_3 &= \left\{\left(-\dfrac{\omega S_f}{2 a_P}\right) \left[\text{exp} (i \theta)-\text{exp} (-i \theta)\right] \right\} \\ 
+     c_4 &= \left( \dfrac{\omega_p}{S_f \Sigma} \right) 
+                    \left\{ \left(\dfrac{1-\omega}{\omega} \right) \left(\dfrac{a_P}{2} \right) \left[\text{exp} (i \theta) - \text{exp} (- i \theta) \right] 
+                    \right\} \\
+     a^S_5 &= (1-\omega)      
+\end{split}
+\end{equation}
+
+For SIMPLEC and COMPLEX, the only terms that are modified, according to Eqs. ()
+
+
 
 {\color{red}
 MP, PEqn y Ucorr en términos de errores para cada método
