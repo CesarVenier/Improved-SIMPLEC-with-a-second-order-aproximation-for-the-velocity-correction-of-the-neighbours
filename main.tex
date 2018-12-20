@@ -38,7 +38,7 @@
 
 \begin{frontmatter}
 
-\title{A second-order approximation on SIMPLEC: the COMPLEX algorithm}
+\title{A pressure-velocity coupling strategy based on SIMPLEC: the COMPLEX algorithm}
 %% A second-neighbor extended correction for segregated p-v coupling algorithms
  
 \author[a,e]{Horacio J. Aguerre}
@@ -1348,7 +1348,10 @@ A method to quantify the overall error damping for a general problem, where the 
 \label{sec:cases}
 
 \subsection{General framework}
-The COMPLEX method is analysed in the context of incompressible, laminar and stationary Newtonian flows. In this sense, two typical tests for incompressible and stationary flows are studied which are the flow inside a square cavity and the backward facing step channel. The performance of the method is assessed by measuring the convergence rate in comparison with the SIMPLE and SIMPLEC algorithms.
+The COMPLEX method is analysed in the context of incompressible, laminar and stationary Newtonian flows. The performance of the method is compared with the SIMPLE and SIMPLEC methods by evaluating the convergence rate.
+
+\subsection{Test problems}
+, two typical tests for incompressible and stationary flows are studied which are the flow inside a square cavity and the backward facing step channel.
 
 \subsection{Error measurement}
 To analyse the rate of convergence of the different algorithms, a unique error measurement is defined. The error is assumed to be the residual of the discretized Navier-Stokes equations. Thus two residuals are computed, the momentum and mass balance residuals as function of the velocity and pressure fields. 
@@ -1445,12 +1448,6 @@ R_2(P)^2
 \end{align}
 
 
-
-
-
-
-\subsection{Problem description}
-
 \begin{figure}[H]
 \centering
 \includegraphics[width=5cm]{fig/Cases/Cavity.pdf}
@@ -1478,21 +1475,21 @@ R_2(P)^2
 
 \subsection{Comparison of COMPLEX with SIMPLE and SIMPLEC}
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \centering
 \includegraphics[width=17cm]{fig/Results/complexCoarse.pdf}
 \caption{}
 \label{Fig:complexCoarse}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \centering
 \includegraphics[width=17cm]{fig/Results/complexMedium.pdf}
 \caption{}
 \label{Fig:complexMedium}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \centering
 \includegraphics[width=17cm]{fig/Results/complexFine.pdf}
 \caption{}
@@ -1518,18 +1515,32 @@ R_2(P)^2
 \section{Conclusions}
 \label{sec:conclusions}
 
-\begin{itemize}
-\item A new pressure-velocity decoupling method was developed
+\begin{enumerate}
+
+\item \begin{enumerate}
+\item A new pressure-velocity coupling method was developed
 \item The method is based on an approximation of the neighbour velocity values using a Taylor expansion
-\item The Taylor approximation require a definition of a velocity gradient based on a mass conservation equation.
-\item The velocity gradient is underdetermined and thus, an additional restriction is imposed: the velocity gradient is proposed to be a scalar matrix. 
-\item A stability analysis over a 1D formulation showed that the COMPLEX method is more efficient than SIMPLEC, especially for high relaxation factors.
+\item The Taylor approximation require a definition of a velocity gradient based on the mass conservation equation.
+\item The velocity gradient is underdetermined and thus, an additional restriction is imposed: the velocity gradient is proposed to be a scalar matrix.
+\end{enumerate} 
+\item \begin{enumerate}
+\item A stability analysis over a 1D formulation showed that the COMPLEX method has a better convergence rate than SIMPLEC, especially for high relaxation factors.
+\end{enumerate}
+\item \begin{enumerate}
+\item In three dimensional simulations, the scalar matrix proposal for the velocity gradient should be relaxed. A series of test were solved which shows that a relaxation factor $\kappa$ equal to $0.2$ generate stable results and in general,  a faster convergence for all the conditions studied.
+\end{enumerate}
+\item  
+\begin{enumerate}
 \item The COMPLEX method showed that requires a lower number of iterations to reach convergence in the context of high velocity relaxation factors. Using low relaxation factors, the COMPLEX is equal to SIMPLEC.
 \item In relative coarse meshes the COMPLEX method proved to be more efficient than SIMPLEC.
-\item A future work is the developing of an improved approximation of the definition of the velocity gradient.
-\item The computational implementation of COMPLEX is performed by adding simple changes over SIMPLEC without requiring  higher computational resources/costs. 
+\item The relative advantage of COMPLEX with SIMPLEC is more significant for the cases with the highest Reynolds number.
+\end{enumerate}
 \item 
-\end{itemize}
+\begin{enumerate}
+\item The computational implementation of COMPLEX is performed by adding simple changes over SIMPLEC without requiring  higher computational resources/costs.
+\item A future work is the developing of an improved approximation of the definition of the velocity gradient. 
+\end{enumerate}
+\end{enumerate}
 
 \bibliographystyle{plain}
 \bibliography{main}
