@@ -12,6 +12,7 @@
 \usepackage{enumerate}
 \usepackage{amsmath,amsthm,amsfonts,amssymb}
 \usepackage{amsthm}
+\usepackage{multirow}
 \usepackage{graphicx}
 \graphicspath{{./figs/}}
 \numberwithin{equation}{section}
@@ -1348,10 +1349,45 @@ A method to quantify the overall error damping for a general problem, where the 
 \label{sec:cases}
 
 \subsection{General framework}
-The COMPLEX method is analysed in the context of incompressible, laminar and stationary Newtonian flows. The performance of the method is compared with the SIMPLE and SIMPLEC methods by evaluating the convergence rate.
+The COMPLEX method is analysed in the context of incompressible, laminar and stationary Newtonian flows. In this context, the performance of the method is compared with the SIMPLE and SIMPLEC methods by evaluating the convergence rate.
 
 \subsection{Test problems}
-, two typical tests for incompressible and stationary flows are studied which are the flow inside a square cavity and the backward facing step channel.
+ 
+
+The evaluation of the complex method is achieved by simulation  two typical tests for incompressible and stationary flows. The first of these problems is the cubic cavity which is schematized in Fig.~\ref{Fig:Cavity}.
+\begin{figure}[t!]
+\centering
+\includegraphics[width=5cm]{fig/Cases/Cavity.pdf}
+\caption{The cubic cavity problem where a fixed tangential velocity is imposed on the upper face.}
+\label{Fig:Cavity}
+\end{figure} 
+Here, a tangential fixed velocity of 1 m/s is imposed on the upper face of the cubic domain of length 1 m. The case is solved using to different values of the kinematic viscosity, $\nu = 2.5\, e-3$ m$^2$/s and $\nu = 2.5$ m$^2$/s which defines the Reynolds number of 400 and $0.4$ respectively. For this paper, the cavity is discretized using three different refinement levels: a coarse mesh with 25 divisions per side (15625 cells), a medium mesh with 50 divisions per side (125000 cells) and a fine mesh with 100 divisions per side (1000000 cells).
+
+The second problem evaluated is the Backward Facing Step (BFS) channel which is shown in Fig.~\ref{Fig:Geometria3}.
+\begin{figure}[b!!!!]
+\centering
+\includegraphics[width=12cm]{fig/Cases/Geometria3.pdf}
+\caption{}
+\label{Fig:Geometria3}
+\end{figure}
+In this problem, a constant and normal velocity of 1 m/s of magnitude is set up at the inlet of the domain. The transversal area change at the step point induces flow separation where the flow profile is adapted to the bigger section area. Analogously to the cavity case, the problem is simulated with two different viscosities, $\nu = 5.141\,e-3$ m$^2$/s and $\nu = 5.141$ m$^2$/s which refers to the Reynolds number of 389 and $0.389$ respectively. The BFS is discretized with three different mesh sizes which are defined in Table~\ref{Table:BFSMeshes}.
+
+\begin{table}[b!]
+\centering
+\begin{tabular}{cccccccc}
+\hline 
+\multirow{2}{1cm}{Mesh Level} & \multicolumn{3}{c}{Pre-step divisions} & \multicolumn{3}{c}{Post-step divisions} & \multirow{2}{1cm}{Total Cells} \\ 
+\cline{2-7} 
+&  $x-$axis &  $y-$axis &  $z-$axis &  $x-$axis &  $y-$axis &  $z-$axis \\ 
+\hline 
+Coarse & 20 & 40 & 8 & 26 & 40 & 16 & 23040 \\ 
+Medium & 40 & 80 & 15 & 52 & 80 & 30 & 172800 \\ 
+Fine & 80 & 160 & 30 & 104 & 160 & 60 & 1382400 \\ 
+\hline 
+\end{tabular}
+\caption{Different mesh sizes for the BFS case.}
+\label{Table:BFSMeshes}
+\end{table}
 
 \subsection{Error measurement}
 To analyse the rate of convergence of the different algorithms, a unique error measurement is defined. The error is assumed to be the residual of the discretized Navier-Stokes equations. Thus two residuals are computed, the momentum and mass balance residuals as function of the velocity and pressure fields. 
@@ -1448,19 +1484,7 @@ R_2(P)^2
 \end{align}
 
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=5cm]{fig/Cases/Cavity.pdf}
-\caption{}
-\label{Fig:Cavity}
-\end{figure}  
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=14cm]{fig/Cases/Geometria3.pdf}
-\caption{}
-\label{Fig:Geometria3}
-\end{figure}  
+  
 
 \subsection{Results}
 
