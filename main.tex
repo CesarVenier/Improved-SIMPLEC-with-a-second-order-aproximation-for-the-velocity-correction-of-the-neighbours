@@ -1367,11 +1367,10 @@ The second problem evaluated is the Backward Facing Step (BFS) channel which is 
 \begin{figure}[b!!!!]
 \centering
 \includegraphics[width=12cm]{fig/Cases/Geometria3.pdf}
-\caption{}
+\caption{Description of the BFS domain where the dimensions are defined relative to the inlet height $h$.}
 \label{Fig:Geometria3}
 \end{figure}
-In this problem, a constant and normal velocity of 1 m/s of magnitude is set up at the inlet of the domain. The transversal area change at the step point induces flow separation where the flow profile is adapted to the bigger section area. Analogously to the cavity case, the problem is simulated with two different viscosities, $\nu = 5.141\,e-3$ m$^2$/s and $\nu = 5.141$ m$^2$/s which refers to the Reynolds number of 389 and $0.389$ respectively. The BFS is discretized with three different mesh sizes which are defined in Table~\ref{Table:BFSMeshes}.
-
+In this problem, a constant and normal velocity of 1 m/s of magnitude is set up at the inlet of the domain which has a height of $h=1$ m. The transversal area change at the step point induces flow separation where the flow profile is adapted to the bigger section area. Analogously to the cavity case, the problem is simulated with two different viscosities, $\nu = 5.141\,e-3$ m$^2$/s and $\nu = 5.141$ m$^2$/s which refers to the Reynolds number of 389 and $0.389$ respectively. The BFS is discretized with three different mesh sizes as defined in Table~\ref{Table:BFSMeshes} with a variable cell size as plotted in Fig.~\ref{Fig:Factores} where the near wall regions and the step sector are relatively refined.
 \begin{table}[b!]
 \centering
 \begin{tabular}{cccccccc}
@@ -1385,9 +1384,16 @@ Medium & 40 & 80 & 15 & 52 & 80 & 30 & 172800 \\
 Fine & 80 & 160 & 30 & 104 & 160 & 60 & 1382400 \\ 
 \hline 
 \end{tabular}
-\caption{Different mesh sizes for the BFS case.}
+\caption{Scheme of divisions for the BFS case. The pre-step and post-step are the upstream and downstream regions of the step transversal section.}
 \label{Table:BFSMeshes}
 \end{table}
+
+\begin{figure}[t!!!]
+\centering
+\includegraphics[width=16cm]{fig/Cases/Factores.pdf}
+\caption{Variable cell refinement in the BFS.  On the left figure, the cell size grows from the step point up to the inlet and outlet boundaries and from the lateral walls up to the middle longitudinal section. On the right, the cell size in the post-step regions grows from the bottom and upper walls up to the middle height section of the channel.}
+\label{Fig:Factores}
+\end{figure}
 
 \subsection{Error measurement}
 To analyse the rate of convergence of the different algorithms, a unique error measurement is defined. The error is assumed to be the residual of the discretized Navier-Stokes equations. Thus two residuals are computed, the momentum and mass balance residuals as function of the velocity and pressure fields. 
@@ -1489,8 +1495,98 @@ R_2(P)^2
 \subsection{Results}
 
 \subsection{Study of the complex factor}
+The main parameter of the current numerical method is the complex factor $\kappa$. In particular, the influence of the value of $\kappa$ is analysed in combination with the relaxation factor for the momentum equation $\omega_{u}$ due to their high influence on the convergence speed of the simulations.  In all simulations the number of iterations required to reach the convergence criteria of Eq. is measured.
 
-\begin{figure}[H]
+The study is performed by solving a serie of simulations of the cavity and BFS problems using the medium meshes respectively. For each case, the two Reynolds number defined before are employed generating consequently four different numerical problems.
+Each one of this four simulations is solved with different values of $\kappa$ and $\omega_{u}$. The complex factor is varied from 0 to 1 by a step of $0.05$ (21 values) and the relaxation factor is varied from 0.8 up to 1 by a step of $0.1$ (21 values). In combination, this parametric study is composed by 441 simulations for each one of the four numerical problems.
+\begin{table}[t!]
+\centering
+\begin{tabular}{c|ccccccccccc}
+\hline 
+$\omega_u$/$\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 1 \\ 
+\hline 
+1 & div & div & div & div & div & div & div & div & div & div & div \\ 
+0.99 & 1993 & 1702 & 1742 & 1754 & 1747 & 1742 & 1761 & div & div & div & div \\ 
+0.98 & 991 & 842  & 845 & 856 & 866 & 870 & 870 & 868 & 865 & 863 & 864 \\ 
+0.97 & 658 & 551  & 559 & 560 & 565 & 570 & 574 & 575 & 575 & 575 & 573 \\ 
+0.96 & 491 &425  & 414 & 416 & 418 & 421 & 424 & 426 & 427 & 428 & 428 \\ 
+0.95 & 391 & 348 & 327 & 330 & 332 & 333 & 335 & 337 & 338 & 339 & 339 \\ 
+0.94 & 373 & 373 & 373 & 373 & 373 & 373 & 373 & 373 & 373 & 373 & 373 \\ 
+0.93 & 438 & 438 & 438 & 438 & 438 & 438 & 438 & 438 & 438 & 438 & 438 \\ 
+0.92 & 504 & 504 & 504 & 504 & 504 & 504 & 504 & 504 & 504 & 504 & 504 \\ 
+\hline 
+\end{tabular} 
+\caption{Cavity, Re = $0.4$}
+\label{Table:Cavity_LowRe}
+\end{table}
+
+\begin{table}[t!]
+\centering
+\begin{tabular}{c|ccccccccccc}
+\hline 
+$\omega_u$/$\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 1 \\ 
+\hline 
+1 & div & div & div & div & div & div & div & div & div & div & div \\ 
+0.99 & 1611 & 1321 & 1286 & 1333 & 1357 & div & div & div & div & div & div \\ 
+0.98 & 802 & 693 & 652 & 635 & 648 & 662 & 671 & 678 & 682 & div & div \\ 
+0.97 & 532 & 471 & 448 & 431 & 423 & 427 & 435 & 441 & 446 & 449 & 452 \\ 
+0.96 & 398 & 357 & 342 & 330 & 321 & 317 & 319 & 323 & 327 & 331 & 333 \\ 
+0.95 & 318 & 288 & 277 & 269 & 262 & 257 & 255 & 256 & 258 & 261 & 263 \\ 
+0.94 & 266 & 243 & 235 & 229 & 225 & 221 & 218 & 216 & 215 & 216 & 217 \\ 
+0.93 & 239 & 225 & 218 & 214 & 211 & 211 & 211 & 210 & 210 & 210 & 209 \\ 
+0.92 & 243 & 243 & 242 & 242 & 242 & 241 & 241 & 241 & 241 & 241 & 240 \\ 
+\hline 
+\end{tabular}
+\caption{Cavity, Re = 400}
+\label{Table:Cavity_HighRe}
+\end{table}
+
+\begin{table}[t!]
+\centering
+\begin{tabular}{c|ccccccccccc}
+\hline 
+$\omega_u$/$\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 1 \\ 
+\hline 
+1 & div & div & div & div & div & div & div & div & div & div & div \\ 
+0.99 & 1974 & 1697 & 1753 & 1865 & 1941 & 1993 & div & div & div & div & div \\ 
+0.98 & 981 & 816 & 844 & 854 & 874 & 904 & 929 & 949 & 966 & 980 & 992 \\ 
+0.97 & 651 & 528 & 550 & 560 & 565 & 571 & 581 & 594 & 606 & 618 & 627 \\ 
+0.96 & 486 & 392 & 403 & 413 & 418 & 421 & 424 & 428 & 435 & 442 & 449 \\ 
+0.95 & 387 & 320 & 317 & 324 & 330 & 333 & 335 & 336 & 339 & 342 & 346 \\ 
+0.94 & 320 & 272 & 259 & 266 & 271 & 274 & 276 & 277 & 278 & 280 & 282 \\ 
+0.93 & 273 & 237 & 220 & 225 & 229 & 232 & 234 & 235 & 236 & 237 & 238 \\ 
+0.92 & 240 & 233 & 233 & 233 & 233 & 233 & 233 & 233 & 233 & 233 & 233 \\ 
+\hline 
+\end{tabular}
+\caption{BFS, Re = 0.389}
+\label{Table:Cavity_HighRe}
+\end{table}
+
+\begin{table}[t!]
+\centering
+\begin{tabular}{c|ccccccccccc}
+\hline 
+$\omega_u$/$\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 1 \\ 
+\hline 
+1 & div & div & div & div & div & div & div & div & div & div &  \\ 
+0.99 & div & div & div & div & div & div & div & div & div & div & div \\ 
+0.98 & 818 & 624 & 632 & 637 & div & div & div & div & div & div & div \\ 
+0.97 & 540 & 427 & 422 & 428 & 435 & div & div & div & div & div & div \\ 
+0.96 & 403 & 329 & 323 & 327 & 329 & 478 & 3086 & div & div & div & div \\ 
+0.95 & 322 & 272 & 264 & 266 & 268 & 351 & 712 & 4714 & div & div & div \\ 
+0.94 & 269 & 236 & 227 & 226 & 250 & 320 & 483 & 1151 & div & div & div \\ 
+0.93 & 240 & 225 & 218 & 221 & 246 & 299 & 397 & 608 & 1427 & div & div \\ 
+0.92 & 242 & 235 & 230 & 232 & 256 & 292 & 351 & 457 & 696 & 1087 & 8863 \\ 
+\hline 
+\end{tabular}
+\caption{BFS, Re = 389}
+\label{Table:Cavity_HighRe}
+\end{table}
+
+
+
+
+\begin{figure}[t!]
 \centering
 \includegraphics[width=17cm]{fig/Results/FactorLowRe.pdf}
 \caption{}
@@ -1499,21 +1595,21 @@ R_2(P)^2
 
 \subsection{Comparison of COMPLEX with SIMPLE and SIMPLEC}
 
-\begin{figure}[H]
+\begin{figure}[t!]
 \centering
 \includegraphics[width=17cm]{fig/Results/complexCoarse.pdf}
 \caption{}
 \label{Fig:complexCoarse}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[t!]
 \centering
 \includegraphics[width=17cm]{fig/Results/complexMedium.pdf}
 \caption{}
 \label{Fig:complexMedium}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[t!]
 \centering
 \includegraphics[width=17cm]{fig/Results/complexFine.pdf}
 \caption{}
