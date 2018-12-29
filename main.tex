@@ -28,10 +28,10 @@
 
 %\linenumbers
 
-\newcommand{\COM}[1]{{\color{green} #1}}
-\newcommand{\HA}[1]{{\color{red} #1}}
-\newcommand{\CIP}[1]{{\color{blue} #1}}
-\newcommand{\CMV}[1]{{\color{orange} #1}}
+\newcommand{\COM}[1]{{\color{green} }}
+\newcommand{\HA}[1]{{\color{red} }}
+\newcommand{\CIP}[1]{{\color{blue} }}
+\newcommand{\CMV}[1]{{\color{orange} }}
 
 
 \begin{document}
@@ -42,8 +42,8 @@
 %% A second-neighbor extended correction for segregated p-v coupling algorithms
  
 \author[a,e]{Horacio J. Aguerre}
-\author[b,a]{Cesar I. Pairetti}
 \author[a,b]{Cesar M. Venier}
+\author[b,a]{Cesar I. Pairetti}
 \author[a,c]{Santiago Marquez Damian}
 \author[a,d]{Norberto M. Nigro}
 
@@ -66,12 +66,37 @@ Segregated algorithms \sep Segregated method \sep Collocated grids \sep Finite V
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 
-\begin{enumerate}
-    \item {\color{red} Introducción a CFD en FVM, metodos de acoplamiento p-v: Monolitico vs Segregados. Relevancia de los metodos segregados.} 
-    \item {\color{red} Establecer problemática de los segregados: costo computacional de iterar. Variantes respecto a SIMPLE y objetivos de cada variante: SIMPLE con relajación de P, SIMPLEC mejora sobre SIMPLE, PISO mejora sobre SIMPLE}
-    \item {\color{red} Introduccion a COMPLEX, que motivo esta propuesta, en que se basa, problematica que viene a solucionar}
-    \item {\color{red} Descripcion de las secciones del paper.}
-\end{enumerate}
+%\begin{enumerate}
+    %\item {\color{red} Introducción a CFD en FVM, metodos de acoplamiento p-v: Monolitico vs Segregados. Relevancia de los metodos segregados.}
+    In the context of Computational Fluid Dynamics (CFD) based on the Finite Volume Method (FVM), pressure-velocity coupling within Navier-Stokes equations can be solved through several strategies. Broadly, the methods can be classified as direct (monolithic) or segregated. The former consist on solving one system including all equations (mass, momentum and energy) at once, giving as result all the primitive variables considered. Segregated algorithms, in contrast, split the full-coupled system in several sub-sysytems; each of them aiming to provide an estimation of a particular field.%The coupling between variables is .
+    
+    In these methodologies, the variables of the problem can be stored in the same or different spatial location, which gives place to grid arrangements known as collocated or staggered  respectively. The staggered grids have the advantage of avoiding interpolations and thus prevents the appearance of spurious oscillations on the unknown fields. On the other hand, collocated grid arrangements are more suitable for unstructured meshes which are mandatory to address practical applications involving complex geometries.
+    
+    %\item {\color{red} Establecer problemática de los segregados: costo computacional de iterar. Variantes respecto a SIMPLE y objetivos de cada variante: SIMPLE con relajación de P, SIMPLEC mejora sobre SIMPLE, PISO mejora sobre SIMPLE}
+    
+    In 1972, Spalding and Patankar \cite{patankar1972} proposed SIMPLE algorithm for heat, mass and momentum transfer. With the SIMPLE algorithm, pressure and velocity are decoupled so as to be solved sequentially. There are two main assumptions in SIMPLE algorithm:
+    \begin{itemize}
+	\item The initial pressure and velocity are given independently.
+	\item The velocity corrections at the neighbours are negligible.
+    \end{itemize}
+    These two approximations slow the convergence to a coupled system. In terms of overcoming the first assumption, Patankar \cite{patankar1980,patankar1981} proposed the SIMPLER algorithm. This improvement consists on solving an initial pressure equation based on the previous velocity values.
+    
+    Further enhancements have been proposed to overcome the second assumption. In 1984, Raithby and van Doormal \cite{vanDoormal} SIMPLEC algorithm which propose a simple approximation for the velocity correction in the neighbours cells. In 1986, Issa \cite{issa} presented an operator-splitting scheme for implicitly discretized equations called PISO algorithm. Thus, the neighbors’ contribution to the velocity correction is under consideration. Tao et al. \cite{tao2001,tao2004} improved the SIMPLER algorithm developing a fully implicit alternative named CLEAR without using the pressure correction equation. The CLEAR algorithm discards the second assumption so that the convergence rate is dramatically increased. However, an unexpected oscillation in the calculation procedure deteriorates the robustness. To overcome this issue, they developed the IDEAL \cite{sun2008efficient} algorithm which improves robustness applying several corrector steps. More recently, improvements have focused on stability for problems with high Reynolds number solved on fine meshes \cite{li2017efficient,xiao2018consistent}. A better understanding on the differences between SIMPLE-family algorithms has been accomplished by means of Fourier analysis \cite{liu,miller,miller3,miller1,miller2}.
+    %There are also some other methods for accelerating the SIMPLE algorithm [22–28] %% Extender.
+	
+	%% OJO donde lo pongo a esto, pero tiene que estar
+
+    
+    %\item {\color{red} Introduccion a COMPLEX, que motivo esta propuesta, en que se basa, problematica que viene a solucionar}
+
+	Despite the aforementioned efforts to improve SIMPLE assumptions, there are still possibilities to enhance performance and robustness of the algorithms. In this work, an extension of the SIMPLEC correction is proposed, based on applying a second order Taylor approximation to estimate velocity correction values on neighbour cells. The construction of this approximations and its usage within the algorithm require further assumptions, discussed in detail on the next sections.
+
+
+    %\item {\color{red} Descripcion de las secciones del paper.}
+
+    This article is organized as follows: section \ref{sec:theory} describes the SIMPLE and SIMPLEC algorithms, which are the starting point to define COMPLEX, in section \ref{sec:COMPLEX}, by the assumptions employed to obtain the new approximation of neighbour correction terms. A stability analysis, based on Fourier decomposition, between the three algorithms is presented in section \ref{sec:fourier}. Then, the results of each algorithm for two well-known benchmark cases, solved on two flow regimes using three mesh-size on each, are compared in section \ref{sec:cases}.
+	The conclusions on section \ref{sec:conclusions} summarizes the advantages and limitations of the proposed method, discussing further improvements that could be applied in the future.
+%\end{enumerate}
 
 \section{Theoretical background} \label{sec:theory}
 
@@ -89,7 +114,7 @@ The continuum incompressible Navier-Stokes equations may be presented as:
 \label{eq:mom1}
 \end{equation}
 
-\noindent where $\displaystyle p = \frac{\mathcal{P}}{\rho}$, $\mathcal{P}$ is the pressure field, $\boldsymbol{u} = (u,v,w)$ is the velocity field, {\color{red}$\rho$ is the mass density, }$\nu$ is the kinematic viscosity and $\mathbf{\Phi}$ is a momentum source term (e.g. a body force).
+\noindent where $\displaystyle p = \frac{\mathcal{P}}{\rho}$, $\mathcal{P}$ is the pressure field, $\boldsymbol{u} = (u,v,w)$ is the velocity field, {$\rho$ is the mass density, }$\nu$ is the kinematic viscosity and $\mathbf{\Phi}$ is a momentum source term (e.g. a body force).
 Based on the Finite Volume Method \cite{jasak}, Eqs.~(\ref{eq:mass1}) and~(\ref{eq:mom1}) may be discretized as:
 
 \begin{equation}
@@ -106,7 +131,7 @@ a_P\,\boldsymbol{u}_P + \sum_{N} a_{N}\,\boldsymbol{u}_{N} = b_P\, \boldsymbol{u
 \end{split}
 \end{equation}
 
-\noindent where the subscript $P$ indicates the cell-centered value of the current cell, $N$ indicates neighbor cells values and $f$ refers to the face values. The term ${\color{red}b_P}\, \boldsymbol{u}^0_P$ is the contribution of the previous time-step and is function of the temporal scheme. {\color{red} The face-normal vector $\textbf{S}_{f}$ has the magnitude of the face area and points out of the cell}, $F_f$ is the {\color{red} velocity} flux at the face $f$ and $a_P$ and $a_{N}$ are the diagonal and off-diagonal momentum matrix coefficients respectively. The operator $\nabla p_P$ is a Gauss-based gradient of the pressure computed using first neighbors values of that field. Isolating $\boldsymbol{u}_P$ from Eq.~(\ref{eq:umom1}),
+\noindent where the subscript $P$ indicates the cell-centered value of the current cell, $N$ indicates neighbor cells values and $f$ refers to the face values. The term ${b_P}\, \boldsymbol{u}^0_P$ is the contribution of the previous time-step and is function of the temporal scheme. {The face-normal vector $\textbf{S}_{f}$ has the magnitude of the face area and points out of the cell}, $F_f$ is the { velocity} flux at the face $f$ and $a_P$ and $a_{N}$ are the diagonal and off-diagonal momentum matrix coefficients respectively. The operator $\nabla p_P$ is a Gauss-based gradient of the pressure computed using first neighbors values of that field. Isolating $\boldsymbol{u}_P$ from Eq.~(\ref{eq:umom1}),
 
 \begin{equation}
 \begin{split}
@@ -116,7 +141,7 @@ a_P\,\boldsymbol{u}_P + \sum_{N} a_{N}\,\boldsymbol{u}_{N} = b_P\, \boldsymbol{u
 \end{equation}
 
 One way to solve Eqs. (\ref{eq:mass2}) and (\ref{eq:umom1}) for $\boldsymbol{u}$ and $p$ consists on addressing one equation at a time, update one of the unknown fields, solve the remaining equation and iterate the sequence. These techniques are known as segregated methods, where the SIMPLE-family techniques \cite{patankar1972,patankar1980,patankar1981,vanDoormal,issa} are among the most popular for incompressible flows. It broadly consists of a Momentum Predictor step and a Corrector step. In the Momentum Predictor, a first approximation for the velocity field is computed using the momentum equation where the pressure term is treated explicitly. 
-{\color{red}
+{
 \begin{equation} \label{eq:MOMPRED}
 \begin{split}
 a_P\, \boldsymbol{u}_P^{*} = \boldsymbol{H}^* - \nabla p_P^{*}%, \\
@@ -290,7 +315,7 @@ Therefore, the Corrector step may be summarized as:
 
 %\CIP{Si conservamos la forma relativa, aquí habría que meter la explicación de Rhie Chow}
 
-\item {\color{red}Compute} the face fluxes by adding the new pressure contribution:
+%\item {\color{red}Compute} the face fluxes by adding the new pressure contribution:
 
 \begin{equation}
 \begin{split}
@@ -310,7 +335,7 @@ F_f = \boldsymbol{u}^*_f \cdotp \textbf{S}_{f} -  \left( \frac{1}{a_P}\right)_f 
 \end{enumerate}
 
 \fi
-Most of the SIMPLE-family algorithms preserve this general structure. In particular, the SIMPLE algorithm \cite{patankar1972}, originally conceived as a steady state flow solver, adds under-relaxation factors to obtain a stable solution. Another variant is the PISO {\color{red}(Pressure-Implicit with Splitting of Operators)} algorithm, which relies on iterating the Corrector step a given number of times to ensure a correct coupling between pressure and velocity for transient flow problems \cite{issa,issa2}. {\color{red} The SIMPLE-PISO combined technique has been largely adopted in several computational codes (e.g. OpenFOAM(R) \cite{ofpg}) to address transient incompressible flow problems due to its beneficial convergence features. It consists on iterating the corrector steps until a certain mass conservation criteria is fulfilled (as in PISO) and iterating the whole sequence (Momentum Predictor and Corrector Step) several times until both mass and momentum equations are verified for each time step. This algorithm will be adopted in the present work.}
+Most of the SIMPLE-family algorithms preserve this general structure. In particular, the SIMPLE algorithm \cite{patankar1972}, originally conceived as a steady state flow solver, adds under-relaxation factors to obtain a stable solution. Another variant is the PISO {(Pressure-Implicit with Splitting of Operators)} algorithm, which relies on iterating the Corrector step a given number of times to ensure a correct coupling between pressure and velocity for transient flow problems \cite{issa,issa2}. {The SIMPLE-PISO combined technique has been largely adopted in several computational codes (e.g. OpenFOAM(R) \cite{ofpg}) to address transient incompressible flow problems due to its beneficial convergence features. It consists on iterating the corrector steps until a certain mass conservation criteria is fulfilled (as in PISO) and iterating the whole sequence (Momentum Predictor and Corrector Step) several times until both mass and momentum equations are verified for each time step. This algorithm will be adopted in the present work.}
 
 \subsection{Improving the neighbor approximation: the SIMPLEC algorithm}
 The SIMPLEC~\cite{vanDoormal} algorithm proposes an aproximation of the neighbour velocity correction $\boldsymbol{u}_N'$,
@@ -916,7 +941,7 @@ The following assumption is proposed:
 \begin{equation}
 \nabla \boldsymbol{u}_P'
 =
-\alpha
+\gamma
 \boldsymbol{I}
 \label{eq:gradApprox}
 \end{equation}
@@ -927,7 +952,7 @@ Replacing,
 \left(
 \boldsymbol{x}_{Pf}
 \cdot 
-\alpha
+\gamma
 \boldsymbol{I}
 \right)
 \cdot 
@@ -942,7 +967,7 @@ Replacing,
 \cdot 
 \boldsymbol{S}_f
 \\
-\alpha
+\gamma
 \sum_f 
 \left(
 \boldsymbol{x}_{Pf}
@@ -963,7 +988,7 @@ Replacing,
 \end{align}
 then
 \begin{equation}
-\alpha
+\gamma
 =
 \dfrac
 {-\sum_f
@@ -984,7 +1009,7 @@ Finally the face gradient~(\ref{Eq:UFaceGradient}) may be computed using the $\a
 \begin{equation}
 \nabla \boldsymbol{u}_f'
 =
-\alpha_f
+\gamma_f
 \boldsymbol{I}.
 \end{equation}
 
@@ -1451,14 +1476,14 @@ R_2(P)^2
 \begin{figure}[H]
 \centering
 \includegraphics[width=5cm]{fig/Cases/Cavity.pdf}
-\caption{}
+\caption{Geometry of the 3D cavity problem}
 \label{Fig:Cavity}
 \end{figure}  
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=14cm]{fig/Cases/Geometria3.pdf}
-\caption{}
+\caption{Geometry of the 3D backward facing step problem}
 \label{Fig:Geometria3}
 \end{figure}  
 
@@ -1469,7 +1494,7 @@ R_2(P)^2
 \begin{figure}[H]
 \centering
 \includegraphics[width=17cm]{fig/Results/FactorLowRe.pdf}
-\caption{}
+\caption{Relative performance depending on the COMPLEX blending factor}
 \label{Fig:Geometria3}
 \end{figure}
 
@@ -1478,21 +1503,21 @@ R_2(P)^2
 \begin{figure}[H]
 \centering
 \includegraphics[width=17cm]{fig/Results/complexCoarse.pdf}
-\caption{}
+\caption{Iterations to achieve performance with COMPLEX ($\alpha = 0.2$) in coarse mesh problems}
 \label{Fig:complexCoarse}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=17cm]{fig/Results/complexMedium.pdf}
-\caption{}
+\caption{Iterations to achieve performance with COMPLEX ($\alpha = 0.2$) in medium mesh problems}
 \label{Fig:complexMedium}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=17cm]{fig/Results/complexFine.pdf}
-\caption{}
+\caption{Iterations to achieve performance with COMPLEX ($\alpha = 0.2$) in fine mesh problems}
 \label{Fig:complexFine}
 \end{figure}
 
