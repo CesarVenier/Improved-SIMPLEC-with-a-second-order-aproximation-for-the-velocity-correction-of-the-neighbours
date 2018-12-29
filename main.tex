@@ -1499,6 +1499,23 @@ The main parameter of the current numerical method is the complex factor $\kappa
 
 The study is performed by solving a serie of simulations of the cavity and BFS problems using the medium meshes respectively. For each case, the two Reynolds number defined before are employed generating consequently four different numerical problems.
 Each one of this four simulations is solved with different values of $\kappa$ and $\omega_{u}$. The complex factor is varied from 0 to 1 by a step of $0.05$ (21 values) and the relaxation factor is varied from 0.8 up to 1 by a step of $0.1$ (21 values). In combination, this parametric study is composed by 441 simulations for each one of the four numerical problems.
+
+The results of the simulations are presented in the Tables~\ref{Table:Cavity_LowRe}, \ref{Table:BFS_LowRe}, \ref{Table:BFS_LowRe} and \ref{Table:BFS_HighRe}, and in the Fig.~\ref{Fig:FactorLowRe}. One one hand, the tables present the required number of iterations to reach the convergence as function of $\omega_u$ and $\kappa$. Not all simulations are displayed due to space limitations, the range of $\omega_u$ is shortened from 0.92 to 1 and the $\kappa$ values are listed using a step of 0.1. On the other hand, the Fig.~\ref{Fig:FactorLowRe} present the results of the four cases in a condensed form. There is one figure per case which plots the relative number of iterations required for each simulation compared with those required for the simulation with the same relaxation factor and with $\kappa = 0$. Formally, the relative iteration index RI for a given pair of values $\omega_u^1$ and $\kappa^1$ is computed as follows,
+\begin{equation}
+RI(\omega_u^1, \kappa^1)
+=
+\dfrac
+{
+NI(\omega_u^1, \kappa^1) - NI(\omega_u^1, 0)
+}
+{
+NI(\omega_u^1, 0)
+}
+\times
+100 \%
+\end{equation}
+where $NI(a,b)$ is the number of iterations required for convergence using the relaxation value $a$ and the complex factor $b$.
+
 \begin{table}[t!]
 \centering
 \begin{tabular}{c|ccccccccccc}
@@ -1527,6 +1544,27 @@ $\omega_u$/$\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 
 $\omega_u$/$\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 1 \\ 
 \hline 
 1 & div & div & div & div & div & div & div & div & div & div & div \\ 
+0.99 & 1974 & 1697 & 1753 & 1865 & 1941 & 1993 & div & div & div & div & div \\ 
+0.98 & 981 & 816 & 844 & 854 & 874 & 904 & 929 & 949 & 966 & 980 & 992 \\ 
+0.97 & 651 & 528 & 550 & 560 & 565 & 571 & 581 & 594 & 606 & 618 & 627 \\ 
+0.96 & 486 & 392 & 403 & 413 & 418 & 421 & 424 & 428 & 435 & 442 & 449 \\ 
+0.95 & 387 & 320 & 317 & 324 & 330 & 333 & 335 & 336 & 339 & 342 & 346 \\ 
+0.94 & 320 & 272 & 259 & 266 & 271 & 274 & 276 & 277 & 278 & 280 & 282 \\ 
+0.93 & 273 & 237 & 220 & 225 & 229 & 232 & 234 & 235 & 236 & 237 & 238 \\ 
+0.92 & 240 & 233 & 233 & 233 & 233 & 233 & 233 & 233 & 233 & 233 & 233 \\ 
+\hline 
+\end{tabular}
+\caption{BFS, Re = 0.389}
+\label{Table:BFS_LowRe}
+\end{table}
+
+\begin{table}[t!]
+\centering
+\begin{tabular}{c|ccccccccccc}
+\hline 
+$\omega_u$/$\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 1 \\ 
+\hline 
+1 & div & div & div & div & div & div & div & div & div & div & div \\ 
 0.99 & 1611 & 1321 & 1286 & 1333 & 1357 & div & div & div & div & div & div \\ 
 0.98 & 802 & 693 & 652 & 635 & 648 & 662 & 671 & 678 & 682 & div & div \\ 
 0.97 & 532 & 471 & 448 & 431 & 423 & 427 & 435 & 441 & 446 & 449 & 452 \\ 
@@ -1541,26 +1579,7 @@ $\omega_u$/$\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 
 \label{Table:Cavity_HighRe}
 \end{table}
 
-\begin{table}[t!]
-\centering
-\begin{tabular}{c|ccccccccccc}
-\hline 
-$\omega_u$/$\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 1 \\ 
-\hline 
-1 & div & div & div & div & div & div & div & div & div & div & div \\ 
-0.99 & 1974 & 1697 & 1753 & 1865 & 1941 & 1993 & div & div & div & div & div \\ 
-0.98 & 981 & 816 & 844 & 854 & 874 & 904 & 929 & 949 & 966 & 980 & 992 \\ 
-0.97 & 651 & 528 & 550 & 560 & 565 & 571 & 581 & 594 & 606 & 618 & 627 \\ 
-0.96 & 486 & 392 & 403 & 413 & 418 & 421 & 424 & 428 & 435 & 442 & 449 \\ 
-0.95 & 387 & 320 & 317 & 324 & 330 & 333 & 335 & 336 & 339 & 342 & 346 \\ 
-0.94 & 320 & 272 & 259 & 266 & 271 & 274 & 276 & 277 & 278 & 280 & 282 \\ 
-0.93 & 273 & 237 & 220 & 225 & 229 & 232 & 234 & 235 & 236 & 237 & 238 \\ 
-0.92 & 240 & 233 & 233 & 233 & 233 & 233 & 233 & 233 & 233 & 233 & 233 \\ 
-\hline 
-\end{tabular}
-\caption{BFS, Re = 0.389}
-\label{Table:Cavity_HighRe}
-\end{table}
+
 
 \begin{table}[t!]
 \centering
@@ -1580,7 +1599,7 @@ $\omega_u$/$\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 
 \hline 
 \end{tabular}
 \caption{BFS, Re = 389}
-\label{Table:Cavity_HighRe}
+\label{Table:BFS_HighRe}
 \end{table}
 
 
@@ -1590,7 +1609,7 @@ $\omega_u$/$\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 
 \centering
 \includegraphics[width=17cm]{fig/Results/FactorLowRe.pdf}
 \caption{}
-\label{Fig:Geometria3}
+\label{Fig:FactorLowRe}
 \end{figure}
 
 \subsection{Comparison of COMPLEX with SIMPLE and SIMPLEC}
