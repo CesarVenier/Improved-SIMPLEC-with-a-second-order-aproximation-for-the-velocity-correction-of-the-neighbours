@@ -107,7 +107,7 @@ a_P\,\boldsymbol{u}_P + \sum_{N} a_{N}\,\boldsymbol{u}_{N} = b_P\, \boldsymbol{u
 \end{split}
 \end{equation}
 
-\noindent where the subscript $P$ indicates the cell-centered value of the current cell, $N$ indicates neighbor cells values and $f$ refers to the face values. The term ${\color{red}b_P}\, \boldsymbol{u}^0_P$ is the contribution of the previous time-step and is function of the temporal scheme. {\color{red} The face-normal vector $\textbf{S}_{f}$ has the magnitude of the face area and points out of the cell}, $F_f$ is the {\color{red} velocity} flux at the face $f$ and $a_P$ and $a_{N}$ are the diagonal and off-diagonal momentum matrix coefficients respectively. The operator $\nabla p_P$ is a Gauss-based gradient of the pressure computed using first neighbors values of that field. Isolating $\boldsymbol{u}_P$ from Eq.~(\ref{eq:umom1}),
+\noindent where the subscript $P$ indicates the cell-centered value of the current cell, $N$ indicates neighbor cells values and $f$ refers to the face values. The term ${\color{red}b_P}\, \boldsymbol{u}^0_P$ is the contribution of the previous time-step and is function of the temporal scheme. {\color{red} The face-normal vector $\textbf{S}_{f}$ has the magnitude of the face area and points out of the cell}, $F_f$ is the {\color{red} velocity} flux at the face $f$ and $a_P$ and $a_{N}$ are the diagonal and off-diagonal momentum matrix coefficients respectively. The operator $\nabla p_P$ is a Gaus-based gradient of the pressure computed using first neighbors values of that field. Isolating $\boldsymbol{u}_P$ from Eq.~(\ref{eq:umom1}),
 
 \begin{equation}
 \begin{split}
@@ -1396,8 +1396,7 @@ Fine & 80 & 160 & 30 & 104 & 160 & 60 & 1382400 \\
 \end{figure}
 
 \subsection{Error measurement}
-To analyse the rate of convergence of the different algorithms, a unique error measurement is defined. The error is assumed to be the residual of the discretized Navier-Stokes equations. Thus two residuals are computed, the momentum and mass balance residuals as function of the velocity and pressure fields. 
-
+To analyse the rate of convergence of the different algorithms, a unique error measurement is defined. The error is assumed to be the residual of the discretized Navier-Stokes equations. In this sense, it is defined the momentum balance residual $R_1$ and the mass balance residual $R_2$. In the continuum, these fields are defined as follows,
 \begin{align}
 R_1
 &=
@@ -1420,8 +1419,9 @@ R_2
 \cdot
 \boldsymbol{u}
 \end{align}
-
+When discretizing the Navier-Stokes equations with the FVM, the residuals $R_1$ and $R_2$ are computed for each cell $P$ of the FV mesh. Then, the momentum residual writes,
 \begin{equation}
+\label{Eq:R1Discretized}
 R_1(P)
 =
 \sum_{f}
@@ -1439,19 +1439,20 @@ p_f
 \,
 \boldsymbol{S}_f
 -
-\boldsymbol{\Phi}_P \, V_P
+\boldsymbol{\Phi}_P \, V_P,
 \end{equation}
-
+and the mass residual is defined as
 \begin{equation}
 R_2(P)
 =
 \sum_f
 \boldsymbol{u}_f
 \cdot
-\boldsymbol{S}_f
+\boldsymbol{S}_f,
 \end{equation}
-
+where the face velocity value $\boldsymbol{u}_f$ is replaced in terms of the momentum equation as done before in Eq.~(\ref{eq:uP}),
 \begin{equation}
+\label{Eq:R2Discretized}
 R_2(P)
 =
 \sum_f 
@@ -1468,9 +1469,11 @@ R_2(P)
 {a_P}
 \right)_f 
 \cdot 
-\boldsymbol{S}_f 
+\boldsymbol{S}_f.
 \end{equation}
+It is important to highlight, that the computation of $R_1$ and $R_2$ is carried out with Eqs.~(\ref{Eq:R1Discretized}) and (\ref{Eq:R2Discretized}) independently to the pressure-velocity coupling strategy used in the numerical simulation. These equations are only function of the velocity and pressure values, and of the momentum equation coefficients which are equally assembled for the three pressure-velocity coupling methods studied in this paper. Appart from this,the residuals $R_1$ and $R_2$ are computed at the end of each time step of the simulation. In this fashion, intermediate results of $\mathbf{u}$ and $p$ are avoided since such fields should be different estimated accordingly to the pressure-velocity coupling algorithm. 
 
+On the basis of their definition, the residuals $R_1$ and $R_2$ are an appropriate indicator to qualify the convergence of the different numerical algorithms. In particular of this paper, the Root Mean Square (RMS) value of them is computed, 
 \begin{align}
 \overline{R}_1
 &=
@@ -1486,8 +1489,17 @@ R_1(P)^2
 {
 \sum_P
 R_2(P)^2
-}
+}.
 \end{align}
+Referring to the $\overline{R}_1$ and $\overline{R}_2$, the following convergence criteria is proposed in this work: a numerical simulation will be assumed as converged is both values, $\overline{R}_1$ and $\overline{R}_2$  fall below a tolerance of $1e^{-9}$,
+\begin{equation}
+\left\lbrace
+\begin{array}{c}
+\overline{R}_1 \leq 1e^{-9} \\
+\overline{R}_2 \leq 1e^{-9}
+\end{array}
+\right..
+\end{equation}
 
 
   
@@ -1639,7 +1651,16 @@ Similar as solved in previous section, the main analysis variable is the number 
 
 The results are presented in the Figs.~\ref{Fig:complexCoarse},~\ref{Fig:complexMedium} and \ref{Fig:complexFine} which are respective to the three refinement levels of the meshes. Each figure contain six bar plots arranged in three rows and two columns. On the right and left columns, the results of the Cavity and BFS simulations are presented respectively. In the first row, the absolute number of iterations at convergence for the COMPLEX method simulations are indicated. Relative to these simulations, the second and third row plot the relative index (Eq.~\ref{Eq:relativeIndex}) of iterations for the SIMPLEC and SIMPLE methods respectively. In all plots, the blue bars are respective to the low Reynolds simulations and the red ones are respective to the high Reynolds simulations.   
 
-In general, the difference between COMPLEX and the other studied methods is relevant for high values of the momentum relaxation factor $\omega_u$. Examining the absolute number of iterations of COMPLEX, the  value of $\omega_u$ in which the complex method has the best convergence is coincident with the start point from which the differences between methods become considerable. This last observation may be interpreted as COMPLEX has a lower minimum of required iterations for convergence and that the decay of the convergence caused by an excessive value of $\omega_u$ is better handled by the COMPLEX method. An hypothesis for the previous reaction of the methods may be explained by considering that a higher relaxation factor of the momentum equation leads to a higher divergence of the velocity field, since this constraint is naturally not imposed in the momentum balance. With this in mind, the COMPLEX strategy includes a numerical correction for this deviation which helps to an enhanced prediction of the pressure in these conditions.   
+In general, the difference between COMPLEX and the other studied methods is relevant for high values of the momentum relaxation factor $\omega_u$. Examining the absolute number of iterations of COMPLEX, the  value of $\omega_u$ in which the complex method has the best convergence is coincident with the start point from which the differences between methods become considerable. This last observation may be interpreted as COMPLEX has a lower minimum of required iterations for convergence and that the decay of the convergence caused by an excessive value of $\omega_u$ is better handled by the COMPLEX method. An hypothesis for the previous reaction of the methods may be explained by considering that a higher relaxation factor of the momentum equation leads to a higher divergence of the velocity field, since this constraint is naturally not imposed in the momentum balance. With this in mind, the COMPLEX strategy includes a numerical correction for this deviation which helps to an enhanced prediction of the pressure in these conditions.
+
+The results are sensitive to the mesh refinement level. Analysing the absolute number of iterations of the COMPLEX method, it is observed that the reduction of the number of iterations when increasing the momentum relaxation factor raises up with mesh refinement. This also deviates the minimum iterations point to the right direction in concordance with a higher value of $\omega_u$. 
+
+The mesh refinement level affects the relative differences between the methods. The range of $\omega_u$ in which COMPLEX converges better is longer in the coarse mesh than the fine mesh. Namely, this range start from $\omega_u = 0.85$ in the coarse mesh and from $\omega_u = 0.95$ in the fine one.
+
+In regard to the Reynolds number influence on COMPLEX it may be assert that for the relative high Reynolds number of each one of the problems, a lower iteration number are required to reach the convergence criteria. This property of COMPLEX is also observed in the comparison with SIMPLE and SIMPLEC where the reduction in the number of iterations required for convergence is higher for the highest Reynolds problem. A similar effect is also noted in the range in which COMPLEX is more convergent where high Reynolds simulations in SIMPLE and SIMPLEC show an increased number of iterations in a wider range than low Reynolds simulations. As pointed out before, the range of advantage of COMPLEX regarding the $\omega_u$ value starts at the point where the iteration number is approaching a minimum. This trend is also observed in the high Reynolds simulations since the wider range of advantage of COMPLEX compared with the low Reynolds problems may be justified since the minimum iterations number occurs with a lower value of $\omega_u$.
+
+To conclude this analysis, it is remarked that in almost all cases (Cavity or BFS, mesh refinement level $\omega_u$ value and Reynolds number) the COMPLEX method is superior in terms of convergence than both, the SIMPLE and SIMPLEC method. 
+
 
 
 
