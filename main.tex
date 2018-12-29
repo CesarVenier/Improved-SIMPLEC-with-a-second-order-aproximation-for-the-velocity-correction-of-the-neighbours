@@ -1,4 +1,4 @@
- \documentclass[final,3p,times,10pt,onecolumn]{myElsarticle}
+ \documentclass[final,3p,times,11pt,onecolumn]{myElsarticle}
 \usepackage{float}
 \usepackage{times}
 \usepackage[utf8]{inputenc}
@@ -1351,7 +1351,7 @@ A method to quantify the overall error damping for a general problem, where the 
 \subsection{General framework}
 The COMPLEX method is analysed in the context of incompressible, laminar and stationary Newtonian flows. In this context, the performance of the method is compared with the SIMPLE and SIMPLEC methods by evaluating the convergence rate.
 
-\subsection{Test problems}
+\subsection{Test problems}\label{Section:problemDescription}
  
 
 The evaluation of the complex method is achieved by simulation  two typical tests for incompressible and stationary flows. The first of these problems is the cubic cavity which is schematized in Fig.~\ref{Fig:Cavity}.
@@ -1500,8 +1500,9 @@ The main parameter of the current numerical method is the complex factor $\kappa
 The study is performed by solving a serie of simulations of the cavity and BFS problems using the medium meshes respectively. For each case, the two Reynolds number defined before are employed generating consequently four different numerical problems.
 Each one of this four simulations is solved with different values of $\kappa$ and $\omega_{u}$. The complex factor is varied from 0 to 1 by a step of $0.05$ (21 values) and the relaxation factor is varied from 0.8 up to 1 by a step of $0.1$ (21 values). In combination, this parametric study is composed by 441 simulations for each one of the four numerical problems.
 
-The results of the simulations are presented in the Tables~\ref{Table:Cavity_LowRe}, \ref{Table:BFS_LowRe}, \ref{Table:BFS_LowRe} and \ref{Table:BFS_HighRe}, and in the Fig.~\ref{Fig:FactorLowRe}. One one hand, the tables present the required number of iterations to reach the convergence as function of $\omega_u$ and $\kappa$. Not all simulations are displayed due to space limitations, the range of $\omega_u$ is shortened from 0.92 to 1 and the $\kappa$ values are listed using a step of 0.1. On the other hand, the Fig.~\ref{Fig:FactorLowRe} present the results of the four cases in a condensed form. There is one figure per case which plots the relative number of iterations required for each simulation compared with those required for the simulation with the same relaxation factor and with $\kappa = 0$. Formally, the relative iteration index RI for a given pair of values $\omega_u^1$ and $\kappa^1$ is computed as follows,
+The results of the simulations are presented in the Tables~\ref{Table:Cavity_LowRe}, \ref{Table:BFS_LowRe}, \ref{Table:Cavity_HighRe} and \ref{Table:BFS_HighRe}, and in the Fig.~\ref{Fig:FactorLowRe}. One one hand, the tables present the required number of iterations to reach the convergence as function of $\omega_u$ and $\kappa$. Not all simulations are displayed due to space limitations, the range of $\omega_u$ is shortened from 0.92 to 1 and the $\kappa$ values are listed using a step of 0.1 instead of 0.05. On the other hand, the Fig.~\ref{Fig:FactorLowRe} present the results of the four cases in a condensed form. There is one figure per case which plots the relative number of iterations ($RI$) required for each simulation compared with those required for the simulation with the same relaxation factor and with $\kappa = 0$. Formally, the relative iteration index $RI$ for a given pair of values $\omega_u^1$ and $\kappa^1$ is computed as follows,
 \begin{equation}
+\label{Eq:relativeIndex}
 RI(\omega_u^1, \kappa^1)
 =
 \dfrac
@@ -1587,7 +1588,7 @@ $\omega_u$/$\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 
 \hline 
 $\omega_u$/$\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 1 \\ 
 \hline 
-1 & div & div & div & div & div & div & div & div & div & div &  \\ 
+1 & div & div & div & div & div & div & div & div & div & div & div \\ 
 0.99 & div & div & div & div & div & div & div & div & div & div & div \\ 
 0.98 & 818 & 624 & 632 & 637 & div & div & div & div & div & div & div \\ 
 0.97 & 540 & 427 & 422 & 428 & 435 & div & div & div & div & div & div \\ 
@@ -1602,9 +1603,6 @@ $\omega_u$/$\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 
 \label{Table:BFS_HighRe}
 \end{table}
 
-
-
-
 \begin{figure}[t!]
 \centering
 \includegraphics[width=17cm]{fig/Results/FactorLowRe.pdf}
@@ -1612,8 +1610,12 @@ $\omega_u$/$\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 
 \label{Fig:FactorLowRe}
 \end{figure}
 
-\subsection{Comparison of COMPLEX with SIMPLE and SIMPLEC}
+The Tables~\ref{Table:Cavity_LowRe},~\ref{Table:BFS_LowRe}, and the upper plots of Fig.~\ref{Fig:FactorLowRe} present the low Reynolds simulation results  and the Tables~\ref{Table:Cavity_HighRe},~\ref{Table:BFS_HighRe}, and the bottom plots of Fig.~\ref{Fig:FactorLowRe} present the high Reynolds simulations results. In general, it is concluded that the addition of the complex term does not influence in the convergence when using relative low relaxation factors. On the contrary, with relative high values of $\omega_u$, the addition of the complex term reduces the number of iterations required for convergence. This reduction has a maximum value of approximately 20 $\%$ in the total number of iterations. The better results are obtained with values of the complex factor that are below $k = 0.5$. The simulations with high values of the complex factor $(k \geq 0.5)$ are more unstable. In particular, the BFS problem at Re = 389 indicates a extended divergence zone for the highest values of $\omega_u$ which is followed by a slow convergence zone (grey-coloured zone in the figure) for lower values of $\omega_u$. Unlike this last behavour, with the lowest values of $\kappa$, the simulations are stable and present the maximum convergence speed. In view of these analysis, it is deduced that a complex factor equal to $\kappa = 0.2$ is adequate to speed up the convergence without losing stability. This last inference is determined based on two different numerical problems (Cavity and BFS) in the range of Reynolds number between $0.4$ and $400$. 
 
+ 
+\subsection{Comparison of COMPLEX with SIMPLE and SIMPLEC}
+In the next paragraphs a comparison of the COMPLEX strategy against the SIMPLE and SIMPLEC methods is performed. All COMPLEX	 simulations are solved using a complex factor of $\kappa = 0.2$. 
+Similar as solved in previous section, the main analysis variable is the number of iterations required to reach the convergence criteria where the Cavity and BFS cases are solved for the two values of Reynolds number respectively. In this instance, each set of four simulations is solved using the coarse, medium and fine mesh levels which were defined on Section~\ref{Section:problemDescription}. As well as the Reynolds number and the mesh refinement, the effect of momentum relaxation factor on the convergence is included into the exploration. Consequently the simulations are solved varying $\omega_u$ from 0.8 to 1 using a step of 0.1.
 \begin{figure}[t!]
 \centering
 \includegraphics[width=17cm]{fig/Results/complexCoarse.pdf}
@@ -1635,15 +1637,9 @@ $\omega_u$/$\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 
 \label{Fig:complexFine}
 \end{figure}
 
+The results are presented in the Figs.~\ref{Fig:complexCoarse},~\ref{Fig:complexMedium} and \ref{Fig:complexFine} which are respective to the three refinement levels of the meshes. Each figure contain six bar plots arranged in three rows and two columns. On the right and left columns, the results of the Cavity and BFS simulations are presented respectively. In the first row, the absolute number of iterations at convergence for the COMPLEX method simulations are indicated. Relative to these simulations, the second and third row plot the relative index (Eq.~\ref{Eq:relativeIndex}) of iterations for the SIMPLEC and SIMPLE methods respectively. In all plots, the blue bars are respective to the low Reynolds simulations and the red ones are respective to the high Reynolds simulations.   
 
-
-
-
-%\begin{itemize}
-%    \item 4 mapas 2D (n iter vs ($\% \alpha$, $\omega_u$)) $\rightarrow$ Re altos y bajos, Cav y BFS. Conclusiones: porcentaje ideal de $\alpha$ = 0.25
-%    \item 12 gráficas con sombreado de n iter vs $\omega_u$ (cada una con 3 curvas: SIMPLE, SIMPLEC y COMPLEX0.25) $\rightarrow$ Re altos y bajos, malla gruesa, media y fina, Cav y BFS.
-%\end{itemize}
-
+In general, the difference between COMPLEX and the other studied methods is relevant for high values of the momentum relaxation factor $\omega_u$. Examining the absolute number of iterations of COMPLEX, the  value of $\omega_u$ in which the complex method has the best convergence is coincident with the start point from which the differences between methods become considerable. This last observation may be interpreted as COMPLEX has a lower minimum of required iterations for convergence and that the decay of the convergence caused by an excessive value of $\omega_u$ is better handled by the COMPLEX method. An hypothesis for the previous reaction of the methods may be explained by considering that a higher relaxation factor of the momentum equation leads to a higher divergence of the velocity field, since this constraint is naturally not imposed in the momentum balance. With this in mind, the COMPLEX strategy includes a numerical correction for this deviation which helps to an enhanced prediction of the pressure in these conditions.   
 
 
 
