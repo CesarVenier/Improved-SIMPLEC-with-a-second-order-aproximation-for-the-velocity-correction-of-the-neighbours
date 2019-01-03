@@ -743,7 +743,7 @@ In order to estimate the value of $\boldsymbol{u}_N'$ in Eq.~(\ref{Eq:HPrima}), 
 \nabla \boldsymbol{u}_f'.
 \end{equation}
 
-Then, the $\boldsymbol{H}'$ is expressed as,
+Then, the $\boldsymbol{H}'$ variable may be expressed as,
 \begin{equation}
 \label{Eq:HPrimaComplex}
 \boldsymbol{H}'
@@ -761,7 +761,7 @@ Then, the $\boldsymbol{H}'$ is expressed as,
 \nabla \boldsymbol{u}_f'
 \right),
 \end{equation}
-which combined with Eq.~(\ref{Eq:UPrimaIsolated}) may be expressed as,
+which combined with Eq.~(\ref{Eq:UPrimaIsolated}) reads as follows,
 \begin{equation}
 \label{Eq:HPrimaComplexReady}
 \boldsymbol{H}'
@@ -787,7 +787,7 @@ a_P
 \,
 \delta_P,
 \end{equation}
-where $\delta_P$ is defined as the second term of the r.h.s of Eq.~(\ref{Eq:HPrimaComplex}) which is called as the complex term or contribution,
+where $\delta_P$ is defined as the second term of the r.h.s of Eq.~(\ref{Eq:HPrimaComplex}) which is named in this paper as the complex term,
 \begin{equation}
 \delta_P 
 \equiv 
@@ -874,14 +874,37 @@ The velocity is computed including the approximation of Eq.~(\ref{Eq:HPrimaCompl
 The Eqs.~(\ref{Eq:pressureComplex}) and (\ref{Eq:velocityComplex}) are similar to Eqs.~(\ref{eq:pEqnSIMPLEC}) and (\ref{Eq:velocitySimplec}) respectively but for the complex term $\delta_P$ which has as main unknown the face gradient $\nabla \boldsymbol{u}_f'$.
 
 \subsection{Computation of the face gradient}
-The face gradient $\nabla \boldsymbol{u}_f' $ is obtained as a linear interpolation of a cell-centred gradient,
+The face gradient $\nabla \boldsymbol{u}_f' $ is obtained as a linear interpolation of a cell-centred gradient $\nabla \boldsymbol{u}_P'$,
 \begin{equation}
 \label{Eq:UFaceGradient}
 \nabla \boldsymbol{u}_f'
 =
 (\nabla \boldsymbol{u}_P')_f.
 \end{equation}
-To obtain $\nabla \boldsymbol{u}_P'$, the face values $\boldsymbol{u_P}'_f$ of the mass balance of Eq.~(\ref{eq:div-free4Again}) are expressed as a  first-order Taylor expansion,
+To obtain an expression for the cell-centred gradient, a derivation starts by including the subdivision of the velocity given in Eq.~(\ref{Eq:velocitySubdiv}) in the mass balance given of Eq.~(\ref{eq:mass2}),
+\begin{equation}
+\label{Eq:massEqSubdivided}
+\sum_{f} 
+\left(
+\boldsymbol{u}_{P}^*
++ 
+\boldsymbol{u}_{P}'
+\right)_f
+\cdotp \textbf{S}_{f} 
+=
+\left(
+\boldsymbol{u}_{P}^*
+\right)_f
+\cdotp \textbf{S}_{f}
++
+\left(
+\boldsymbol{u}_{P}'
+\right)_f
+\cdotp \textbf{S}_{f}
+=
+0
+\end{equation}
+In last equation, the face values $\boldsymbol{u_P}'_f$ are expressed as function of $\nabla \boldsymbol{u}_P'$ by proposing the following first-order Taylor expansion,
 \begin{equation}
 \label{Eq:TaylorOnFace}
 \left(
@@ -894,9 +917,7 @@ To obtain $\nabla \boldsymbol{u}_P'$, the face values $\boldsymbol{u_P}'_f$ of t
 \cdot 
 \nabla \boldsymbol{u}_P'.
 \end{equation} 
-
-
-Subsequently, this last equation is replaced in  Eq.~(\ref{eq:div-free4Again}),
+Subsequently, this last equation is replaced in  Eq.~(\ref{Eq:massEqSubdivided}),
 \begin{align}
 \sum_f 
 \left(
@@ -954,37 +975,34 @@ Subsequently, this last equation is replaced in  Eq.~(\ref{eq:div-free4Again}),
 \cdot 
 \boldsymbol{S}_f
 \end{align}
-
-where,
+where $\boldsymbol{u_P}^{*}$ is obtained by the momentum predictor, Eq.~(\ref{Eq:MomentumPredictor}),
 \begin{equation}
 \left(
 \boldsymbol{u_P}^{*}
 \right)_{f}
 =
-\left[\frac{1}{a_P}\left(\boldsymbol{H}^* - \nabla p_P^{*}\right)\right]_f
+\left[\frac{1}{a_P}\left(\boldsymbol{H}^* - \nabla p_P^{0}\right)\right]_f.
 \end{equation}
-
 Then, a similar form of the Rhie-Chow term given in Eq.~(\ref{eq:pEqnSIMPLE2}) is included,
 \begin{equation}
 \left(
 \boldsymbol{u_P}^{*}
 \right)_{f}
 =
-\left[\frac{1}{a_P}\left(\boldsymbol{H}^* - \nabla p_P^{*}\right)\right]_f
+\left[\frac{1}{a_P}\left(\boldsymbol{H}^* - \nabla p_P^{0}\right)\right]_f
 +
 \left[
 \left(
-\frac{\nabla p_P^{*}}{a_P}
+\frac{\nabla p_P^{0}}{a_P}
 \right)_f
 - 
 \left(
 \frac{1}{a_P}
 \right)_f 
-\nabla p_f^{*} 
-\right]
+\nabla p_f^{0} 
+\right],
 \end{equation}
-
-Simplifying, 
+and simplifying, 
 \begin{equation}
 \left(
 \boldsymbol{u_P}^{*}
@@ -992,11 +1010,11 @@ Simplifying,
 =
  \left(\frac{\boldsymbol{H}^*}{a_P}\right)_f 
  -
- \left(\frac{1}{a_P}\right)_f \nabla p_f^{*}
+ \left(\frac{1}{a_P}\right)_f \nabla p_f^{0}.
 \end{equation}
-
 Replacing in Eq.~(\ref{Eq:Last}),
 \begin{equation}
+\label{Eq:mainGradEq}
 \sum_f 
 \left(
 \boldsymbol{x}_{Pf}
@@ -1010,27 +1028,26 @@ Replacing in Eq.~(\ref{Eq:Last}),
 \left[
 \left(\frac{\boldsymbol{H}^*}{a_P}\right)_f 
  -
- \left(\frac{1}{a_P}\right)_f \nabla p_f^{*}
+ \left(\frac{1}{a_P}\right)_f \nabla p_f^{0}
  \right]
 \cdot 
-\boldsymbol{S}_f
+\boldsymbol{S}_f.
 \end{equation}
-The following assumption is proposed:
+Last expression allows computing the cell gradient $\nabla \boldsymbol{u}_P'$ as functions of $\boldsymbol{H}^*$ and $\nabla p_f^{0}$ which are known values after the momentum predictor equation is solved. However, the Eq.~(\ref{Eq:mainGradEq}) is underdetermined since the gradient $\nabla \boldsymbol{u}_P'$ requires to define nine unknowns. In order to solve this last underdetermination, an additional approximation is introduced over the gradient definition. In this respect, it is proposed that the gradient $\nabla \boldsymbol{u}_P'$ is a scalar matrix as defined below,
 \begin{equation}
 \nabla \boldsymbol{u}_P'
 =
-\alpha
+\alpha_P\,
 \boldsymbol{I}
 \label{eq:gradApprox}
 \end{equation}
-
-Replacing,
+Replacing this last definition in Eq.~(\ref{Eq:mainGradEq}),
 \begin{align}
 \sum_f 
 \left(
 \boldsymbol{x}_{Pf}
 \cdot 
-\alpha
+\alpha_P\,
 \boldsymbol{I}
 \right)
 \cdot 
@@ -1043,9 +1060,9 @@ Replacing,
  \left(\frac{1}{a_P}\right)_f \nabla p_f^{*}
  \right]
 \cdot 
-\boldsymbol{S}_f
+\boldsymbol{S}_f,
 \\
-\alpha
+\alpha_P
 \sum_f 
 \left(
 \boldsymbol{x}_{Pf}
@@ -1064,9 +1081,9 @@ Replacing,
 \cdot 
 \boldsymbol{S}_f,
 \end{align}
-then
+and isolating $\alpha_P$,
 \begin{equation}
-\alpha
+\alpha_P
 =
 \dfrac
 {-\sum_f
@@ -1083,13 +1100,21 @@ then
 \boldsymbol{S}_f}
 \end{equation}
 
-Finally the face gradient~(\ref{Eq:UFaceGradient}) may be computed using the $\alpha$ values on the faces,
+Finally the face gradient~(\ref{Eq:UFaceGradient}) may be computed using the $\alpha_P$ values interpolated to the faces,
 \begin{equation}
 \nabla \boldsymbol{u}_f'
 =
-\alpha_f
+\left(
+\alpha_P
+\right)_f
 \boldsymbol{I}.
 \end{equation}
+
+\subsection{Relaxation of the complex term}
+The COMPLEX method is based on approximate the neighbours velocity corrections $\boldsymbol{u}_N'$ as function of a Taylor expansion based on the mass balance equation. However, an accurate definition of the gradient for the second term of the Taylor serie requires additional information which is not available before solving the pressure equation. Due to this numerical difficulty, the approximation given in Eq.~(\ref{eq:gradApprox}) is proposed which allows closing the numerical problem at the expense of reducing the whole potential of the original proposal.
+
+
+
 
 \section{Stability Analysis}
 \label{sec:fourier}
