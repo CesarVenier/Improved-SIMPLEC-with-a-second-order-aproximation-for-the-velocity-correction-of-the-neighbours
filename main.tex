@@ -419,6 +419,7 @@ and therefore the Eq.~(\ref{Eq:HPrima}) may be expressed as,
 \end{equation}
 To include last expression in Eq.~(\ref{Eq:pressureEqSubdiv}), it must be expressed as function of the  pressure. For this, a expression for $\boldsymbol{u}^{'}$ is derived by subtracting Eq.~(\ref{Eq:MomentumPredictor}) from Eq.~(\ref{Eq:UpIsolated}),
 \begin{equation}
+\label{Eq:UPrimaIsolated}
 \boldsymbol{u}_P'
 =
 \dfrac
@@ -680,7 +681,8 @@ Then, simplifying,
 
 The velocity is computed by employing the approximation of Eq.~(\ref{Eq:HPrima}) in Eq.~(\ref{Eq:UpIsolatedH}):
 
-\begin{equation}\label{eq:uCorrSIMPLEC}
+\begin{equation}
+\label{eq:uCorrSIMPLEC}
 \boldsymbol{u}_P 
 =
 \dfrac
@@ -709,6 +711,7 @@ a_P
 \end{equation}
 and reordering,
 \begin{equation}
+\label{Eq:velocitySimplec}
 \boldsymbol{u}_P 
 =
 \dfrac
@@ -734,88 +737,71 @@ The only difference between SIMPLE and SIMPLEC are the coefficients in the Corre
 \section{Enhancement of SIMPLEC: the COMPLEX method}
 \label{sec:COMPLEX}
 
-In order to estimate the value of $\boldsymbol{u}_N'$ in Eq.~(\ref{eq:HPrima}), a second order Taylor approximation is proposed,
+In order to estimate the value of $\boldsymbol{u}_N'$ in Eq.~(\ref{Eq:HPrima}), a second order Taylor approximation is proposed,
 \begin{equation}\label{eq:uNTaylor}
 \boldsymbol{u}_N' = \boldsymbol{u}_P' + \boldsymbol{x}_{PN}\cdot 
 \nabla \boldsymbol{u}_f'.
 \end{equation}
 
-Replacing Eq.~(\ref{eq:uNTaylor}) in (\ref{eq:HPrima}), considering the same velocity gradient for all the neighbor approximations
-\begin{align}
-\label{eq:uPrimeCOMPLEX}
-a_P\,\boldsymbol{u}_P^{'} 
-&=
- -\sum_{N} a_{N}\, \left(\boldsymbol{u}_P^{'} + \boldsymbol{x}_{PN}\cdot \nabla \boldsymbol{u}_f'\right)- \nabla p_P^{'}, 
-\\
-\boldsymbol{u}_P^{'} 
-&=
-- \dfrac{\nabla p_P^{'}}
-{\tilde{a}_P}
--
+Then, the $\boldsymbol{H}'$ is expressed as,
+\begin{equation}
+\label{Eq:HPrimaComplex}
+\boldsymbol{H}'
+=
+\left(
+-\sum_N a_N
+\right)
+\boldsymbol{u}_P' 
++
+\left(
+-\sum_N a_N
+\right)
+\left(
+\boldsymbol{x}_{PN}\cdot 
+\nabla \boldsymbol{u}_f'
+\right),
+\end{equation}
+which combined with Eq.~(\ref{Eq:UPrimaIsolated}) may be expressed as,
+\begin{equation}
+\label{Eq:HPrimaComplexReady}
+\boldsymbol{H}'
+= 
 \dfrac
 {
-\sum_{N} a_{N} 
-( 
-\boldsymbol{x}_{PN} 
-\cdot
-\nabla \boldsymbol{u}_f' 
-)
-}
-{\tilde{a}_P}.
-\end{align}
-
-\begin{align} 
-\label{eq:div-free4Again}
-\sum_f \left(\boldsymbol{u_P}'\right)_{f} \cdot \boldsymbol{S}_f &= -\sum_f \left(\boldsymbol{u_P}^{*}\right)_{f} \cdot \boldsymbol{S}_f 
-\end{align}
-
-\begin{equation}
-\label{eq:pEqnCOMPLEX1}
-\sum_f 
-\left[
 \left(
-\frac
-{
-1
+\tilde{a}_P
+-
+a_P
+\right)
 }
 {
 \tilde{a}_P
 }
-\right)
-\nabla p_P^{'}
-\right]_f
-\cdot 
-\boldsymbol{S}_f
-= 
-\sum_f 
-\left[
-\frac{1}{a_P}
 \left(
-\boldsymbol{H}^* - \nabla p_P^{*}
-\right)
-\right]_f 
-\cdot
-\boldsymbol{S}_f
+\nabla p_P
 -
-\sum_f 
-\left[
-\dfrac
-{
-\sum_{N} a_{N} 
-( 
-\boldsymbol{x}_{PN} 
-\cdot
-\nabla \boldsymbol{u}_f' 
-)
-}
-{\tilde{a}_P}
-\right]_f 
-\cdot
-\boldsymbol{S}_f.
+\nabla p_P^{0}
+\right)
++
+\dfrac{a_P}{\tilde{a}_P}
+\,
+\delta_P,
 \end{equation}
-
+where $\delta_P$ is defined as the second term of the r.h.s of Eq.~(\ref{Eq:HPrimaComplex}) which is called as the complex term or contribution,
 \begin{equation}
-\label{Eq:complexSemiFinal}
+\delta_P 
+\equiv 
+\left(
+-\sum_N a_N
+\right)
+\left(
+\boldsymbol{x}_{PN}\cdot 
+\nabla \boldsymbol{u}_f'
+\right),
+\end{equation}
+Including Eq.~(\ref{Eq:HPrimaComplexReady}) in Eq.~(\ref{Eq:pressureEqSubdiv}) and following an analogous derivation as done from Eq.~(\ref{Eq:pressureReplacedSimplec}) up to Eq.~(\ref{eq:pEqnSIMPLEC}), the following pressure equation is obtained for the complex algorithm,
+\begin{equation}
+\label{Eq:pressureComplex}
 \sum_f
 \left[
 \left(
@@ -823,7 +809,7 @@ a_P\,\boldsymbol{u}_P^{'}
 {1}
 {\tilde{a}_P}
 \right)_f
-\nabla p^{**}_f
+\nabla p_f
 \right]
 \cdot 
 \boldsymbol{S}_f
@@ -849,27 +835,43 @@ a_P\,\boldsymbol{u}_P^{'}
 {1}
 {a_P}
 \right)_f
-\nabla p^{*}_f
-\right]_f
-\cdot
-S_f
--
-\sum_f 
-\left[
-\dfrac
-{
-\sum_{N} a_{N} 
-( 
-\boldsymbol{x}_{PN} 
-\cdot
-\nabla \boldsymbol{u}_f' 
-)
-}
-{\tilde{a}_P}
-\right]_f 
+\nabla p^{0}_f
+\right]
 \cdot
 \boldsymbol{S}_f
++
+\sum_f
+\left(
+\dfrac{\delta_P}{\tilde{a}_P}
+\right)_f
+\cdot
+\boldsymbol{S}_f.
 \end{equation}
+The velocity is computed including the approximation of Eq.~(\ref{Eq:HPrimaComplex}) in Eq.~(\ref{Eq:UpIsolatedH}),
+\begin{equation}
+\label{Eq:velocityComplex}
+\boldsymbol{u}_P 
+=
+\dfrac
+{
+\boldsymbol{H}^*
+- 
+\nabla p_P}
+{\tilde{a}_P}
++
+\left(
+\dfrac{1}
+{\tilde{a}_P}
+-
+\dfrac{1}
+{a_P}
+\right)
+\nabla p^{0}
++
+\dfrac{\delta_P}
+{\tilde{a}_P}.
+\end{equation}
+The Eqs.~(\ref{Eq:pressureComplex}) and (\ref{Eq:velocityComplex}) are similar to Eqs.~(\ref{eq:pEqnSIMPLEC}) and (\ref{Eq:velocitySimplec}) respectively but for the complex term $\delta_P$ which has as main unknown the face gradient $\nabla \boldsymbol{u}_f'$.
 
 \subsection{Computation of the face gradient}
 The face gradient $\nabla \boldsymbol{u}_f' $ is obtained as a linear interpolation of a cell-centred gradient,
@@ -1453,7 +1455,7 @@ The COMPLEX method is analysed in the context of incompressible, laminar and sta
 
 \subsection{Test problems}\label{Section:problemDescription}
  
-
+\subsubsection{Cavity}
 The evaluation of the complex method is achieved by simulation  two typical tests for incompressible and stationary flows. The first of these problems is the cubic cavity which is schematized in Fig.~\ref{Fig:Cavity}.
 \begin{figure}[t!]
 \centering
@@ -1463,6 +1465,7 @@ The evaluation of the complex method is achieved by simulation  two typical test
 \end{figure} 
 Here, a tangential fixed velocity of 1 m/s is imposed on the upper face of the cubic domain of length 1 m. The case is solved using to different values of the kinematic viscosity, $\nu = 2.5\, e-3$ m$^2$/s and $\nu = 2.5$ m$^2$/s which defines the Reynolds number of 400 and $0.4$ respectively. For this paper, the cavity is discretized using three different refinement levels: a coarse mesh with 25 divisions per side (15625 cells), a medium mesh with 50 divisions per side (125000 cells) and a fine mesh with 100 divisions per side (1000000 cells).
 
+\subsubsection{BFS}
 The second problem evaluated is the Backward Facing Step (BFS) channel which is shown in Fig.~\ref{Fig:Geometria3}.
 \begin{figure}[b!!!!]
 \centering
