@@ -66,6 +66,19 @@ Segregated algorithms \sep Segregated method \sep Collocated grids \sep Finite V
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 
+{\color{red}Owing to the low computational efficiency and large memory require-
+ment, it has not been widely applied in engineering problems such as
+built-environment; however, it is currently successfully used in aero-
+space and multiphase flow simulation. Coupled methods have been
+widely employed for the computation of compressible flows, whereas
+segregated methods have been preferred for the computation of in-
+compressible flows. Unlike a coupled solution, a segregated method
+solves velocity and pressure fields separately or consecutively. It ex-
+hibits the advantages of reduced computer memory and CPU time re-
+quirements [13], rendering it computationally more efficient [14] for
+analyzing incompressible fluid [15], which is the case in built-en-
+vironment simulation.}
+
 \begin{enumerate}
     \item {\color{red} Introducción a CFD en FVM, metodos de acoplamiento p-v: Monolitico vs Segregados. Relevancia de los metodos segregados.} 
     \item {\color{red} Establecer problemática de los segregados: costo computacional de iterar. Variantes respecto a SIMPLE y objetivos de cada variante: SIMPLE con relajación de P, SIMPLEC mejora sobre SIMPLE, PISO mejora sobre SIMPLE}
@@ -73,9 +86,65 @@ Segregated algorithms \sep Segregated method \sep Collocated grids \sep Finite V
     \item {\color{red} Descripcion de las secciones del paper.}
 \end{enumerate}
 
+\begin{enumerate}
+\item In the context of Computational Fluid Dynamics (CFD) based on the Finite Volume Method (FVM), pressure-velocity coupling
+within Navier-Stokes equations may be solved through several strategies. Broadly, the methods may be classified as direct (monolithic)
+or segregated. The first one consists on solving one system of equations which includes all the governing equations at once for all the unknowns. Examples of this approach may be found in the literature {\color{red} CITAS Mazhar x2, Chen, Darwish x2, Uoric(Jasak)}. In these works the pressure and velocity are assembled together in a unique system of equations where the non-linearity of the convective term is treated iteratively. Segregated algorithms, in contrast, solves separately for a unique variable at a time. The procedure is iterative and ends when the unknowns satisfy a convergence criteria. Within these group of methods, the penalty method \cite{temam1968methode}, the artificial compression method \cite{harten1977artificial} and pressure correction and projection strategies are among the most adopted {\color{red} CHORIN}.
+In the pressure correction/projection methods, an initial estimation of the velocity is corrected by means of a pressure equation where the velocity field is forced to satisfy the divergence free condition. FS MAC y caemos en simple y posteriormente en su familia.
+
+
+
+%split the full-coupled system in several sub-systems;
+each of them aiming to provide an estimation of a particular field.
+
+
+
+%In these methodologies, the variables of the problem can be stored in the same or different spatial locations, which gives place to grid arrangements known as collocated or staggered respectively. The staggered grids have the advantage of avoiding interpolations and thus prevents the appearance of spurious oscillations on the unknown fields. On the other hand, collocated grid arrangements re more suitable for unstructured meshes which are mandatory to address practical applications involving complex geometries.
+
+
+\item In 1972, Spalding and Patankar [12] proposed the SIMPLE algorithm for heat, mass and momentum transfer. With the SIMPLE
+algorithm, pressure and velocity are decoupled so as to be solved sequentially. 
+
+%There are two main assumptions in SIMPLE algorithm:
+
+%\begin{itemize}
+%\item The initial pressure and velocity are given independently
+%\item The velocity corrections at the neighbours are negligible. 
+%\end{itemize}
+
+%These two approximations slow down the convergence to a coupled system.
+In terms of overcoming the first assumption, Patankar [10, 11]
+proposed the SIMPLER algorithm. This improvement consists on solving an initial pressure equation based on the previous velocity
+values.
+Further enhancements have been proposed to overcome the second assumption. In 1984, Raithby and van Doormal [14]
+SIMPLEC algorithm which propose a simple approximation for the velocity correction in the neighbours cells. In 1986, Issa [2]
+presented an operator-splitting scheme for implicitly discretized equations called PISO algorithm. Thus, the neighbors’ contribution
+to the velocity correction is under consideration. Tao et al. [? ? ] improved the SIMPLER algorithm developing a fully implicit
+alternative named CLEAR without using the pressure correction equation. The CLEAR algorithm discards the second assumption
+so that the convergence rate is dramatically increased. However, an unexpected oscillation in the calculation procedure deteriorates
+the robustness. To overcome this issue, they developed the IDEAL [? ] algorithm which improves robustness applying several
+corrector steps. More recently, improvements have focused on stability for problems with high Reynolds number solved on fine
+meshes [? ? ]. A better understanding on the differences between SIMPLE-family algorithms has been accomplished by means of
+Fourier analysis [5, 6, 7, 8, 9].
+Despite the aforementioned efforts to improve SIMPLE assumptions, there are still possibilities to enhance performance and
+robustness of the algorithms.
+
+\item In this work, an extension of the SIMPLEC correction is proposed, based on applying a second order
+Taylor approximation to estimate velocity correction values on neighbour cells. The construction of this approximations and its
+usage within the algorithm require further assumptions, discussed in detail on the next sections.
+
+\item This article is organized as follows: section 2 describes the SIMPLE and SIMPLEC algorithms, which are the starting point
+to define COMPLEX, in section 3, by the assumptions employed to obtain the new approximation of neighbour correction terms.
+A stability analysis, based on Fourier decomposition, between the three algorithms is presented in section 4. Then, the results of
+each algorithm for two well-known benchmark cases, solved on two flow regimes using three mesh-size on each, are compared in section 5. The conclusions on section 6 summarizes the advantages and limitations of the proposed method, discussing further
+improvements that could be applied in the future.
+\end{enumerate}
+
+
+
+
 \section{Theoretical background} \label{sec:theory}
 This section starts with a description of the SIMPLE algorithm which is followed by the foundations of the SIMPLEC method. After this basis, the method proposed in this work is formally presented.
-\subsection{The SIMPLE algorithm on collocated grids}
 
 The continuum incompressible Navier-Stokes equations may be presented as:
 
@@ -185,6 +254,8 @@ where the operator $(\cdot)_f$ interpolates linearly cell values into faces. Fin
 \textbf{S}_{f}.
 \end{equation}
 At this point the discretized Navier-Stokes equations is represented by two linear system of equations, one for the velocity, Eq.~(\ref{Eq:UpIsolatedH}) and the other one for the pressure, Eq.~(\ref{Eq:firstPressureEq}).
+
+\subsection{The SIMPLE algorithm on collocated grids}
 
 In the SIMPLE algorithm, a subdivision of the velocity is proposed. With this in mind, the velocity and pressure fields may be considered as the contribution of two parts,
 \begin{align}
@@ -892,11 +963,13 @@ To obtain an expression for the cell-centred gradient, a derivation starts by in
 \right)_f
 \cdotp \textbf{S}_{f} 
 =
+\sum_{f} 
 \left(
 \boldsymbol{u}_{P}^*
 \right)_f
 \cdotp \textbf{S}_{f}
 +
+\sum_{f} 
 \left(
 \boldsymbol{u}_{P}'
 \right)_f
@@ -1111,9 +1184,80 @@ Finally the face gradient~(\ref{Eq:UFaceGradient}) may be computed using the $\a
 \end{equation}
 
 \subsection{Relaxation of the complex term}
-The COMPLEX method is based on approximate the neighbours velocity corrections $\boldsymbol{u}_N'$ as function of a Taylor expansion based on the mass balance equation. However, an accurate definition of the gradient for the second term of the Taylor serie requires additional information which is not available before solving the pressure equation. Due to this numerical difficulty, the approximation given in Eq.~(\ref{eq:gradApprox}) is proposed which allows closing the numerical problem at the expense of reducing the whole potential of the original proposal.
-
-
+The COMPLEX method is based on an approximation of the neighbours velocity corrections $\boldsymbol{u}_N'$ as function of a Taylor expansion which is based on the mass balance equation. However, an accurate definition of the gradient for the second term of the Taylor expansion requires additional information which is not available before solving the pressure equation. The unique information obtained with this approach is the trace of the velocity tensor which is opposite to the divergence of the predicted velocity $\boldsymbol{u}^*$. Due to this numerical difficulty, the approximation given in Eq.~(\ref{eq:gradApprox}) is proposed which allows closing the numerical problem at the expense of reducing the whole potential of the original proposal. The use of a scalar matrix as an estimate of the velocity gradient may be interpreted as an isotropic deformation of the velocity correction field $\boldsymbol{u}_P'$. This effect may not be so if this field is recomputed with the new pressure values. Taking this into account, a relaxation of the complex term $\delta_P$ is proposed in order to avoid an excessive estimation of $\boldsymbol{u}_N'$. Introducing a relaxation of the complex term in the Eqs.~(\ref{Eq:pressureComplex}) and (\ref{Eq:velocityComplex}) , 
+\begin{equation}
+\label{Eq:pressureComplexRelaxed}
+\sum_f
+\left[
+\left(
+\dfrac
+{1}
+{\tilde{a}_P}
+\right)_f
+\nabla p_f
+\right]
+\cdot 
+\boldsymbol{S}_f
+= 
+\sum_f 
+\left[
+\frac{1}{a_P}
+\left(
+\boldsymbol{H}^*
+\right)
+\right]_f 
+\cdot
+\boldsymbol{S}_f
++
+\sum_f
+\left[
+\left(
+\dfrac
+{1}
+{\tilde{a}_P}
+-
+\dfrac
+{1}
+{a_P}
+\right)_f
+\nabla p^{0}_f
+\right]
+\cdot
+\boldsymbol{S}_f
++
+\kappa
+\sum_f
+\left(
+\dfrac{\delta_P}{\tilde{a}_P}
+\right)_f
+\cdot
+\boldsymbol{S}_f.
+\end{equation}
+\begin{equation}
+\label{Eq:velocityComplexRelaxed}
+\boldsymbol{u}_P 
+=
+\dfrac
+{
+\boldsymbol{H}^*
+- 
+\nabla p_P}
+{\tilde{a}_P}
++
+\left(
+\dfrac{1}
+{\tilde{a}_P}
+-
+\dfrac{1}
+{a_P}
+\right)
+\nabla p^{0}
++
+\kappa
+\dfrac{\delta_P}
+{\tilde{a}_P}.
+\end{equation}
+where $\kappa$ is a relaxation factor called as the complex factor which value is between 0 and 1.
 
 
 \section{Stability Analysis}
