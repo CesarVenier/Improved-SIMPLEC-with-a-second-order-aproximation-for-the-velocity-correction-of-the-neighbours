@@ -55,7 +55,7 @@
 
 %Start of abstract
 \begin{abstract}
-a
+This paper introduces the COMPLEX algorithm which is an enhancement of  SIMPLEC. The new approach is based on considering the neighbour velocity approximation of SIMPLEC as a Taylor expansion. Using this assumption, a first-order term is included in the neighbour approximation leading to a second-order estimate. The new term includes a velocity gradient which is assumed to be a scalar matrix  where its scalar value is defined by solving a mass balance equation. The stability of the method is analysed with a Fourier decomposition of the error showing significant benefits in the convergence rate when comparing it with SIMPLE and SIMPLEC. In the same line, the new method is tested in two typical laminar flow problems where COMPLEX exhibits better convergence properties in the range of high relaxation factors and showing similar performances in for the remaining conditions.
 \end{abstract}
 
 \begin{keyword}
@@ -1175,6 +1175,7 @@ and isolating $\alpha_P$,
 
 Finally the face gradient~(\ref{Eq:UFaceGradient}) may be computed using the $\alpha_P$ values interpolated to the faces,
 \begin{equation}
+\label{Eq:scalarMatrix}
 \nabla \boldsymbol{u}_f'
 =
 \left(
@@ -1942,33 +1943,16 @@ To conclude this analysis, it is remarked that in almost all cases (Cavity or BF
 
 \section{Conclusions}
 \label{sec:conclusions}
+This paper presented an new strategy to couple velocity and pressure in the context of the FVM which is called as the COMPLEX method. This proposal is based on the SIMPLEC algorithm where the neighbour velocity approximation is enhanced using a Taylor expansion. The resulting expression requires the definition of a velocity gradient which is proposed to be a scalar matrix where its value is computed solving the mass balance equation. The differences between COMPLEX and SIMPLEC may be grouped in a term, named complex term, which is relaxed in order to study its influence on the convergence of the numerical method. 
 
-\begin{enumerate}
+The COMPLEX method is formally analysed using a Fourier decomposition of the error. In particular, it is compared with the SIMPLEC method in a framework of a one-dimensional Navier-Stokes problem. In view of the study, the COMPLEX method is more stable than SIMPLEC when employing high relaxation values of the momentum equation. On the other hand, for relative low values of the relaxation factor, both methods, COMPLEX and SIMPLEC are equivalent in regards to the convergence rate.
 
-\item \begin{enumerate}
-\item A new pressure-velocity coupling method was developed
-\item The method is based on an approximation of the neighbour velocity values using a Taylor expansion
-\item The Taylor approximation require a definition of a velocity gradient based on the mass conservation equation.
-\item The velocity gradient is underdetermined and thus, an additional restriction is imposed: the velocity gradient is proposed to be a scalar matrix.
-\end{enumerate} 
-\item \begin{enumerate}
-\item A stability analysis over a 1D formulation showed that the COMPLEX method has a better convergence rate than SIMPLEC, especially for high relaxation factors.
-\end{enumerate}
-\item \begin{enumerate}
-\item In three dimensional simulations, the scalar matrix proposal for the velocity gradient should be relaxed. A series of test were solved which shows that a relaxation factor $\kappa$ equal to $0.2$ generate stable results and in general,  a faster convergence for all the conditions studied.
-\end{enumerate}
-\item  
-\begin{enumerate}
-\item The COMPLEX method showed that requires a lower number of iterations to reach convergence in the context of high velocity relaxation factors. Using low relaxation factors, the COMPLEX is equal to SIMPLEC.
-\item In relative coarse meshes the COMPLEX method proved to be more efficient than SIMPLEC.
-\item The relative advantage of COMPLEX with SIMPLEC is more significant for the cases with the highest Reynolds number.
-\end{enumerate}
-\item 
-\begin{enumerate}
-\item The computational implementation of COMPLEX is performed by adding simple changes over SIMPLEC without requiring  higher computational resources/costs.
-\item A future work is the developing of an improved approximation of the definition of the velocity gradient. 
-\end{enumerate}
-\end{enumerate}
+The COMPLEX formulation was studied with two three dimensional problems, the cubic cavity and the BFS cases. For each test, two different Reynodls conditions were analysed. In a first instance, the optimal value of the complex factor $\kappa$  was investigated. An exhaustive study of more than 1500 simulations was performed where the total number of iterations to reach a convergence criteria as function of the momentum relaxation factor, the complex factor $\kappa$ and the Reynolds number, was measured. Based on the stability behaviour and convergence rate of the simulations, a complex factor of $\kappa = 0.2$ was chosen as the most suitable value for the method in the conditions proved. After this point, the COMPLEX method was compared with SIMPLE and SIMPLEC. Here, each problem was solved using three different mesh refinements and varying the Reynolds number as the analysis before. The results proved that the COMPLEX method has advantages in terms of the convergence speed. This improvement was recognized in the range of high values of the momentum relaxation factor. This behaviour of COMPLEX was also verified via the Fourier analysis carried out in Section~\ref{sec:fourier}. This range is longer in coarse meshes which increases the advantage of COMPLEX against the other methods. Another finding was that for high Reynolds number the COMPLEX method has a better convergence than cases with relative lower Reynolds number where the relative difference with the SIMPLE algorithm was particularly significant.
+
+The COMPLEX method is a promising numerical strategy in order to speed up the convergence of segregated algorithms. The implementation of this strategy is simple since it is performed by adding a unique term on the pressure equation in the SIMPLEC formulation.  The main advantage of the current method is that its performance is equal or better than SIMPLEC or SIMPLE. COMPLEX is an advisable method when the prediction of the velocity gets away from the divergence free condition as it is the case of high relaxation factors or high Reynolds numbers.
+
+A challenge of future work is the improvement of the approximation defined in Eq.~(\ref{Eq:scalarMatrix}) (scalar matrix assumption of the velocity gradient). This hypothesis has no error in one-dimensional problems where COMPLEX was proved to be significantly better than SIMPLEC on the basis of the Fourier analysis.
+
 
 \bibliographystyle{plain}
 \bibliography{main}
