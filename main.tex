@@ -40,7 +40,7 @@
 \begin{frontmatter}
 
 \title{A pressure-velocity coupling strategy based on SIMPLEC: the COMPLEX algorithm}
-%% A second-neighbor extended correction for segregated p-v coupling algorithms
+%% A second-neighbour extended correction for segregated p-v coupling algorithms
  
 \author[a]{Horacio J. Aguerre}
 \author[b,a]{Cesar I. Pairetti}
@@ -118,7 +118,7 @@ proposed the SIMPLER algorithm. This improvement consists on solving an initial 
 values.
 Further enhancements have been proposed to overcome the second assumption. In 1984, Raithby and van Doormal [14]
 SIMPLEC algorithm which propose a simple approximation for the velocity correction in the neighbours cells. In 1986, Issa [2]
-presented an operator-splitting scheme for implicitly discretized equations called PISO algorithm. Thus, the neighbors’ contribution
+presented an operator-splitting scheme for implicitly discretized equations called PISO algorithm. Thus, the neighbours’ contribution
 to the velocity correction is under consideration. Tao et al. [? ? ] improved the SIMPLER algorithm developing a fully implicit
 alternative named CLEAR without using the pressure correction equation. The CLEAR algorithm discards the second assumption
 so that the convergence rate is dramatically increased. However, an unexpected oscillation in the calculation procedure deteriorates
@@ -143,22 +143,21 @@ improvements that could be applied in the future.
 
 
 
-\section{Theoretical background} \label{sec:theory}
-This section starts with a description of the SIMPLE algorithm which is followed by the foundations of the SIMPLEC method. After this basis, the method proposed in this work is formally presented.
 
-The continuum incompressible Navier-Stokes equations may be presented as:
+\section{Segregated pressure-velocity coupling methods} \label{sec:theory}
 
+This section presents the numerical approach for solving the steady state, incompressible Navier-Stokes equations via segregated pressure-based methods. This will be done under the framework of the Finite Volume Method (FVM) on collocated grids with Rhie-Chow correction \cite{rhiechow} and the standard SIMPLE algorithm for the pressure and velocity coupling \cite{patankar1972}. Then, the SIMPLEC algorithm will be introduced \cite{vanDoormal} following the same formalism and focusing on the enhancement of approximating the neighbour-cells velocity corrections for the iterative procedure \cite{moukalled}.
+
+The continuum incompressible Navier-Stokes equations are:
 \begin{align}
-\displaystyle \frac{\partial \boldsymbol{u}}{\partial t} + \nabla \cdotp (\boldsymbol{u} \boldsymbol{u}) &= -\nabla p + \nu\, \Delta \boldsymbol{u} + \boldsymbol{\Phi},
+\displaystyle \frac{\partial \boldsymbol{u}}{\partial t} + \nabla \cdotp \boldsymbol{u} \boldsymbol{u} &= -\nabla p + \nu\, \boldsymbol{\delta} \boldsymbol{u} + \boldsymbol{\Phi},
 \label{eq:mom1}
 \\
 \displaystyle \nabla \cdotp \boldsymbol{u} &= 0, 
 \label{eq:mass1}
 \end{align}
-
-\noindent where $\displaystyle p = (\mathcal{P}/\rho)$, $\rho$ is the mass density, $\mathcal{P}$ is the pressure field, $\boldsymbol{u} = (u,v,w)$ is the velocity field, $\nu$ is the kinematic viscosity and $\mathbf{\Phi}$ is a momentum source term.
-Based on the FVM \cite{jasak}, the Eqs.~(\ref{eq:mass1}) and~(\ref{eq:mom1}) may be discretized as:
-
+\noindent where $\displaystyle p = (\mathcal{P}/\rho)$, $\rho$ is the mass density, $\mathcal{P}$ is the pressure field, $\boldsymbol{u}$ is the velocity field, $\nu$ is the kinematic viscosity and $\mathbf{\Phi}$ is a momentum source term.
+Based on the FVM, the Eqs.~(\ref{eq:mom1}) and~(\ref{eq:mass1}) may be discretized as:
 \begin{align}
 a_P\,\boldsymbol{u}_P + \sum_{N} a_{N}\,\boldsymbol{u}_{N} &= b_P\, \boldsymbol{u}^0_P + \boldsymbol{\Phi}_P - \nabla p_P,
 \label{eq:umom1}
@@ -166,27 +165,26 @@ a_P\,\boldsymbol{u}_P + \sum_{N} a_{N}\,\boldsymbol{u}_{N} &= b_P\, \boldsymbol{
 \sum_{f} \boldsymbol{u}_{f} \cdotp \textbf{S}_{f} &= 0, 
 \label{eq:mass2} 
 \end{align}
-where the subscript $P$ indicates the cell values, $N$ indicates neighbour cell values and $f$ refers to face values, $b_P\, \boldsymbol{u}^0_P$ is the contribution of the previous time-step or iteration. The value of $b_P$ is function of the temporal scheme in transient solvers and of the relaxation factor in steady-state solvers, $\textbf{S}_{f}$ is the face-normal vector,  $a_P$ and $a_{N}$ are the diagonal and off-diagonal momentum matrix coefficients respectively and the gradient $\nabla p_P$ is computed by linear interpolation of first neighbours values of that field.
+where the subscript $P$ refers to current cell values, $N$ refers to neighbour cell values and $f$ refers to values in the faces of the current cell, $b_P\, \boldsymbol{u}^0_P$ is the contribution of the previous time-step or iteration and $\textbf{S}_{f}$ is the face-normal vector. Also, $a_P$ and $a_{N}$ are the diagonal and off-diagonal momentum matrix coefficients respectively and the gradient $\nabla p_P$ is computed by linear interpolation of first neighbour values of that field \cite{jasak, moukalled, marquez}. 
 
-An alternative to solve the system of Eqs.~(\ref{eq:umom1}) and (\ref{eq:mass2}) is to isolate the velocity $\mathbf{u}_{P}$ from Eq.~(\ref{eq:umom1}) and introduce it in Eq.~(\ref{eq:mass2}). Then,
+Eqs.~(\ref{eq:umom1}) and~(\ref{eq:mass2}) are presented in a way that could serve as a starting point for both steady state and transient algorithm formulations. This is achieved by allowing different definitions of the coefficients $a_P$ and $b_P$ \cite{issa2}. For transient solvers, $b_P$ contains the discretized coefficients of the transient term of the momentum equation (e.g. $b_P = \dfrac{V_P}{\boldsymbol{\delta} t}$ for first order schemes) while, for steady state solvers, it is defined following a numerical relaxation of the momentum equations to enhance the stability of the method \cite{moukalled} (e.g. $b_P = \dfrac{1-\omega_u}{\omega_u} \overline{a}_P$, where $\overline{a}_P$ have the current cell contributions of the discretization of the advective and diffusive terms of the momentum equation). On the other hand, $a_P = \overline{a}_P + \dfrac{V_P}{\boldsymbol{\delta} t}$ for transient solvers and $a_P = \dfrac{\overline{a}_P}{\omega_u}$ for steady state solvers. Although these dual definitions are still valid for describing steady state (as SIMPLE, SIMPLEC, SIMPLER, etc.) or transient solvers (as PISO), the present work focuses on steady state solvers of the SIMPLE family, so $b_P$ and $a_P$ should be considered as functions of the momentum relaxation factor.
+
+%The value of $b_P$ is function of the temporal scheme in transient solvers and of the relaxation factor in steady-state solvers, ,  
+The system given by Eqs.~(\ref{eq:umom1}) and (\ref{eq:mass2}) may be rewritten in a more suitable way for the subsequent numerical approach. First, the current cell velocity $\boldsymbol{u}_{P}$ may be isolated from Eq.~(\ref{eq:umom1}) as,
 \begin{equation}
-\label{Eq:UpIsolated}
+\label{Eq:UpIsolatedH}
 \boldsymbol{u}_P
 =
 \dfrac
 {
--\sum_{N} a_{N}\,\boldsymbol{u}_{N}
-+
-b_P\, \boldsymbol{u}^0_P 
-+ 
-\boldsymbol{\Phi}_P 
+\boldsymbol{H}_P
 - 
 \nabla p_P}
 {a_P}.
 \end{equation}
-To simplify the notation, the variable $\boldsymbol{H}$ is defined,
+\noindent where $\boldsymbol{H}_P$ is defined as,
 \begin{equation}
-\boldsymbol{H}
+\boldsymbol{H}_P
 \equiv
 -\sum_{N} a_{N}\,\boldsymbol{u}_{N}
 +
@@ -194,19 +192,9 @@ b_P\, \boldsymbol{u}^0_P
 + 
 \boldsymbol{\Phi}_P
 \end{equation}
-Consequently, the Eq.~(\ref{Eq:UpIsolated}) may be expressed as,
-\begin{equation}
-\label{Eq:UpIsolatedH}
-\boldsymbol{u}_P
-=
-\dfrac
-{
-\boldsymbol{H}
-- 
-\nabla p_P}
-{a_P}.
-\end{equation}
-After this, last equation is replaced in Eq.~(\ref{eq:mass2}),
+%Consequently, the Eq.~(\ref{Eq:UpIsolated}) may be expressed as,
+
+Then, Eq.~(\ref{Eq:UpIsolatedH}) is replaced in Eq.~(\ref{eq:mass2}),
 \begin{equation}
 \sum_{f} 
 \left(
@@ -219,7 +207,7 @@ After this, last equation is replaced in Eq.~(\ref{eq:mass2}),
 \left(
 \dfrac
 {
-\boldsymbol{H}
+\boldsymbol{H}_P
 - 
 \nabla p_P}
 {a_P}
@@ -229,7 +217,7 @@ After this, last equation is replaced in Eq.~(\ref{eq:mass2}),
 = 
 0,
 \end{equation}
-where the operator $(\cdot)_f$ interpolates linearly cell values into faces. Finally, a expression for the pressure is obtained,
+where the operator $(\cdot)_f$ linearly interpolates the cell values to the faces. Finally, an equation for the pressure field is obtained,
 \begin{equation}
 \label{Eq:firstPressureEq}
 \sum_{f} 
@@ -246,46 +234,42 @@ where the operator $(\cdot)_f$ interpolates linearly cell values into faces. Fin
 \left(
 \dfrac
 {
-\boldsymbol{H}
+\boldsymbol{H}_P
 }
 {a_P}
 \right)_f
 \cdotp 
 \textbf{S}_{f}.
 \end{equation}
-At this point the discretized Navier-Stokes equations is represented by two linear system of equations, one for the velocity, Eq.~(\ref{Eq:UpIsolatedH}) and the other one for the pressure, Eq.~(\ref{Eq:firstPressureEq}).
+Now, for each cell, there are two system of linearized discrete equations: one for the velocity, given by Eq.~(\ref{Eq:UpIsolatedH}) for each cell, and the other one for the pressure, given by Eq.~(\ref{Eq:firstPressureEq}) for each cell.
 
-\subsection{The SIMPLE algorithm on collocated grids}
-
-In the SIMPLE algorithm, a subdivision of the velocity is proposed. With this in mind, the velocity and pressure fields may be considered as the contribution of two parts,
+Now, for the iterative procedure, a subdivision of the velocity into two contributions is proposed,
 \begin{align}
 \label{Eq:velocitySubdiv}
 \boldsymbol{u}_P
 = 
 \boldsymbol{u}_P^{*} 
 +
-\boldsymbol{u}_P^{'}
-\\
-\label{Eq:pressureSubdiv}
-p_P
-=
-p_P^{*} 
+\boldsymbol{u}_P^{'} \\
+\boldsymbol{u}_N
+= 
+\boldsymbol{u}_N^{*} 
 +
-p_P^{'}
+\boldsymbol{u}_N^{'}
 \end{align}
-where $\boldsymbol{u}_P^{*}$, $p_P^{*}$ are the velocity and pressure predictions, and $\boldsymbol{u}_P^{'}$, $p_P^{*}$ are corrections fields. In particular, the subdivision of the velocity leads to an analogous separation of the variable $\boldsymbol{H}$,
+where $\boldsymbol{u}^{*}$ is a velocity prediction and $\boldsymbol{u}^{'}$ is a correction of the velocity. This subdivision leads to an analogous separation of the variable $\boldsymbol{H}_P$,
 \begin{equation}
 \label{Eq:HSubDivision}
-\boldsymbol{H} 
+\boldsymbol{H}_P 
 =
-\boldsymbol{H}^{*}
+\boldsymbol{H}_P^{*}
 +
-\boldsymbol{H}^{'},
+\boldsymbol{H}_P^{'},
 \end{equation}
 where,
 \begin{align}
 \label{Eq:HStar}
-\boldsymbol{H}^{*} 
+\boldsymbol{H}_P^{*} 
 &\equiv -\sum_{N} a_{N}\,\boldsymbol{u}_{N}^{*}
 +
 b_P\, \boldsymbol{u}^0_P 
@@ -293,19 +277,19 @@ b_P\, \boldsymbol{u}^0_P
 \boldsymbol{\Phi}_P,
 \\
 \label{Eq:HPrima}
-\boldsymbol{H}^{'}
+\boldsymbol{H}_P^{'}
 &\equiv -\sum_{N} a_{N}\,\boldsymbol{u}_{N}^{'}. 
 \end{align}
-Considering these last expressions, the algorithm starts by computing the momentum balance to predict the velocity $\boldsymbol{u}_P^{*}$ using a pressure prediction equal to previous iteration value $p^{*}=p^{0}$,
+Considering these last expressions, the iterative procedure begins by computing the momentum balance to predict the velocity $\boldsymbol{u}_P^{*}$ using the previous iteration value of the pressure $p^{0}$,
 \begin{equation}
 \label{Eq:MomentumPredictor}
 \boldsymbol{u}_P^{*}
 =
 \dfrac
 {
-\boldsymbol{H}^*
+\boldsymbol{H}_P^*
 - 
-\nabla p_P^{*}}
+\nabla p_P^{0}}
 {a_P}.
 \end{equation}
 After this, the pressure is computed by introducing the Eq.~(\ref{Eq:HSubDivision}) in the mass balance of Eq.~(\ref{Eq:firstPressureEq}),
@@ -325,19 +309,22 @@ After this, the pressure is computed by introducing the Eq.~(\ref{Eq:HSubDivisio
 \left(
 \dfrac
 {
-\boldsymbol{H}^{*}
+\boldsymbol{H}_P^{*}
 +
-\boldsymbol{H}^{'}
+\boldsymbol{H}_P^{'}
 }
 {a_P}
 \right)_f
 \cdotp 
 \textbf{S}_{f}.
 \end{equation}
-Since the correction velocity values $\boldsymbol{u}_N^{'}$  are not yet computed, an approximation of $\boldsymbol{H}^{'}$ must be proposed. In this sense, the SIMPLE method proposes to neglect the influence of the neighbour velocity correction which is equivalent to neglect,
+
+\subsection{The SIMPLE algorithm on collocated grids}
+
+Since the correction velocity values $\boldsymbol{u}_N^{'}$  are not yet computed, an approximation of $\boldsymbol{H}_P^{'}$ must be proposed. In this sense, the SIMPLE method proposes to neglect the influence of the neighbour velocity correction which is equivalent to consider,
 \begin{equation}
 \label{Eq:simpleAproximation}
-\boldsymbol{H}^{'} = 0,
+\boldsymbol{H}_P^{'} = 0,
 \end{equation}
 thus, introducing~Eq.~(\ref{Eq:simpleAproximation}) into (\ref{Eq:pressureEqSubdiv}),
 \begin{equation}
@@ -355,7 +342,7 @@ thus, introducing~Eq.~(\ref{Eq:simpleAproximation}) into (\ref{Eq:pressureEqSubd
 \left(
 \dfrac
 {
-\boldsymbol{H}^*
+\boldsymbol{H}_P^*
 }
 {
 a_P
@@ -365,7 +352,7 @@ a_P
 \boldsymbol{S}_f,
 \label{eq:div-free5}  
 \end{equation}
-which determines a Poisson problem for the pressure. Nevertheless, solving this system in a straightforward manner may lead to high-frequency oscillations. The Rhie-Chow correction \cite{rhiechow} reduces this effect in collocated grids, 
+which is a Poisson problem for the pressure. Nevertheless, for collocated grids, solving this system in a straightforward manner may lead to high-frequency oscillations. The Rhie-Chow correction \cite{rhiechow} seeks to reduce this effect by introducing a stabilizing term, 
 
 \begin{equation}
 \label{eq:pEqnSIMPLE2}
@@ -382,7 +369,7 @@ which determines a Poisson problem for the pressure. Nevertheless, solving this 
 \sum_f 
 \left(
 \dfrac{
-\boldsymbol{H}^*
+\boldsymbol{H}_P^*
 }
 {
 a_P
@@ -405,34 +392,41 @@ a_P
 \cdot 
 \boldsymbol{S}_f.
 \end{equation}
-Reordering Eq.~(\ref{eq:pEqnSIMPLE2}), the pressure equation may be written as,
+Reordering the terms in Eq.~(\ref{eq:pEqnSIMPLE2}) leads to the following form for the pressure equation,
 \begin{equation}\label{eq:pEqnSIMPLE3}
 \sum_f \left(\frac{1}{a_P}\right)_f \nabla p_f 
 \cdot
 \boldsymbol{S}_f 
-=  \sum_f \left(\frac{\boldsymbol{H}^*}{a_P}\right)_f \cdot \boldsymbol{S}_f.
+=  \sum_f \left(\frac{\boldsymbol{H}_P^*}{a_P}\right)_f \cdot \boldsymbol{S}_f.
 \end{equation}
-Finally, the velocity value is computing by Eq.~(\ref{Eq:UpIsolatedH}) where the variable $\boldsymbol{H}$ is approximated by $\boldsymbol{H}^{*}$ similarly as done in the mass balance equation,
+For SIMPLE, the pressure field is usually relaxed after its calculation in Eq.~(\ref{eq:pEqnSIMPLE3}) to improve the numerical stability of the method, following,
+\begin{equation}
+\label{eq:relaxP}
+p_P
+=
+\omega_P p_P^{BR} + (1-\omega_P) p_P^0.
+\end{equation}
+\noindent where $p_P^{BR}$ is the pressure field obtained from Eq.~(\ref{eq:pEqnSIMPLE3}) (before relaxation).
+
+Finally, the velocity value is computed through Eq.~(\ref{Eq:UpIsolatedH}) where the variable $\boldsymbol{H}_P$ is approximated by $\boldsymbol{H}_P^{*}$ (as was done in the mass balance equation),
 \begin{equation}
 \label{eq:SIMPLECorr}
 \boldsymbol{u}_P
 =
 \dfrac
 {
-\boldsymbol{H}^*
+\boldsymbol{H}_P^*
 - 
 \nabla p_P}
 {a_P}.
 \end{equation}
-Note that last equation is explicit since the terms r.h.s of last equation are known. The algorithm continues with Eq.~(\ref{Eq:MomentumPredictor}) where the last values of $\boldsymbol{u}_p$ and $p_p$ are considered as $\boldsymbol{u}_p^0$ and $p_p^0$.
-
-
+Note that last equation is explicit since the terms r.h.s of last equation are known. The algorithm continues iteratively from Eq.~(\ref{Eq:MomentumPredictor}), where $\boldsymbol{u}_P^0$ and $p_P^0$ are replaced by the values of $\boldsymbol{u}_P$ and $p_P$ from the previous iteration, until a certain convergence criteria is reached.
 
 % In order to do so, the velocity field $\boldsymbol{u}_P$, originally on cell-centers, needs to be interpolated to the faces obtaining: 
 %
 % \begin{equation}
 % \begin{split}
-% \sum_{f} \left( \boldsymbol{H}_P - \frac{1}{a_P} \nabla p_P  \right)_f \cdotp \textbf{S}_{f} = 0 
+% \sum_{f} \left( \boldsymbol{H}_P_P - \frac{1}{a_P} \nabla p_P  \right)_f \cdotp \textbf{S}_{f} = 0 
 % \end{split}
 % \label{eq:pEq1} 
 % \end{equation}
@@ -475,8 +469,8 @@ Note that last equation is explicit since the terms r.h.s of last equation are k
 %\fi
 %Most of the SIMPLE-family algorithms preserve this general structure. In particular, the SIMPLE algorithm \cite{patankar1972}, originally conceived as a steady state flow solver, adds under-relaxation factors to obtain a stable solution. Another variant is the PISO {\color{red}(Pressure-Implicit with Splitting of Operators)} algorithm, which relies on iterating the Corrector step a given number of times to ensure a correct coupling between pressure and velocity for transient flow problems \cite{issa,issa2}. {\color{red} The SIMPLE-PISO combined technique has been largely adopted in several computational codes (e.g. OpenFOAM(R) \cite{ofpg}) to address transient incompressible flow problems due to its beneficial convergence features. It consists on iterating the corrector steps until a certain mass conservation criteria is fulfilled (as in PISO) and iterating the whole sequence (Momentum Predictor and Corrector Step) several times until both mass and momentum equations are verified for each time step. This algorithm will be adopted in the present work.}
 
-\subsection{Improving the neighbor approximation: the SIMPLEC algorithm}
-The SIMPLEC~\cite{vanDoormal} algorithm proposes an aproximation of the neighbour velocity correction $\boldsymbol{u}_N'$,
+\subsection{Improving the neighbour approximation: the SIMPLEC algorithm}
+The SIMPLEC~\cite{vanDoormal} algorithm proposes an approximation for the neighbour velocity correction $\boldsymbol{u}_N'$,
 \begin{equation}
 \label{Eq:simplecAproximation}
 \boldsymbol{u}_N'
@@ -486,16 +480,16 @@ The SIMPLEC~\cite{vanDoormal} algorithm proposes an aproximation of the neighbou
 and therefore the Eq.~(\ref{Eq:HPrima}) may be expressed as,
 \begin{equation}
 \label{eq:H_SIMPLEC}
-\boldsymbol{H}'= \left(-\sum_N a_N\right) \boldsymbol{u}'_P.
+\boldsymbol{H}_P'= \left(-\sum_N a_N\right) \boldsymbol{u}'_P.
 \end{equation}
-To include last expression in Eq.~(\ref{Eq:pressureEqSubdiv}), it must be expressed as function of the  pressure. For this, a expression for $\boldsymbol{u}^{'}$ is derived by subtracting Eq.~(\ref{Eq:MomentumPredictor}) from Eq.~(\ref{Eq:UpIsolated}),
+To include it in Eq.~(\ref{Eq:pressureEqSubdiv}), first it must be written in terms of the pressure gradient. To do this, an expression for $\boldsymbol{u}_P^{'}$ is derived by subtracting Eq.~(\ref{Eq:MomentumPredictor}) from Eq.~(\ref{Eq:UpIsolatedH}),
 \begin{equation}
 \label{Eq:UPrimaIsolated}
 \boldsymbol{u}_P'
 =
 \dfrac
 {
-\boldsymbol{H}'
+\boldsymbol{H}_P'
 - 
 \left(
 \nabla p_P
@@ -505,10 +499,10 @@ To include last expression in Eq.~(\ref{Eq:pressureEqSubdiv}), it must be expres
 }
 {a_P},
 \end{equation}
-which in combination with Eq.~(\ref{eq:H_SIMPLEC}) determines an expression of $\boldsymbol{H}'$ as function of the pressure,
+which, in combination with Eq.~(\ref{eq:H_SIMPLEC}), provides an expression for $\boldsymbol{H}_P'$ as function of the pressure gradient,
 \begin{equation}
-\label{Eq:HPrima}
-\boldsymbol{H}'
+\label{Eq:HPrima2}
+\boldsymbol{H}_P'
 = 
 \dfrac
 {
@@ -527,13 +521,13 @@ a_P
 \nabla p_P^{0}
 \right).
 \end{equation}
-being $\tilde{a}_P$ a definition given by,
+where,
 \begin{equation}
 \tilde{a}_P
-\equiv
+=
 a_P + \sum_{N} a_{N}.
 \end{equation}
-Subsequently, introducing Eq.~(\ref{Eq:HPrima}) in Eq.~(\ref{Eq:pressureEqSubdiv})
+Subsequently, introducing Eq.~(\ref{Eq:HPrima}) in Eq.~(\ref{Eq:pressureEqSubdiv}),
 
 \begin{equation}
 \label{Eq:pressureReplacedSimplec}
@@ -551,7 +545,7 @@ Subsequently, introducing Eq.~(\ref{Eq:HPrima}) in Eq.~(\ref{Eq:pressureEqSubdiv
 \left(
 \dfrac
 {
-\boldsymbol{H}^{*}
+\boldsymbol{H}_P^{*}
 }
 {a_P}
 \right)_f
@@ -580,7 +574,7 @@ a_P
 \cdot
 \boldsymbol{S}_{f},
 \end{equation}
-and simplifying and reordering,
+which may be rewritten as,
 \begin{equation}
 \label{Eq:pressureReplacedSimplec2}
 \sum_{f} 
@@ -597,7 +591,7 @@ and simplifying and reordering,
 \left(
 \dfrac
 {
-\boldsymbol{H}^{*}
+\boldsymbol{H}_P^{*}
 }
 {a_P}
 \right)_f
@@ -638,7 +632,7 @@ The pressure equation is obtained by including an analogous Rhie-Chow correction
 \left(
 \dfrac
 {
-\boldsymbol{H}^{*}
+\boldsymbol{H}_P^{*}
 }
 {a_P}
 \right)_f
@@ -708,27 +702,24 @@ The pressure equation is obtained by including an analogous Rhie-Chow correction
 &
 \end{array}
 \end{equation}
-Then, simplifying,
+which may be simplified as,
 \begin{equation}
 \sum_f
-\left[
 \left(
 \dfrac
 {1}
 {\tilde{a}_P}
 \right)_f
 \nabla p_f
-\right]
 \cdot 
 \boldsymbol{S}_f
 = 
 \sum_f 
-\left[
-\frac{1}{a_P}
 \left(
-\boldsymbol{H}^*
-\right)
-\right]_f 
+\frac{
+\boldsymbol{H}_P^*
+}{a_P}
+\right)_f 
 \cdot
 \boldsymbol{S}_f
 +
@@ -750,7 +741,7 @@ Then, simplifying,
 \label{eq:pEqnSIMPLEC}
 \end{equation}
 
-The velocity is computed by employing the approximation of Eq.~(\ref{Eq:HPrima}) in Eq.~(\ref{Eq:UpIsolatedH}):
+The velocity is computed by including the approximation of Eq.~(\ref{Eq:HPrima2}) into Eq.~(\ref{Eq:UpIsolatedH}):
 
 \begin{equation}
 \label{eq:uCorrSIMPLEC}
@@ -758,7 +749,7 @@ The velocity is computed by employing the approximation of Eq.~(\ref{Eq:HPrima})
 =
 \dfrac
 {
-\boldsymbol{H}^*
+\boldsymbol{H}_P^*
 - 
 \nabla p_P}
 {a_P}
@@ -780,14 +771,14 @@ a_P
 \nabla p_P^{0}
 \right).
 \end{equation}
-and reordering,
+where the terms may be reordered to obtain,
 \begin{equation}
 \label{Eq:velocitySimplec}
 \boldsymbol{u}_P 
 =
 \dfrac
 {
-\boldsymbol{H}^*
+\boldsymbol{H}_P^*
 - 
 \nabla p_P}
 {\tilde{a}_P}
@@ -803,21 +794,24 @@ and reordering,
 \end{equation}
 
 
-The only difference between SIMPLE and SIMPLEC are the coefficients in the Corrector step. Nevertheless, this slight modification shows a significant improvement in the stability  and convergence properties of the algorithm \cite{liu}. In the spirit of using better approximation for the neighbors correction values, we propose the following method.
+The reader may notice that the only difference between SIMPLE and SIMPLEC is in the presence of a coefficient $\tilde{a}_P$ different from $a_P$. This modification represents a significant improvement in the stability and convergence properties of the algorithm, which matches with the performance of the SIMPLE method with optimal setting of the relaxation factors \cite{miller}. In fact, SIMPLEC do not uses pressure relaxation factors since they are not needed to ensure stability (as for SIMPLE). 
 
-\section{Enhancement of SIMPLEC: the COMPLEX method}
+In the same spirit, this work proposes a new pressure-velocity coupling method of the SIMPLE family, based on increasing the order of approximation of the neighbour velocity corrections.
+
+\section{A COupling Method for Pressure Linked Equations based on series eXpansions: COMPLEX}
 \label{sec:COMPLEX}
 
-In order to estimate the value of $\boldsymbol{u}_N'$ in Eq.~(\ref{Eq:HPrima}), a second order Taylor approximation is proposed,
+In order to accurately estimate the contribution of the neighbour velocity corrections, an approximation is proposed based on preserving first order terms of a Taylor series expansion over $\boldsymbol{u}_N'$,
 \begin{equation}\label{eq:uNTaylor}
 \boldsymbol{u}_N' = \boldsymbol{u}_P' + \boldsymbol{x}_{PN}\cdot 
 \nabla \boldsymbol{u}_f'.
 \end{equation}
+where $\boldsymbol{x}_{PN}$ is a distance vector that goes from the cell centroid $P$ to the cell centroid $N$.
 
-Then, the $\boldsymbol{H}'$ variable may be expressed as,
+Thus, the $\boldsymbol{H}_P'$ variable may be written as,
 \begin{equation}
 \label{Eq:HPrimaComplex}
-\boldsymbol{H}'
+\boldsymbol{H}_P'
 =
 \left(
 -\sum_N a_N
@@ -832,10 +826,10 @@ Then, the $\boldsymbol{H}'$ variable may be expressed as,
 \nabla \boldsymbol{u}_f'
 \right),
 \end{equation}
-which combined with Eq.~(\ref{Eq:UPrimaIsolated}) reads as follows,
+which combined with Eq.~(\ref{Eq:UPrimaIsolated}) leads to,
 \begin{equation}
 \label{Eq:HPrimaComplexReady}
-\boldsymbol{H}'
+\boldsymbol{H}_P'
 = 
 \dfrac
 {
@@ -856,11 +850,11 @@ a_P
 +
 \dfrac{a_P}{\tilde{a}_P}
 \,
-\delta_P,
+\boldsymbol{\delta}_P,
 \end{equation}
-where $\delta_P$ is defined as the second term of the r.h.s of Eq.~(\ref{Eq:HPrimaComplex}) which is named in this paper as the complex term,
+where $\boldsymbol{\delta}_P$ is defined as the second term of the r.h.s of Eq.~(\ref{Eq:HPrimaComplex}), which will be referred to as Complex term,
 \begin{equation}
-\delta_P 
+\boldsymbol{\delta}_P 
 \equiv 
 \left(
 -\sum_N a_N
@@ -870,7 +864,7 @@ where $\delta_P$ is defined as the second term of the r.h.s of Eq.~(\ref{Eq:HPri
 \nabla \boldsymbol{u}_f'
 \right),
 \end{equation}
-Including Eq.~(\ref{Eq:HPrimaComplexReady}) in Eq.~(\ref{Eq:pressureEqSubdiv}) and following an analogous derivation as done from Eq.~(\ref{Eq:pressureReplacedSimplec}) up to Eq.~(\ref{eq:pEqnSIMPLEC}), the following pressure equation is obtained for the complex algorithm,
+Including Eq.~(\ref{Eq:HPrimaComplexReady}) in Eq.~(\ref{Eq:pressureEqSubdiv}) and following an analogous derivation as done from Eq.~(\ref{Eq:pressureReplacedSimplec}) up to Eq.~(\ref{eq:pEqnSIMPLEC}), the following pressure equation is obtained,
 \begin{equation}
 \label{Eq:pressureComplex}
 \sum_f
@@ -889,7 +883,7 @@ Including Eq.~(\ref{Eq:HPrimaComplexReady}) in Eq.~(\ref{Eq:pressureEqSubdiv}) a
 \left[
 \frac{1}{a_P}
 \left(
-\boldsymbol{H}^*
+\boldsymbol{H}_P^*
 \right)
 \right]_f 
 \cdot
@@ -913,19 +907,19 @@ Including Eq.~(\ref{Eq:HPrimaComplexReady}) in Eq.~(\ref{Eq:pressureEqSubdiv}) a
 +
 \sum_f
 \left(
-\dfrac{\delta_P}{\tilde{a}_P}
+\dfrac{\boldsymbol{\delta}_P}{\tilde{a}_P}
 \right)_f
 \cdot
 \boldsymbol{S}_f.
 \end{equation}
-The velocity is computed including the approximation of Eq.~(\ref{Eq:HPrimaComplex}) in Eq.~(\ref{Eq:UpIsolatedH}),
+Then, the velocity is computed including the approximation of Eq.~(\ref{Eq:HPrimaComplex}) in Eq.~(\ref{Eq:UpIsolatedH}),
 \begin{equation}
 \label{Eq:velocityComplex}
 \boldsymbol{u}_P 
 =
 \dfrac
 {
-\boldsymbol{H}^*
+\boldsymbol{H}_P^*
 - 
 \nabla p_P}
 {\tilde{a}_P}
@@ -939,10 +933,10 @@ The velocity is computed including the approximation of Eq.~(\ref{Eq:HPrimaCompl
 \right)
 \nabla p^{0}
 +
-\dfrac{\delta_P}
+\dfrac{\boldsymbol{\delta}_P}
 {\tilde{a}_P}.
 \end{equation}
-The Eqs.~(\ref{Eq:pressureComplex}) and (\ref{Eq:velocityComplex}) are similar to Eqs.~(\ref{eq:pEqnSIMPLEC}) and (\ref{Eq:velocitySimplec}) respectively but for the complex term $\delta_P$ which has as main unknown the face gradient $\nabla \boldsymbol{u}_f'$.
+The Eqs.~(\ref{Eq:pressureComplex}) and (\ref{Eq:velocityComplex}) are similar to Eqs.~(\ref{eq:pEqnSIMPLEC}) and (\ref{Eq:velocitySimplec}) respectively but for the Complex term $\boldsymbol{\delta}_P$ which has as main unknown the face gradient $\nabla \boldsymbol{u}_f'$. Putting aside the task of computing this term, this means that the general structure of the SIMPLEC algorithm remains unaltered. 
 
 \subsection{Computation of the face gradient}
 The face gradient $\nabla \boldsymbol{u}_f' $ is obtained as a linear interpolation of a cell-centred gradient $\nabla \boldsymbol{u}_P'$,
@@ -977,24 +971,24 @@ To obtain an expression for the cell-centred gradient, a derivation starts by in
 =
 0
 \end{equation}
-In last equation, the face values $\boldsymbol{u_P}'_f$ are expressed as function of $\nabla \boldsymbol{u}_P'$ by proposing the following first-order Taylor expansion,
+In this last equation, the face values $\left(\boldsymbol{u}_P'\right)_f$ can expressed as function of $\nabla \boldsymbol{u}_P'$ by considering the following first-order Taylor expansion,
 \begin{equation}
 \label{Eq:TaylorOnFace}
 \left(
-\boldsymbol{u_P}'
+\boldsymbol{u}_P'
 \right)_f
 =
-\boldsymbol{u_P}'
+\boldsymbol{u}_P'
 +
 \boldsymbol{x}_{Pf}
 \cdot 
 \nabla \boldsymbol{u}_P'.
 \end{equation} 
-Subsequently, this last equation is replaced in  Eq.~(\ref{Eq:massEqSubdivided}),
+Now, this may be introduced in Eq.~(\ref{Eq:massEqSubdivided}),
 \begin{align}
 \sum_f 
 \left(
-\boldsymbol{u_P}'
+\boldsymbol{u}_P'
 +
 \boldsymbol{x}_{Pf}
 \cdot 
@@ -1005,12 +999,12 @@ Subsequently, this last equation is replaced in  Eq.~(\ref{Eq:massEqSubdivided})
 &=
 -\sum_f
 \left(
-\boldsymbol{u_P}^{*}
+\boldsymbol{u}_P^{*}
 \right)_{f} 
 \cdot 
 \boldsymbol{S}_f
 \\
-\boldsymbol{u_P}'
+\boldsymbol{u}_P'
 \cdot 
 \sum_f 
 \boldsymbol{S}_f
@@ -1026,7 +1020,7 @@ Subsequently, this last equation is replaced in  Eq.~(\ref{Eq:massEqSubdivided})
 &=
 -\sum_f
 \left(
-\boldsymbol{u_P}^{*}
+\boldsymbol{u}_P^{*}
 \right)_{f} 
 \cdot 
 \boldsymbol{S}_f
@@ -1043,26 +1037,26 @@ Subsequently, this last equation is replaced in  Eq.~(\ref{Eq:massEqSubdivided})
 &=
 -\sum_f
 \left(
-\boldsymbol{u_P}^{*}
+\boldsymbol{u}_P^{*}
 \right)_{f} 
 \cdot 
 \boldsymbol{S}_f
 \end{align}
-where $\boldsymbol{u_P}^{*}$ is obtained by the momentum predictor, Eq.~(\ref{Eq:MomentumPredictor}),
+where $\sum_f \boldsymbol{S}_f = \boldsymbol{0}$ for closed polyhedrons and $\boldsymbol{u}_P^{*}$ is known from Eq.~(\ref{Eq:MomentumPredictor}),
 \begin{equation}
 \left(
-\boldsymbol{u_P}^{*}
+\boldsymbol{u}_P^{*}
 \right)_{f}
 =
-\left[\frac{1}{a_P}\left(\boldsymbol{H}^* - \nabla p_P^{0}\right)\right]_f.
+\left[\frac{1}{a_P}\left(\boldsymbol{H}_P^* - \nabla p_P^{0}\right)\right]_f.
 \end{equation}
-Then, a similar form of the Rhie-Chow term given in Eq.~(\ref{eq:pEqnSIMPLE2}) is included,
+Now, a similar form of the Rhie-Chow correction term, given in Eq.~(\ref{eq:pEqnSIMPLE2}), is included,
 \begin{equation}
 \left(
 \boldsymbol{u_P}^{*}
 \right)_{f}
 =
-\left[\frac{1}{a_P}\left(\boldsymbol{H}^* - \nabla p_P^{0}\right)\right]_f
+\left[\frac{1}{a_P}\left(\boldsymbol{H}_P^* - \nabla p_P^{0}\right)\right]_f
 +
 \left[
 \left(
@@ -1075,17 +1069,17 @@ Then, a similar form of the Rhie-Chow term given in Eq.~(\ref{eq:pEqnSIMPLE2}) i
 \nabla p_f^{0} 
 \right],
 \end{equation}
-and simplifying, 
+leading to, 
 \begin{equation}
 \left(
 \boldsymbol{u_P}^{*}
 \right)_{f}
 =
- \left(\frac{\boldsymbol{H}^*}{a_P}\right)_f 
+ \left(\frac{\boldsymbol{H}_P^*}{a_P}\right)_f 
  -
  \left(\frac{1}{a_P}\right)_f \nabla p_f^{0}.
 \end{equation}
-Replacing in Eq.~(\ref{Eq:Last}),
+Then, replacing this expression into Eq.~(\ref{Eq:Last}),
 \begin{equation}
 \label{Eq:mainGradEq}
 \sum_f 
@@ -1099,14 +1093,14 @@ Replacing in Eq.~(\ref{Eq:Last}),
 =
 -\sum_f
 \left[
-\left(\frac{\boldsymbol{H}^*}{a_P}\right)_f 
+\left(\frac{\boldsymbol{H}_P^*}{a_P}\right)_f 
  -
  \left(\frac{1}{a_P}\right)_f \nabla p_f^{0}
  \right]
 \cdot 
 \boldsymbol{S}_f.
 \end{equation}
-Last expression allows computing the cell gradient $\nabla \boldsymbol{u}_P'$ as functions of $\boldsymbol{H}^*$ and $\nabla p_f^{0}$ which are known values after the momentum predictor equation is solved. However, the Eq.~(\ref{Eq:mainGradEq}) is underdetermined since the gradient $\nabla \boldsymbol{u}_P'$ requires to define nine unknowns. In order to solve this last underdetermination, an additional approximation is introduced over the gradient definition. In this respect, it is proposed that the gradient $\nabla \boldsymbol{u}_P'$ is a scalar matrix as defined below,
+This last equation allows to compute the cell gradient $\nabla \boldsymbol{u}_P'$ as a function of $\boldsymbol{H}_P^*$ and $\nabla p_f^{0}$ which are known values after the first step of the algorithm. However, the Eq.~(\ref{Eq:mainGradEq}) is underdetermined since the gradient $\nabla \boldsymbol{u}_P'$ is a second order tensor with nine unknown scalar values. In order to solve this, an additional approximation is proposed: 
 \begin{equation}
 \nabla \boldsymbol{u}_P'
 =
@@ -1114,7 +1108,8 @@ Last expression allows computing the cell gradient $\nabla \boldsymbol{u}_P'$ as
 \boldsymbol{I}
 \label{eq:gradApprox}
 \end{equation}
-Replacing this last definition in Eq.~(\ref{Eq:mainGradEq}),
+This means that the gradient of the velocity corrections is considered to be a diagonal isotropic matrix. Therefore, it has only one unknown scalar value.
+Replacing this last definition in Eq.~(\ref{Eq:mainGradEq}) leads to,
 \begin{align}
 \sum_f 
 \left(
@@ -1128,7 +1123,7 @@ Replacing this last definition in Eq.~(\ref{Eq:mainGradEq}),
 &=
 -\sum_f
 \left[
-\left(\frac{\boldsymbol{H}^*}{a_P}\right)_f 
+\left(\frac{\boldsymbol{H}_P^*}{a_P}\right)_f 
  -
  \left(\frac{1}{a_P}\right)_f \nabla p_f^{*}
  \right]
@@ -1147,7 +1142,7 @@ Replacing this last definition in Eq.~(\ref{Eq:mainGradEq}),
 &=
 -\sum_f
 \left[
-\left(\frac{\boldsymbol{H}^*}{a_P}\right)_f 
+\left(\frac{\boldsymbol{H}_P^*}{a_P}\right)_f 
  -
  \left(\frac{1}{a_P}\right)_f \nabla p_f^{*}
  \right]
@@ -1161,7 +1156,7 @@ and isolating $\alpha_P$,
 \dfrac
 {-\sum_f
 \left[
-\left(\frac{\boldsymbol{H}^*}{a_P}\right)_f 
+\left(\frac{\boldsymbol{H}_P^*}{a_P}\right)_f 
  -
  \left(\frac{1}{a_P}\right)_f \nabla p_f^{*}
  \right]
@@ -1173,7 +1168,7 @@ and isolating $\alpha_P$,
 \boldsymbol{S}_f}
 \end{equation}
 
-Finally the face gradient~(\ref{Eq:UFaceGradient}) may be computed using the $\alpha_P$ values interpolated to the faces,
+Finally, the face gradient given by Eq.~(\ref{Eq:UFaceGradient}) may be computed using the face interpolated values of $\alpha$,
 \begin{equation}
 \label{Eq:scalarMatrix}
 \nabla \boldsymbol{u}_f'
@@ -1184,8 +1179,8 @@ Finally the face gradient~(\ref{Eq:UFaceGradient}) may be computed using the $\a
 \boldsymbol{I}.
 \end{equation}
 
-\subsection{Relaxation of the complex term}
-The COMPLEX method is based on an approximation of the neighbours velocity corrections $\boldsymbol{u}_N'$ as function of a Taylor expansion which is based on the mass balance equation. However, an accurate definition of the gradient for the second term of the Taylor expansion requires additional information which is not available before solving the pressure equation. The unique information obtained with this approach is the trace of the velocity tensor which is opposite to the divergence of the predicted velocity $\boldsymbol{u}^*$. Due to this numerical difficulty, the approximation given in Eq.~(\ref{eq:gradApprox}) is proposed which allows closing the numerical problem at the expense of reducing the whole potential of the original proposal. The use of a scalar matrix as an estimate of the velocity gradient may be interpreted as an isotropic deformation of the velocity correction field $\boldsymbol{u}_P'$. This effect may not be so if this field is recomputed with the new pressure values. Taking this into account, a relaxation of the complex term $\delta_P$ is proposed in order to avoid an excessive estimation of $\boldsymbol{u}_N'$. Introducing a relaxation of the complex term in the Eqs.~(\ref{Eq:pressureComplex}) and (\ref{Eq:velocityComplex}) , 
+\subsection{Relaxation of the Complex term}
+The COMPLEX method is based on an approximation of the neighbours velocity corrections $\boldsymbol{u}_N'$ based on a Taylor expansion and taking into account the mass balance equation. However, an accurate definition of the gradient for the second term of the Taylor expansion requires additional information which is not available before solving the pressure equation. The only accurate information that can be extracted from this approach is the trace of the gradient of the velocity correction, which is opposite to the divergence of the predicted velocity $\boldsymbol{u}^*$. Due to this numerical difficulty, the approximation given in Eq.~(\ref{eq:gradApprox}) provides the mathematical closure of the numerical problem at the cost of reducing the potential of the original proposal. The physical meaning of using a scalar matrix as an estimate of the gradient of the velocity is that the deformation of the velocity correction is considered to be isotropic. This may not be true once the velocity field is computed with the new pressure values. Taking this into account, a relaxation of the complex term $\boldsymbol{\delta}_P$ is proposed in order to avoid an overestimation of the real value of $\boldsymbol{u}_N'$. Introducing a relaxation factor on the Complex term in the Eqs.~(\ref{Eq:pressureComplex}) and (\ref{Eq:velocityComplex}) , 
 \begin{equation}
 \label{Eq:pressureComplexRelaxed}
 \sum_f
@@ -1204,7 +1199,7 @@ The COMPLEX method is based on an approximation of the neighbours velocity corre
 \left[
 \frac{1}{a_P}
 \left(
-\boldsymbol{H}^*
+\boldsymbol{H}_P^*
 \right)
 \right]_f 
 \cdot
@@ -1229,7 +1224,7 @@ The COMPLEX method is based on an approximation of the neighbours velocity corre
 \kappa
 \sum_f
 \left(
-\dfrac{\delta_P}{\tilde{a}_P}
+\dfrac{\boldsymbol{\delta}_P}{\tilde{a}_P}
 \right)_f
 \cdot
 \boldsymbol{S}_f.
@@ -1240,7 +1235,7 @@ The COMPLEX method is based on an approximation of the neighbours velocity corre
 =
 \dfrac
 {
-\boldsymbol{H}^*
+\boldsymbol{H}_P^*
 - 
 \nabla p_P}
 {\tilde{a}_P}
@@ -1255,11 +1250,10 @@ The COMPLEX method is based on an approximation of the neighbours velocity corre
 \nabla p^{0}
 +
 \kappa
-\dfrac{\delta_P}
+\dfrac{\boldsymbol{\delta}_P}
 {\tilde{a}_P}.
 \end{equation}
-where $\kappa$ is a relaxation factor called as the complex factor which value is between 0 and 1.
-
+where $\kappa$ is the Complex relaxation factor and its value is between 0 and 1.
 
 \section{Stability Analysis}
 \label{sec:fourier}
@@ -1301,7 +1295,7 @@ First, the Momentum Predictor (Eq. (\ref{eq:MOMPRED})) will be rewritten in term
 Now, the errors can be written in terms of the Fourier decomposition as:
 
 \begin{equation}
-    e^k_{\phi,M} = \alpha^k_{\phi} \; \text{exp} \left(i \; \dfrac{x_M \; \theta}{\Delta x}\right)
+    e^k_{\phi,M} = \alpha^k_{\phi} \; \text{exp} \left(i \; \dfrac{x_M \; \theta}{\boldsymbol{\delta} x}\right)
     \label{eq:error}
 \end{equation}
 
@@ -1326,7 +1320,7 @@ p
 \alpha_u \\
 \alpha_p 
 \end{bmatrix}^{k}
-\; \text{exp}\left[ i \; \theta \; \frac{x_M}{\Delta x}\right]
+\; \text{exp}\left[ i \; \theta \; \frac{x_M}{\boldsymbol{\delta} x}\right]
 \label{eq:fou1}
 \end{equation}
 
@@ -1718,7 +1712,7 @@ R_2(P)
 -
 \sum_f
 \left(
-\frac{\boldsymbol{H}}
+\frac{\boldsymbol{H}_P}
 {a_P}
 \right)_f 
 \cdot 
