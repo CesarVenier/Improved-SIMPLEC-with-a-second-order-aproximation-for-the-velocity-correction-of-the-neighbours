@@ -55,11 +55,8 @@
 
 %Start of abstract
 \begin{abstract}
-This paper introduces the COMPLEX algorithm which is an enhancement of  SIMPLEC . The new approach is based on considering the neighbour velocity approximation of SIMPLEC as a Taylor expansion. Using this assumption, a first-order term is included in the neighbour approximation leading to a second-order estimate. The new term includes a velocity gradient which is assumed to be a scalar matrix with its scalar value defined by a mass balance equation.
-
-The stability of the method is analysed with a Fourier decomposition of the error showing significant benefits in the convergence rate when comparing it with SIMPLE and SIMPLEC. In the same line, the new method is tested in two typical laminar flow problems where COMPLEX exhibits better convergence properties in the range of high relaxation factors and showing similar performances in for the remaining conditions.
-
- The proposed procedure is a new alternative to improve SIMPLE-like algorithms in general. The preliminary results presented are promising, as they show that, in some cases, computational cost can be reduced by 20 \%.
+This paper introduces the a new pressure-velocity coupling algorithm based on the SIMPLEC method. The new approach considers the neighbour velocity corrections of SIMPLEC as a Taylor series expansion. In this context, a first-order term is introduced in the neighbour velocity correction aiming to increase the accuracy of the approximation. The new term includes a velocity gradient which is assumed to be a scalar matrix constrained by means of a mass conservation equation.
+The stability of the method is analysed via a Fourier decomposition of the error showing a better convergence rate than SIMPLE and SIMPLEC for high relaxation factors. Afterwards, the new method is tested in two typical laminar flow problems where the conclusions of the Fourier analysis are verified. The current proposal sets a theoretical baseline for further improvements and, in view of the results, it is a promising alternative to improve SIMPLE-like algorithms.
 \end{abstract}
 
 \begin{keyword}
@@ -70,45 +67,22 @@ Segregated algorithms \sep Segregated method \sep Collocated grids \sep Finite V
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 
-{\color{red}Owing to the low computational efficiency and large memory require-
-ment, it has not been widely applied in engineering problems such as
-built-environment; however, it is currently successfully used in aero-
-space and multiphase flow simulation. Coupled methods have been
-widely employed for the computation of compressible flows, whereas
-segregated methods have been preferred for the computation of in-
-compressible flows. Unlike a coupled solution, a segregated method
-solves velocity and pressure fields separately or consecutively. It ex-
-hibits the advantages of reduced computer memory and CPU time re-
-quirements [13], rendering it computationally more efficient [14] for
-analyzing incompressible fluid [15], which is the case in built-en-
-vironment simulation.}
-
 In the context of Computational Fluid Dynamics (CFD) based on the Finite Volume Method (FVM), pressure-velocity coupling
 within Navier-Stokes equations may be solved through several strategies. Broadly, the methods may be classified as direct (monolithic)
-or segregated. The first one consists on solving one system of equations which includes all the governing equations at once for all the unknowns. Examples of this approach may be found in the literature {\color{red} CITAS Mazhar x2, Chen, Darwish x2, Uoric(Jasak)}. In these works the pressure and velocity are assembled together in a unique system of equations where the non-linearity of the convective term is treated iteratively.
-
-{\color{blue} Typically, segregated methods have been used for the computation of incompressible flows whereas coupled solvers, for compressible flows. Compared to coupled solvers, segregated methods present the advantage of computational savings in RAM memory and CPU time, although at the cost of an inferior robustness. However, previously published segregated algorithms for general compressible flows are known to present pitfalls, like convergence to wrong solutions, lack of robustness in the presence of strong discontinuities, such as normal and oblique shocks, and complicated boundary condition imposition. Therefore, in this paper a segregated method for non-isothermal compressible flows is proposed that preserves the thermodynamic coupling and overcomes the criticisms of existing methods.
-}
- 
- Segregated algorithms, in contrast, solves separately for a unique variable at a time. The procedure is iterative and ends when the unknowns satisfy a convergence criteria. Within these group of methods, the penalty method \cite{temam1968methode}, the artificial compression method \cite{harten1977artificial} and pressure correction and projection strategies are among the most adopted {\color{red} CHORIN}.
+or segregated. The first one consists on solving one system of equations which includes all the governing equations at once for all the unknowns. Examples of this approach may be found in the literature {\color{red} CITAS Mazhar x2, Chen, Darwish x2, Uoric(Jasak)}. In these works the pressure and velocity are assembled together in a unique system of equations where the non-linearity of the convective term is treated iteratively.  
+ Segregated algorithms, in contrast, solves separately for a unique variable at a time. The procedure is iterative and ends when the unknowns satisfy a convergence criteria. In general, segregated strategies are superior in terms of memory saving and computational performance but their numerical stability may not be guaranteed for solving strongly-coupled physical problems. Within these group of methods, the penalty method \cite{temam1968methode}, the artificial compression method \cite{harten1977artificial} and pressure correction and projection strategies are among the most adopted {\color{red} CHORIN}.
 In the pressure correction/projection methods, an initial estimation of the velocity is corrected by means of a pressure equation where the velocity field is forced to satisfy the divergence free condition. On this line, the Fractional Step methods (FS) are widely-adopted {\color{red} CITAS}. Here, a temporal splitting on the velocity is proposed where a first part is computed using the momentum equation with an initial guess of the pressure. Afterwards, the remaining velocity is defined by solving a pressure equation based on the mass balance.
 
-Under the scope of the projection methods, a new strategy was introduced by Patankar and Spalding with the developing of the SIMPLE algorithm. In this technique, a pressure equation is derived after introducing the whole momentum equation into the mass balance. 
+Under the scope of the projection methods, a new strategy was introduced by Patankar and Spalding with the developing of the SIMPLE algorithm. In this technique, a pressure equation is derived after introducing the whole momentum equation into the mass balance.
 After the first appearance, further improvements were developed. Within the most important variants of SIMPLE may be included the SIMPLER algorithm which enhance the velocity handling of the method by adding an additional pressure equation. Another significant derivation of SIMPLE was proposed by Raithby and van Doormal who named it the
 SIMPLEC algorithm. It is based on including an approximation of the neighbour velocity corrections. For transient flow problems, Issa improved the SIMPLE algorithm by the inclusion of an iterative process to accurately estimate the neighbour velocity corrections. This method, called PISO, works under the hypothesis of relative low CFL numbers. Many others variants of the SIMPLE method were developed over the years. They seek to enhance the robustness and convergence rate of the simulations compared with the standard SIMPLE formulation. 
-A better understanding on the differences between SIMPLE-family algorithms may be found in the literature.{\color{red}Moukaled dawish, liu, miller, building}. Despite the aforementioned efforts to improve SIMPLE assumptions, this topic is a relevant and active  research field nowadays with the aim of reduce computational time and the numerical stability of the simulations {\color{red} CITAS RECIENTES (las de la revista;)}.
+A better understanding on the differences between SIMPLE-family algorithms may be found in the literature.{\color{red}Moukaled dawish, liu, miller, building}. Despite the aforementioned efforts to improve SIMPLE assumptions, this topic is a relevant and active  research field nowadays with the aim of reduce computational time and the numerical stability of the simulations {\color{red} CITAS RECIENTES (las de la revista, TAO, etc)}.
 
 
+The error in the SIMPLE algorithm is exclusively  associated with the elimination of the neighbour velocity correction in the pressure equation. Without this strong assumption, the pressure equation would be exact for the linearised Navier-Stokes problem. In practice, this approximation leads to the need of relaxing the pressure to achieve a stable behaviour towards convergence in the iterative process. Regarding this, the SIMPLEC algorithm avoids relaxing the pressure by considering the neighbour velocity correction equal to the one of the current cell. In other words, the proposal is to assume the velocity correction as a constant field in the proximities of each cell. The SIMPLEC approximation may be seen as an estimation of the neighbour velocities via a zero-order truncation of a Taylor series expansion. In this context, this work proposes to employ this numerical insight by taking into account a first-order term of the same Taylor series expansion. This approach bring out the need of determining the derivative of the velocity correction which will be discussed further on. This article continues as follows: section 2 describes the SIMPLE and SIMPLEC algorithms, which are the starting point
+for the present method. Then, in section 3, the basis and theoretical background of the new presented method are explained. Subsequently, in section 4, a stability analysis based on Fourier decomposition between the three algorithms is presented. Next, a series of laminar flow problems are solved to calibrate and investigate the performance of the new proposal. Finally, a discuss of the results and final comments are presented in the last section.
 
-In this work, an extension of the SIMPLEC correction is proposed, based on applying a second order
-Taylor approximation to estimate velocity correction values on neighbour cells. The construction of this approximations and its
-usage within the algorithm require further assumptions, discussed in detail on the next sections.
 
-This article is organized as follows: section 2 describes the SIMPLE and SIMPLEC algorithms, which are the starting point
-to define COMPLEX, in section 3, by the assumptions employed to obtain the new approximation of neighbour correction terms.
-A stability analysis, based on Fourier decomposition, between the three algorithms is presented in section 4. Then, the results of
-each algorithm for two well-known benchmark cases, solved on two flow regimes using three mesh-size on each, are compared in section 5. The conclusions on section 6 summarizes the advantages and limitations of the proposed method, discussing further
-improvements that could be applied in the future.
 
 \section{Segregated pressure-velocity coupling methods} \label{sec:theory}
 
