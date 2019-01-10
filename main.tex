@@ -1544,7 +1544,7 @@ Fig.~\ref{fig:1b} shows the sensitivity of the amplification factor to the momen
 
 This theoretical advantage is very important since it indicates that the good performance of the method holds up even when the convergence rate to the steady state solution is accelerated by increasing the momentum relaxation factors. In the next section, this advantage will be put to the test in two benchmark tridimensional problems to verify the accuracy of these predictions on full CFD problems.
 
-These analysis may be deepened by considering a continuous range as relaxation factors from $0$ to $1$ for the three methods, as shown in Figs. \ref{fig:1c1}, \ref{fig:1c2} and \ref{fig:1c3}. These figures show a clear advantage of SIMPLEC over SIMPLE for almost every relaxation factor considered, and a clear advantage of COMPLEX over SIMPLE for high values of the amplification factor. Here it may be noted that, for very low values of $\omega_u$ all methods tend to the same stability behavior.
+These analysis may be deepened by considering a continuous range as relaxation factors from $0$ to $1$ for the three methods, as shown in Figs. \ref{fig:1c1}, \ref{fig:1c2} and \ref{fig:1c3}. These figures show a clear advantage of SIMPLEC over SIMPLE for almost every relaxation factor considered, and a clear advantage of COMPLEX over SIMPLEC for high values of the amplification factor. Here it may be noted that, for very low values of $\omega_u$ all methods tend to the same stability behavior.
 
 \begin{figure}[H]
     \centering
@@ -1565,7 +1565,7 @@ These analysis may be deepened by considering a continuous range as relaxation f
     \label{fig:1c3}
 \end{figure}    
     
-A method to quantify the overall error damping for a general problem, where the initial solution is formed by an equally distributed amount of modes (i.e. there is no frequency that is clearly dominant over the others in the initial values of $u$ and $p$ fields), is to consider an average amplification factor over all the frequencies. This is shown in Fig. \ref{fig:1d}, where the mean value of $\beta$ over all frequencies is plotted for all the possible values of the momentum relaxation factors. Here it is also clear that, while all methods are stable under these conditions, the SIMPLEC and COMPLEX algorithms are clearly more efficient in terms of the error damping, and the COMPLEX algorithm outperforms SIMPLEC when the relaxation factor is increased. 
+A method to quantify the overall error damping for a general problem, where the initial solution is formed by an equally distributed amount of modes (i.e. assuming that there is no frequency that is clearly dominant over the others in the initial values of $u$ and $p$ fields), is to consider an frequency-average amplification factor. This is shown in Fig.~\ref{fig:1d}, where the mean value of $\beta$ over all frequencies is plotted for all the possible values of the momentum relaxation factor. Here it is also clear that, while all methods are stable under these conditions, the SIMPLEC and COMPLEX algorithms are clearly more efficient in terms of the error damping, and the COMPLEX algorithm outperforms SIMPLEC when the relaxation factor is increased. 
 
 \begin{figure}[H]
     \centering
