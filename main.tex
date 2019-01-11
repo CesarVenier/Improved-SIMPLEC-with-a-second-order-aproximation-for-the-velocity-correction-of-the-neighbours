@@ -55,7 +55,7 @@
 
 %Start of abstract
 \begin{abstract}
-This paper introduces the a new pressure-velocity coupling algorithm based on the SIMPLEC method. The new approach considers the neighbour velocity corrections of SIMPLEC as a Taylor series expansion. In this context, a first-order term is introduced in the neighbour velocity correction aiming to increase the accuracy of the approximation. The new term includes a velocity gradient which is assumed to be a scalar matrix constrained by means of a mass conservation equation.
+This paper introduces a new pressure-velocity coupling algorithm based on the SIMPLEC method. The new approach considers the neighbour velocity corrections of SIMPLEC as a Taylor series expansion. In this context, a first-order term is introduced in the neighbour velocity correction aiming to increase the accuracy of the approximation. The new term includes a velocity gradient which is assumed to be a scalar matrix constrained by means of a mass conservation equation.
 The stability of the method is analysed via a Fourier decomposition of the error showing a better convergence rate than SIMPLE and SIMPLEC for high relaxation factors. Afterwards, the new method is tested in two typical laminar flow problems where the conclusions of the Fourier analysis are verified. The current proposal sets a theoretical baseline for further improvements and, in view of the results, it is a promising alternative to improve SIMPLE-like algorithms.
 \end{abstract}
 
@@ -1500,8 +1500,8 @@ Fig.~\ref{fig:1a} shows the amplification factor for each method with a relaxati
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.45\textwidth]{fig/Re0001} \hspace{1cm}
-    \includegraphics[width=0.45\textwidth]{fig/Re1000}
+    %\includegraphics[width=0.45\textwidth]{fig/Re0001-b.pdf} \hspace{1cm}
+    \includegraphics[width=\textwidth]{fig/Re_fourier.pdf}
     \caption{Amplification factor for $Re_h=0.001$ (left) and $Re_h=1000$ (right)}
     \label{fig:1a}
 \end{figure}
@@ -1511,40 +1511,28 @@ Fig.~\ref{fig:1b} shows the sensitivity of the amplification factor to the momen
 \begin{figure}[H]
     \centering
     %\includegraphics[width=0.45\textwidth]{fig/w07} \hspace{1cm}
-    \includegraphics[width=0.45\textwidth]{fig/w095}
+    \includegraphics[width=\textwidth]{fig/w_fourier.pdf}
     \caption{Amplification factor for $\omega_u=0.7$ (left) and $\omega_u=0.95$ (right)}
     \label{fig:1b}
 \end{figure}    
 
 This theoretical advantage is very important since it indicates that the good performance of the method holds up even when the convergence rate to the steady state solution is accelerated by increasing the momentum relaxation factors. In the next section, this advantage will be put to the test in two benchmark tridimensional problems to verify the accuracy of these predictions on full CFD problems.
 
-These analysis may be deepened by considering a continuous range as relaxation factors from $0$ to $1$ for the three methods, as shown in Figs. \ref{fig:1c1}, \ref{fig:1c2} and \ref{fig:1c3}. These figures show a clear advantage of SIMPLEC over SIMPLE for almost every relaxation factor considered, and a clear advantage of COMPLEX over SIMPLEC for high values of the amplification factor. Here it may be noted that, for very low values of $\omega_u$ all methods tend to the same stability behavior.
+These analysis may be deepened by considering a continuous range as relaxation factors from $0$ to $1$ for the three methods, as shown in Fig. \ref{fig:1c}. These figures show a clear advantage of SIMPLEC over SIMPLE for almost every relaxation factor considered, and a clear advantage of COMPLEX over SIMPLEC for high values of the amplification factor. Here it may be noted that, for very low values of $\omega_u$ all methods tend to the same stability behavior.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\textwidth]{fig/SIMPLE_map}
-    \caption{Amplification factor for SIMPLE for different relaxation factors and frequencies}
-    \label{fig:1c1}
-\end{figure}  
-\begin{figure}[H]
-    \centering    
-    \includegraphics[width=0.6\textwidth]{fig/SIMPLEC_map}
-    \caption{Amplification factor for SIMPLEC for different relaxation factors and frequencies}
-    \label{fig:1c2}
-\end{figure}  
-\begin{figure}[H]
-    \centering           
-    \includegraphics[width=0.6\textwidth]{fig/COMPLEX_map}
-    \caption{Amplification factor for COMPLEX for different relaxation factors and frequencies}
-    \label{fig:1c3}
+    \includegraphics[width=\textwidth]{fig/maps_fourier.pdf}
+    \caption{Amplification factor for SIMPLE (a), SIMPLEC (b) and COMPLEX (c) for different relaxation factors and frequencies}
+    \label{fig:1c}
 \end{figure}    
     
 A method to quantify the overall error damping for a general problem, where the initial solution is formed by an equally distributed amount of modes (i.e. assuming that there is no frequency that is clearly dominant over the others in the initial values of $u$ and $p$ fields), is to consider an frequency-average amplification factor. This is shown in Fig.~\ref{fig:1d}, where the mean value of $\beta$ over all frequencies is plotted for all the possible values of the momentum relaxation factor. Here it is also clear that, while all methods are stable under these conditions, the SIMPLEC and COMPLEX algorithms are clearly more efficient in terms of the error damping, and the COMPLEX algorithm outperforms SIMPLEC when the relaxation factor is increased. 
 
 \begin{figure}[H]
     \centering
-    %\includegraphics[width=0.6\textwidth]{fig/meanAmp.pdf}
-    \caption{Mean amplification factor for each relaxation of momentum $\omega_u$}
+    \includegraphics[width=0.5\textwidth]{fig/meanAmp.pdf}
+    \caption{Mean amplification factor as a function of the momentum relaxation factor $\omega_u$}
     \label{fig:1d}
 \end{figure}  
 
@@ -1557,7 +1545,7 @@ In this section, the new pressure-velocity coupling strategy is analysed in the 
  The evaluation of the COMPLEX method is achieved by solving two typical tests for incompressible and stationary flows. The first of them is the cubic cavity test and the second one is the flow through the Backward Facing Step (BFS) channel.
 \subsubsection{Cavity}
  A graphical scheme of this problem is depicted in Fig.~\ref{Fig:Cavity}.
-\begin{figure}[t!]
+\begin{figure}[H]
 \centering
 \includegraphics[width=5cm]{fig/Cases/Cavity.pdf}
 \caption{The cubic cavity problem where a fixed tangential velocity is imposed on the upper face.}
@@ -1567,7 +1555,7 @@ There, a tangential fixed velocity of 1 m/s is imposed on the upper face of the 
 
 \subsubsection{Backward Facing Step}
 The domain of this test and its dimension are shown in Fig.~\ref{Fig:Geometria3}.
-\begin{figure}[b!!!!]
+\begin{figure}[H]
 \centering
 \includegraphics[width=12cm]{fig/Cases/Geometria3.pdf}
 \caption{Description of the BFS domain where the dimensions are defined relative to the inlet height $h = 1$ m.}
@@ -1591,7 +1579,7 @@ Fine & 80 & 160 & 30 & 104 & 160 & 60 & 1382400 \\
 \label{Table:BFSMeshes}
 \end{table}
 
-\begin{figure}[t!!!]
+\begin{figure}[H]
 \centering
 \includegraphics[width=16cm]{fig/Cases/Factores.pdf}
 \caption{Variable cell refinement in the BFS.  On the left figure, the cell size grows from the step point up to the inlet and outlet boundaries and from the lateral walls up to the middle longitudinal section. On the right, the cell size in the post-step regions grows from the bottom and upper walls up to the middle height section of the channel.}
@@ -1720,7 +1708,7 @@ NI(\omega_u, 0)
 \end{equation}
 where $NI(\omega_u, \kappa)$ is the number of iterations required for convergence using the relaxation value $\omega_u$ and the complex factor $\kappa$ and $NI(\omega_u, 0)$ is the number of iterations required for the convergence using the relaxation value $\omega_u$ and a complex factor equal to $\kappa = 0$.
 
-\begin{table}[t!]
+\begin{table}[H]
 \centering
 \begin{tabular}{c|ccccccccccc}
 \hline 
@@ -1740,7 +1728,7 @@ $\omega_u$/$\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 
 \caption{Required number of iterations at convergence for the Cavity case with Re = $0.4$}
 \label{Table:Cavity_LowRe}
 \end{table}
-\begin{table}[t!]
+\begin{table}[H]
 \centering
 \begin{tabular}{c|ccccccccccc}
 \hline 
@@ -1760,7 +1748,7 @@ $\omega_u$/$\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 
 \caption{Required number of iterations at convergence for the BFS case with Re = 0.389}
 \label{Table:BFS_LowRe}
 \end{table}
-\begin{table}[t!]
+\begin{table}[H]
 \centering
 \begin{tabular}{c|ccccccccccc}
 \hline 
@@ -1780,7 +1768,7 @@ $\omega_u$/$\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 
 \caption{Required number of iterations at convergence for the Cavity case with Re = 400}
 \label{Table:Cavity_HighRe}
 \end{table}
-\begin{table}[t!]
+\begin{table}[H]
 \centering
 \begin{tabular}{c|ccccccccccc}
 \hline 
@@ -1800,7 +1788,7 @@ $\omega_u$/$\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 
 \caption{Required number of iterations at convergence for the BFS case with Re = 389}
 \label{Table:BFS_HighRe}
 \end{table}
-\begin{figure}[t!]
+\begin{figure}[H]
 \centering
 \includegraphics[width=17cm]{fig/Results/FactorLowRe.pdf}
 \caption{Isolines of relative iterations as function of the momentum relaxation factor and the complex factor for the Cavity and BFS cases and the values of the Reynolds number employed respectively.}
