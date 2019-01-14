@@ -1202,7 +1202,7 @@ Here, a single iteration of the algorithm will be studied, which can be separate
 
 Moreover, the present study will be done for a one-dimensional FVM discretization (see Fig. \ref{fig:4a}) to simplify the analysis and arrive to some preliminary conclusions about the stability features of the method. Later on, all the methods will be tested in benchmark problems and the stability and convergence rate will be fully assessed. 
 
-\begin{figure}[H]
+\begin{figure}[t!]
     \centering
     \includegraphics[width=0.7\textwidth]{fig/cells.eps}
     \caption{One-dimensional FVM discretization}
@@ -1487,7 +1487,7 @@ The von Neumann stability criteria \cite{hirsch} will be applied to determine th
 
 Fig.~\ref{fig:1a} shows the amplification factor for each method with a relaxation factor $\omega=0.7$ ($\omega_p=1-\omega$, for SIMPLE) for low and high mesh-Reynolds numbers ($Re_h = \dfrac{h U}{\nu}$). It is observed that SIMPLE has always a higher amplification factor (slower convergance rate) for each frequency and for each $Re_h$ considered. On the other hand, the SIMPLEC method gets slightly affected with the change of $Re_h$ while COMPLEX does not show any significant variation. All methods show a stable behavior under the Fourier conditions, while COMPLEX and SIMPLEC show lower amplification factors than SIMPLE. 
 
-\begin{figure}[H]
+\begin{figure}[t!!]
     \centering
     %\includegraphics[width=0.45\textwidth]{fig/Re0001-b.pdf} \hspace{1cm}
     \includegraphics[width=\textwidth]{fig/Re_fourier.pdf}
@@ -1497,7 +1497,7 @@ Fig.~\ref{fig:1a} shows the amplification factor for each method with a relaxati
     
 Fig.~\ref{fig:1b} shows the sensitivity of the amplification factor to the momentum relaxation factor for all frequencies and for the three coupling methods. The results are obtained for a $Re_h=1$ and always considering the rule $\omega_P = 1 - \omega$ for SIMPLE. While the SIMPLE algorithm does not show any significant improvement for higher values of $\omega$ (even showing a range of instability for low frequencies at $\omega=0.95$ and $\omega_P=0.05$), the SIMPLEC algorithm shows a depletion in its performance for high momentum relaxation factors (tending to unity for $\theta=0$ as $\omega_u \rightarrow 1$). In this aspect, the COMPLEX algorithm shows a clear advantage over the other two methods by preserving almost unaltered the overall error damping, even for high momentum relaxation factors.     
     
-\begin{figure}[H]
+\begin{figure}[t!!]
     \centering
     %\includegraphics[width=0.45\textwidth]{fig/w07} \hspace{1cm}
     \includegraphics[width=\textwidth]{fig/w_fourier.pdf}
@@ -1509,7 +1509,7 @@ This theoretical advantage is very important since it indicates that the good pe
 
 These analysis may be deepened by considering a continuous range as relaxation factors from $0$ to $1$ for the three methods, as shown in Fig. \ref{fig:1c}. These figures show a clear advantage of SIMPLEC over SIMPLE for almost every relaxation factor considered, and a clear advantage of COMPLEX over SIMPLEC for high values of the amplification factor. Here it may be noted that, for very low values of $\omega_u$ all methods tend to the same stability behavior.
 
-\begin{figure}[H]
+\begin{figure}[b!]
     \centering
     \includegraphics[width=\textwidth]{fig/maps_fourier.pdf}
     \caption{Amplification factor for SIMPLE (a), SIMPLEC (b) and COMPLEX (c) for different relaxation factors and frequencies}
@@ -1518,7 +1518,7 @@ These analysis may be deepened by considering a continuous range as relaxation f
     
 A method to quantify the overall error damping for a general problem, where the initial solution is formed by an equally distributed amount of modes (i.e. assuming that there is no frequency that is clearly dominant over the others in the initial values of $u$ and $p$ fields), is to consider an frequency-average amplification factor. This is shown in Fig.~\ref{fig:1d}, where the mean value of $\beta$ over all frequencies is plotted for all the possible values of the momentum relaxation factor. Here it is also clear that, while all methods are stable under these conditions, the SIMPLEC and COMPLEX algorithms are clearly more efficient in terms of the error damping, and the COMPLEX algorithm outperforms SIMPLEC when the relaxation factor is increased. 
 
-\begin{figure}[H]
+\begin{figure}[t!]
     \centering
     \includegraphics[width=0.5\textwidth]{fig/meanAmp.pdf}
     \caption{Mean amplification factor as a function of the momentum relaxation factor $\omega_u$}
@@ -1534,7 +1534,7 @@ In this section, the new pressure-velocity coupling strategy is analysed in the 
  The evaluation of the COMPLEX method is achieved by solving two typical tests for incompressible and stationary flows. The first of them is the cubic cavity test and the second one is the flow through the Backward Facing Step (BFS) channel.
 \subsubsection{Cavity}
  A graphical scheme of this problem is depicted in Fig.~\ref{Fig:Cavity}.
-\begin{figure}[H]
+\begin{figure}[t!!!]
 \centering
 \includegraphics[width=5cm]{fig/Cases/Cavity.pdf}
 \caption{The cubic cavity problem where a fixed tangential velocity is imposed on the upper face.}
@@ -1544,7 +1544,7 @@ There, a tangential fixed velocity of 1 m/s is imposed on the upper face of the 
 
 \subsubsection{Backward Facing Step}
 The domain of this test and its dimension are shown in Fig.~\ref{Fig:Geometria3}.
-\begin{figure}[H]
+\begin{figure}[t!!!]
 \centering
 \includegraphics[width=12cm]{fig/Cases/Geometria3.pdf}
 \caption{Description of the BFS domain where the dimensions are defined relative to the inlet height $h = 1$ m.}
@@ -1568,7 +1568,7 @@ Fine & 80 & 160 & 30 & 104 & 160 & 60 & 1382400 \\
 \label{Table:BFSMeshes}
 \end{table}
 
-\begin{figure}[H]
+\begin{figure}[b!!!]
 \centering
 \includegraphics[width=16cm]{fig/Cases/Factores.pdf}
 \caption{Variable cell refinement in the BFS.  On the left figure, the cell size grows from the step point up to the inlet and outlet boundaries and from the lateral walls up to the middle longitudinal section. On the right, the cell size in the post-step regions grows from the bottom and upper walls up to the middle height section of the channel.}
@@ -1697,7 +1697,8 @@ NI(\omega_u, 0)
 \end{equation}
 where $NI(\omega_u, \kappa)$ is the number of iterations required for convergence using the relaxation value $\omega_u$ and the complex factor $\kappa$ and $NI(\omega_u, 0)$ is the number of iterations required for the convergence using the relaxation value $\omega_u$ and a complex factor equal to $\kappa = 0$.
 
-\begin{table}[H]
+The Tables~\ref{Table:Cavity_LowRe},~\ref{Table:BFS_LowRe}, and the upper plots of Fig.~\ref{Fig:FactorLowRe} present the relative low Reynolds simulation results  and the Tables~\ref{Table:Cavity_HighRe},~\ref{Table:BFS_HighRe}, and the bottom plots of Fig.~\ref{Fig:FactorLowRe} present the relative high Reynolds ones. 
+\begin{table}[b!!]
 \centering
 \begin{tabular}{c|ccccccccccc}
 \hline 
@@ -1717,7 +1718,7 @@ $\omega_u$/$\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 
 \caption{Required number of iterations at convergence for the Cavity case with Re = $0.4$}
 \label{Table:Cavity_LowRe}
 \end{table}
-\begin{table}[H]
+\begin{table}[b!!]
 \centering
 \begin{tabular}{c|ccccccccccc}
 \hline 
@@ -1737,7 +1738,7 @@ $\omega_u$/$\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 
 \caption{Required number of iterations at convergence for the BFS case with Re = 0.389}
 \label{Table:BFS_LowRe}
 \end{table}
-\begin{table}[H]
+\begin{table}[t!!]
 \centering
 \begin{tabular}{c|ccccccccccc}
 \hline 
@@ -1757,7 +1758,7 @@ $\omega_u$/$\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 
 \caption{Required number of iterations at convergence for the Cavity case with Re = 400}
 \label{Table:Cavity_HighRe}
 \end{table}
-\begin{table}[H]
+\begin{table}[t!!]
 \centering
 \begin{tabular}{c|ccccccccccc}
 \hline 
@@ -1777,13 +1778,13 @@ $\omega_u$/$\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 
 \caption{Required number of iterations at convergence for the BFS case with Re = 389}
 \label{Table:BFS_HighRe}
 \end{table}
-\begin{figure}[H]
+\begin{figure}[t!!!!!!!]
 \centering
 \includegraphics[width=17cm]{fig/Results/FactorLowRe.pdf}
 \caption{Isolines of relative iterations as function of the momentum relaxation factor and the complex factor for the Cavity and BFS cases and the values of the Reynolds number employed respectively.}
 \label{Fig:FactorLowRe}
 \end{figure}
-The Tables~\ref{Table:Cavity_LowRe},~\ref{Table:BFS_LowRe}, and the upper plots of Fig.~\ref{Fig:FactorLowRe} present the relative low Reynolds simulation results  and the Tables~\ref{Table:Cavity_HighRe},~\ref{Table:BFS_HighRe}, and the bottom plots of Fig.~\ref{Fig:FactorLowRe} present the relative high Reynolds ones. In general, it is concluded that the addition of the complex term does not influence the convergence when using relative low relaxation factors. On the contrary, with relative high values of $\omega_u$, the addition of the complex term reduces the number of iterations required for convergence. This reduction has a maximum value of approximately 20 $\%$ in the total number of iterations. The better results are obtained with values of the complex factor that are below $k = 0.5$. The simulations with high values of the complex factor $(k \geq 0.5)$ may be unstable. In particular, the BFS problem at Re = 389 indicates an extended divergence zone for the highest values of $\omega_u$ which is followed by a slow convergence zone (grey-coloured zone in the figure) for lower values of $\omega_u$. Unlike this last behavour, with lower values of $\kappa$, the simulations are stable and indicate the maximum convergence speed. 
+In general, it is concluded that the addition of the complex term does not influence the convergence when using relative low relaxation factors. On the contrary, with relative high values of $\omega_u$, the addition of the complex term reduces the number of iterations required for convergence. This reduction has a maximum value of approximately 20 $\%$ in the total number of iterations. The better results are obtained with values of the complex factor that are below $k = 0.5$. The simulations with high values of the complex factor $(k \geq 0.5)$ may be unstable. In particular, the BFS problem at Re = 389 indicates an extended divergence zone for the highest values of $\omega_u$ which is followed by a slow convergence zone (grey-coloured zone in the figure) for lower values of $\omega_u$. Unlike this last behavour, with lower values of $\kappa$, the simulations are stable and indicate the maximum convergence speed. 
 
 In view of this investigation, it is concluded that a complex factor equal to $\kappa = 0.2$ is adequate to speed up the convergence without losing stability. This last inference is determined based on two different numerical problems (Cavity and BFS) in the range of Reynolds number between $0.4$ and $400$. 
 
@@ -1833,7 +1834,9 @@ The mesh refinement level affects the relative differences between the methods. 
 
 In regard to the Reynolds number influence on COMPLEX it may be assert that for the relative high Reynolds number, a less iterations are required to reach the convergence criteria. This property of COMPLEX is also observed when comparing it with SIMPLE and SIMPLEC. Here, the iteration reduction required for convergence is higher for the relative high Reynold problems. A similar effect is also noted in the range in which COMPLEX is more convergent. As pointed out before, the range of advantage of COMPLEX regarding the $\omega_u$ value starts at the point where the iteration number is approaching a minimum. This trend is also observed in the high Reynolds simulations since the wider range of advantage of COMPLEX compared with the low Reynolds problems may be justified since the minimum iterations number occurs with a lower value of $\omega_u$.
 
-To conclude this analysis, it is remarked that in almost all cases (Cavity or BFS, mesh refinement level $\omega_u$ value, and Reynolds number) the COMPLEX method is superior in terms of convergence than both, the SIMPLE and SIMPLEC method.
+%To conclude this analysis, it is remarked that in almost all cases (Cavity or BFS, mesh refinement level $\omega_u$ value, and Reynolds number) the COMPLEX method is superior in terms of convergence than both, the SIMPLE and SIMPLEC method.
+
+To finalize this section, a further analysis of the COMPLEX method is performed by studying its computational efficiency. The  COMPLEX algorithm was implemented using the OpenFOAM(R)  libraries for the FVM \cite{ofpg}. In this sense, the current implementation of COMPLEX is compared with the OpenFOAM(R) reference of SIMPLEC. In this comparison, it is measured that COMPLEX  has a relative increment of the computational time per iteration of approximately 5$\%$  for the problems solved in this section. Since the convergence rate of the COMPLEX algorithm is equal than SIMPLE and SIMPLEC for relative low relaxation values of the momentum equation, its application on this range of $\omega_u$ would not be profitable in terms of computational efficiency due to the higher time consumed per iteration. However, the maximum computational performance is obtained when using relative high values of the velocity relaxation factor. In this range, the COMPLEX method overcomes SIMPLE and SIMPLEC saving more than a 5 $\%$ of the total number of iterations and therefore the COMPLEX simulations take less time. 
 
 \section{Conclusions}
 \label{sec:conclusions}
