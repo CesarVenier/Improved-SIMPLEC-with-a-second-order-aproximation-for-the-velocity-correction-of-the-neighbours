@@ -67,7 +67,7 @@ Segregated algorithms \sep Segregated method \sep Collocated grids \sep Finite V
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 
-A major numerical difficulty for solving incompressible Navier-Stokes equations arise from the coupling between pressure and velocity fields. Several strategies have been proposed to tackle this problem and, in general, they can be classified into coupled and segregated methods. The first category algorithms consist on solving all the governing equations at once for all the unknowns in a single system of equations \cite{mazhar1, mazhar2, chen, darwish1, darwish2, uroic}. In these approaches, the pressure and velocity are assembled together in a unique system of equations where the non-linearity of the convective term is treated iteratively. Segregated algorithms, in contrast, solve the equations in a sequential fashion for a unique variable at a time. The procedure is iterative and ends when the unknowns satisfy a certain convergence criteria \cite{ferziger, versteeg, moukalled}. In general, segregated strategies are superior in terms of memory saving and computational performance but their numerical stability may not be guaranteed for solving strongly-coupled physical problems \cite{uroic,wang2}. Within these group of methods, the penalty method \cite{temam1968methode}, the artificial compression method \cite{harten1977artificial} and projection methods \cite{chorin1, chorin2} are among the most adopted in CFD codes nowadays \cite{wang2}. In the projection methods, an initial estimation of the velocity is corrected by means of a pressure equation where the velocity field is forced to satisfy the divergence free condition. The Fractional Step methods (FS) \cite{kim}, for instance, rely on a temporal splitting on the velocity where a first estimate is obtained from an approximate momentum equation% with an initial guess of the pressure
+A major numerical difficulty for solving incompressible Navier-Stokes equations arise from the coupling between pressure and velocity fields. Several strategies have been proposed to tackle this problem and, in general, they can be classified into coupled and segregated methods. The first category algorithms consist on solving all the governing equations at once for all the unknowns in a single system of equations \cite{mazhar1, mazhar2, chen, darwish1, darwish2, uroic}. In these approaches, the pressure and velocity are assembled together in a unique system of equations where the non-linearity of the convective term is treated iteratively. Segregated algorithms, in contrast, solve the equations in a sequential fashion for a unique variable at a time. The procedure is iterative and ends when the unknowns satisfy a certain convergence criteria \cite{ferziger, versteeg, moukalled}. In general, segregated strategies are superior in terms of memory saving and computational performance but their numerical stability may not be guaranteed for solving strongly-coupled physical problems \cite{uroic,wang2}. Within these group of methods, the penalty method \cite{temam1968methode}, the artificial compression method \cite{harten1977artificial} and projection methods \cite{chorin1, chorin2} are among the most adopted in CFD codes nowadays \cite{wang2}. In the projection methods, an initial estimation of the velocity is corrected by means of a pressure equation where the velocity field is forced to satisfy the divergence-free condition. The Fractional Step methods (FS) \cite{kim}, for instance, rely on a temporal splitting on the velocity where a first estimate is obtained from an approximate momentum equation% with an initial guess of the pressure
 . Afterwards, the remaining velocity component is computed by solving a pressure equation based on the mass balance.
 
 Under the scope of the projection methods, a new line of strategies was introduced by Patankar and Spalding with the development of the SIMPLE algorithm \cite{patankar1972}. In this method, a pressure equation is derived after introducing the whole momentum equation into the mass balance. Then, the velocity field is updated based on the momentum equation and including the new values of the pressure field. The coupling between pressure and velocity is achieved by means of an iterative procedure where relaxation factors are needed to improve the stability and convergence rate of the method. Focusing on these last aspects, further improvements have been developed taking the SIMPLE algorithm as a starting point. Among these, the SIMPLER algorithm \cite{patankar1980} aims to enhance the pressure-velocity coupling of the method by adding an additional pressure equation. Another relevant improvement on SIMPLE was proposed by Van Doormal and Raithby \cite{vanDoormal}, who included an approximation of the neighbour velocity corrections within the pressure equation and velocity update. This algorithm, called SIMPLEC, suppress the need of relaxing the pressure field after its calculation to guarantee stability. For transient flow problems, Issa proposed the PISO method \cite{issa,issa2} which consists on including corrector sub-steps to enforce mass conservation without relaxing the equations.% This method, called  works under the hypothesis of relative low CFL numbers.% In this way, each SIMPLE iteration can be conceived as a new time-step without the need of pressure relaxation. The effect of these sub-steps can be seen as a way of including better approximations for the neighbour velocity corrections with each sub-step \cite{moukalled}.
@@ -336,7 +336,7 @@ For SIMPLE, the pressure field is usually relaxed after its calculation in Eq.~(
 \label{eq:relaxP}
 p_P
 =
-\omega_P p_P^{BR} + (1-\omega_P) p_P^0.
+\omega_p p_P^{BR} + (1-\omega_p) p_P^0.
 \end{equation}
 \noindent where $p_P^{BR}$ is the pressure field obtained from Eq.~(\ref{eq:pEqnSIMPLE3}) (before relaxation).
 
@@ -868,7 +868,7 @@ Then, the velocity is computed including the approximation of Eq.~(\ref{Eq:HPrim
 \dfrac{\boldsymbol{\delta}_P}
 {\tilde{a}_P}.
 \end{equation}
-The Eqs.~(\ref{Eq:pressureComplex}) and (\ref{Eq:velocityComplex}) are similar to Eqs.~(\ref{eq:pEqnSIMPLEC}) and (\ref{Eq:velocitySimplec}) respectively but for the Complex term $\boldsymbol{\delta}_P$ which has as main unknown the face gradient $\nabla \boldsymbol{u}_f'$. Putting aside the task of computing this term, this means that the general structure of the SIMPLEC algorithm remains unaltered. 
+The Eqs.~(\ref{Eq:pressureComplex}) and (\ref{Eq:velocityComplex}) are equivalent to Eqs.~(\ref{eq:pEqnSIMPLEC}) and (\ref{Eq:velocitySimplec}) respectively but for the Complex term $\boldsymbol{\delta}_P$ which has as main unknown the face gradient $\nabla \boldsymbol{u}_f'$. Putting aside the task of computing this term, this means that the general structure of the SIMPLEC algorithm remains unaltered. 
 
 \subsection{Computation of the face gradient}
 The face gradient $\nabla \boldsymbol{u}_f' $ is obtained as a linear interpolation of a cell-centred gradient $\nabla \boldsymbol{u}_P'$,
@@ -1194,7 +1194,7 @@ where $\kappa$ is the Complex relaxation factor and its value is between 0 and 1
 
 In order to investigate the features of the new method, a stability analysis based on a Fourier decomposition of the error is proposed. This technique has proven to be a powerful tool to determine the numerical and physical conditions that guarantee a stable solution for linearized equations. Moreover, the methodology is extendable for the analysis of multi-variable discrete systems that are addressed by segregation of the variables. The main feature of this approach is to condense the spatial information into a frequency spectrum where only the term of the frequency that produces the highest amplification of the error is taken into account. In this way, the problem is reduced to the analysis of the Fourier coefficients and its evolution in time \cite{hirsch}. 
 
-On the downside, this technique relies on having constant coefficients in the momentum and pressure equations, which will be constant up to the point of the beginning of the second iteration where $a_P$ and $a_N$ are updated with the new velocity field. That means that a sequence of several SIMPLE iterations cannot be studied via Fourier decomposition as a whole. Instead, each iteration need to be studied separately. Another drawback of the Fourier analysis is that only periodic boundary conditions can be considered for the analysis. Nevertheless, this restrictions are the price to pay to have an analytical tool that gives valuable information about the ranges of stability and error damping of each method as a function of just a few parameters. Moreover, since this technique will be used to compare each coupling method under the same conditions, these drawbacks will become irrelevant.
+On the downside, this technique assumes constant coefficients in the momentum and pressure equations, which will be constant up to the point of the beginning of the second iteration where $a_P$ and $a_N$ are updated with the new velocity field. That means that a sequence of several SIMPLE iterations cannot be studied via Fourier decomposition as a whole. Instead, each iteration need to be studied separately. Another drawback of the Fourier analysis is that only periodic boundary conditions can be considered for the analysis. Nevertheless, this restrictions are the price to pay to have an analytical tool that gives valuable information about the ranges of stability and error damping of each method as a function of just a few parameters. Moreover, since this technique will be used to compare each coupling method under the same conditions, these drawbacks will become irrelevant.
 
 Many examples of usage of this technique can be found in the literature. Shaw et al. \cite{shaw} used it to study the error damping properties of the SIMPLE algorithm in staggered grids. Then, Miller \cite{miller1} extended this analysis to the investigation of the performance of SIMPLE and SIMPLEC on both collocated and staggered grids. On the other hand, Liu et al. \cite{liu} adopted the same technique to study a large number algorithms of the SIMPLE family. More recently, Miller et al. \cite{miller2} extended this technique for studying Eulerian multiphase flow models, while Venier et al. \cite{venier} studied the stability features of the PISO algorithm for addressing transient and steady state flow problems.
 
@@ -1216,11 +1216,11 @@ Moreover, the present study will be done for a one-dimensional FVM discretizatio
 
 First, the momentum predictor (Eq. (\ref{Eq:MomentumPredictor})) will be rewritten in terms of the error of the variables as follows,
 \begin{equation}
-    \dfrac{\overline{a}_P}{\omega} \; u_P^* + a_E \; u_E^* + a_W \; u_W^* = \dfrac{1-\omega}{\omega} \; \overline{a}_P \; u_P^0 - (\hat{\nabla} p)_P + \Phi_P
+    \dfrac{\overline{a}_P}{\omega_u} \; u_P^* + a_E \; u_E^* + a_W \; u_W^* = \dfrac{1-\omega_u}{\omega_u} \; \overline{a}_P \; u_P^0 - (\hat{\nabla} p)_P + \Phi_P
 \end{equation}
 
 \begin{equation}
-    \dfrac{\overline{a}_P}{\omega} \; e_{u,P}^* + a_E \; e_{u,E}^* + a_W \; e_{u,W}^* = \dfrac{1-\omega}{\omega} \; \overline{a}_P \; e_{u,P}^0 - \dfrac{S_f}{2} (e^0_{p,E}-e^0_{p,W})
+    \dfrac{\overline{a}_P}{\omega_u} \; e_{u,P}^* + a_E \; e_{u,E}^* + a_W \; e_{u,W}^* = \dfrac{1-\omega_u}{\omega_u} \; \overline{a}_P \; e_{u,P}^0 - \dfrac{S_f}{2} (e^0_{p,E}-e^0_{p,W})
     \label{eq:MPerror}
 \end{equation}
 
@@ -1264,7 +1264,7 @@ Replacing each error on Eq. (\ref{eq:MPerror}) for its corresponding Fourier dec
     \label{eq:MPfou}
 \end{equation}
 
-\noindent where $P_u = \dfrac{\overline{a}_P}{\omega}  + a_E \; \text{e}^{i \theta} + a_W \; \text{e}^{-i \theta}$
+\noindent where $P_u = \dfrac{\overline{a}_P}{\omega_u}  + a_E \; \text{e}^{i \theta} + a_W \; \text{e}^{-i \theta}$
 
 This can be rewritten as,
 \begin{equation}
@@ -1275,7 +1275,7 @@ This can be rewritten as,
 \noindent where:
 \begin{equation}
 \begin{split}
-     a_1 &= \dfrac{1-\omega}{\omega} \; \overline{a}_P \; P_u^{-1} \\
+     a_1 &= \dfrac{1-\omega_u}{\omega_u} \; \overline{a}_P \; P_u^{-1} \\
      b_1 &= - \left( \dfrac{S_f}{2} \right) \left( \text{e}^{i \theta} -  \text{e}^{-i \theta} \right) \; P_u^{-1}
 \end{split}
 \end{equation}
@@ -1308,7 +1308,7 @@ The pressure equation in terms of the errors for the SIMPLE algorithm is obtaine
     S_f \; (e_{p,E}^{**} - 2 e_{p,P}^{**} + e_{p,W}^{**}) = 
      -\left(\dfrac{a_E}{2}\right) (e_{u,EE}^* - e_{u,P}^*) 
     -\left(\dfrac{a_W}{2}\right) (e_{u,P}^* - e_{u,WW}^*)  +
-    \left( \dfrac{1-\omega}{\omega} \right) \left(\dfrac{\overline{a}_P}{2}\right) (e_{u,E}^0 - e_{u,W}^0)
+    \left( \dfrac{1-\omega_u}{\omega_u} \right) \left(\dfrac{\overline{a}_P}{2}\right) (e_{u,E}^0 - e_{u,W}^0)
 \end{equation}
 
 \noindent and the Fourier decomposition of the error (with pressure relaxation) becomes:
@@ -1319,7 +1319,7 @@ The pressure equation in terms of the errors for the SIMPLE algorithm is obtaine
                             \left(-\dfrac{a_W}{2} \right) \left(1 - \text{e}^{-2 i \theta}\right)
                     \right] \alpha_u^{*} \\
                     & + \left( \dfrac{\omega_p}{S_f \Psi} \right) 
-                    \left[ \left(\dfrac{1-\omega}{\omega} \right) \left(\dfrac{\overline{a}_P}{2} \right) \left(\text{e}^{i \theta} - \text{e}^{- i \theta} \right) 
+                    \left[ \left(\dfrac{1-\omega_u}{\omega_u} \right) \left(\dfrac{\overline{a}_P}{2} \right) \left(\text{e}^{i \theta} - \text{e}^{- i \theta} \right) 
                     \right] \alpha_u^{0} \\
                     & + (1-\omega_p) \; \alpha_p^*    
 \end{split}
@@ -1336,7 +1336,7 @@ For the velocity update (Eq.~(\ref{eq:SIMPLECorr})), the equation for the error 
 \begin{equation}
     e_{u,P}^{***} = -\dfrac{\omega_u a_E}{\overline{a}_P} e_{u,E}^{*} -\dfrac{\omega_u a_W}{\overline{a}_P} e_{u,W}^{*} +
                    -\dfrac{\omega_u S_f}{2 \overline{a}_P} (e_{p,E}^{**}-e_{p,W}^{**}) +
-                   (1-\omega) \; e_{u,P}^0
+                   (1-\omega_u) \; e_{u,P}^0
 \end{equation}
 
 \noindent which, in Fourier terms, becomes:
@@ -1344,7 +1344,7 @@ For the velocity update (Eq.~(\ref{eq:SIMPLECorr})), the equation for the error 
 \begin{equation}
     \alpha_{u}^{***} = \left[\left(-\dfrac{\omega_u a_E}{\overline{a}_P}\right) \text{e}^{i \theta} + \left(- \dfrac{\omega_u a_W}{\overline{a}_P}\right) \text{e}^{- i \theta}\right] \alpha_u^{**} +
                    \left[\left(-\dfrac{\omega_u S_f}{2 \overline{a}_P}\right) \left(\text{e}^{i \theta}-\text{e}^{-i \theta}\right) \right] \alpha_p^{**} +
-                   (1-\omega) \; \alpha_u^0
+                   (1-\omega_u) \; \alpha_u^0
 \end{equation}
 
 \noindent with $\alpha_p^{***}=\alpha_p^{**}$.
@@ -1442,8 +1442,8 @@ a^S_5 & 0 \\
      a^S_3 &= \left(-\dfrac{\omega_u a_E}{\overline{a}_P}\right) \text{e}^{i \theta} + \left(- \dfrac{\omega_u a_W}{\overline{a}_P}\right) \text{e}^{- i \theta} \\
      b^S_3 &= \left(-\dfrac{\omega_u S_f}{2 \overline{a}_P}\right) \left(\text{e}^{i \theta}-\text{e}^{-i \theta}\right) \\ 
      c^S_4 &= \left( \dfrac{\omega_p}{S_f \Psi} \right) 
-                     \left(\dfrac{1-\omega}{\omega} \right) \left(\dfrac{\overline{a}_P}{2} \right) \left(\text{e}^{i \theta} - \text{e}^{- i \theta} \right)  \\
-     a^S_5 &= (1-\omega)      
+                     \left(\dfrac{1-\omega_u}{\omega_u} \right) \left(\dfrac{\overline{a}_P}{2} \right) \left(\text{e}^{i \theta} - \text{e}^{- i \theta} \right)  \\
+     a^S_5 &= (1-\omega_u)      
 \end{split}
 \end{equation}
 
@@ -1463,7 +1463,7 @@ Looking at Eqs.~(\ref{eq:pEqnSIMPLEC2}) and~(\ref{eq:uCorrSIMPLEC}), and taking 
      d^C_2 &= 1 \\
      a^C_3 &= \left(\dfrac{\overline{a}_P}{\omega_u \tilde{a}_P}\right) a_3^S + \dfrac{a_E+a_W}{\tilde{a}_P} \\
      b^C_3 &= \left(\dfrac{\overline{a}_P}{\omega_u \tilde{a}_P}\right) b_3^S \\ 
-     c^C_4 &= \dfrac{1}{\omega_P} c^S_4 \\
+     c^C_4 &= \dfrac{1}{\omega_p} c^S_4 \\
      a^C_5 &= \left(\dfrac{\overline{a}_P}{\omega_u \tilde{a}_P}\right) a^S_5     
 \end{split}
 \end{equation}
@@ -1490,7 +1490,7 @@ The von Neumann stability criteria \cite{hirsch} will be applied to determine th
 
 \noindent where $\beta$ is the amplification factor and $\lambda$ are the eigenvalues of the amplification matrix $[A^m]$. If Eq. (\ref{eq:AmpCrit}) is verified for each frequency, then the method will be considered numerically stable (under the hypothesis of the Fourier analysis). Moreover, the value of $\beta$ gives a notion about the error damping (or convergence) rate of the method (i.e. if the values are below but close to unity, then the method will probably have a slow convergence rate, while the opposite happens when the values are close to zero).
 
-Fig.~\ref{fig:1a} shows the amplification factor for each method with a relaxation factor $\omega=0.7$ ($\omega_p=1-\omega$, for SIMPLE) for low and high mesh-Reynolds numbers ($Re_h = \dfrac{h U}{\nu}$). It is observed that SIMPLE has always a higher amplification factor (slower convergance rate) for each frequency and for each $Re_h$ considered. On the other hand, the SIMPLEC method gets slightly affected with the change of $Re_h$ while COMPLEX does not show any significant variation. All methods show a stable behavior under the Fourier conditions, while COMPLEX and SIMPLEC show lower amplification factors than SIMPLE. 
+Fig.~\ref{fig:1a} shows the amplification factor for each method with a relaxation factor $\omega_u=0.7$ ($\omega_p=1-\omega_u$, for SIMPLE) for low and high mesh-Reynolds numbers ($Re_h = \dfrac{h U}{\nu}$). It is observed that SIMPLE has always a higher amplification factor (slower convergance rate) for each frequency and for each $Re_h$ considered. On the other hand, the SIMPLEC method gets slightly affected with the change of $Re_h$ while COMPLEX does not show any significant variation. All methods show a stable behavior under the Fourier conditions, while COMPLEX and SIMPLEC show lower amplification factors than SIMPLE. 
 
 \begin{figure}[t!!]
     \centering
@@ -1500,8 +1500,8 @@ Fig.~\ref{fig:1a} shows the amplification factor for each method with a relaxati
     \label{fig:1a}
 \end{figure}
     
-Fig.~\ref{fig:1b} shows the sensitivity of the amplification factor to the momentum relaxation factor for all frequencies and for the three coupling methods. The results are obtained for a $Re_h=1$ and always considering the rule $\omega_P = 1 - \omega$ for SIMPLE. While the SIMPLE algorithm does not show any significant improvement for higher values of $\omega$ (even showing a range of instability for low frequencies at $\omega=0.95$ and $\omega_P=0.05$), the SIMPLEC algorithm shows a depletion in its performance for high momentum relaxation factors (tending to unity for $\theta=0$ as $\omega_u \rightarrow 1$). In this aspect, the COMPLEX algorithm shows a clear advantage over the other two methods by preserving almost unaltered the overall error damping, even for high momentum relaxation factors.     
-    
+Fig.~\ref{fig:1b} shows the sensitivity of the amplification factor to the momentum relaxation factor for all frequencies and for the three coupling methods. The results are obtained for a $Re_h=1$ and always considering the rule $\omega_p = 1 - \omega_u$ for SIMPLE. While the SIMPLE algorithm does not show any significant improvement for higher values of $\omega_u$ (even showing a range of instability for low frequencies at $\omega_u=0.95$ and $\omega_p=0.05$), the SIMPLEC algorithm shows a depletion in its performance for high momentum relaxation factors (tending to unity for $\theta=0$ as $\omega_u \rightarrow 1$). In this aspect, the COMPLEX algorithm shows a clear advantage over the other two methods by preserving almost unaltered the overall error damping, even for high momentum relaxation factors.
+
 \begin{figure}[t!!]
     \centering
     %\includegraphics[width=0.45\textwidth]{fig/w07} \hspace{1cm}
@@ -1533,11 +1533,17 @@ A method to quantify the overall error damping for a general problem, where the 
 \section{Test cases}
 \label{sec:cases}
 
-In this section, the new pressure-velocity coupling strategy is analysed in the context of incompressible, laminar and stationary Newtonian flows. On this line, the numerical performance of the method is compared with  SIMPLE and SIMPLEC by evaluating the total number of iterations required to achieve a convergence criteria. First of all, the details of each problem are explained followed by the definition of the convergence criteria. Subsequently, the numerical configuration of the simulations are commented and after that, two different analysis over the COMPLEX method are performed. On the one hand, a serie of simulations are carried out to investigate a suitable value of the complex factor $\kappa$ and finally, a comparison of the current proposal with SIMPLE and SIMPLEC is presented for various conditions. 
+In this section, the new pressure-velocity coupling strategy is analysed in the context of incompressible, laminar and stationary Newtonian flow problems. The numerical performance of the method is compared with SIMPLE and SIMPLEC by considering the total number of iterations required to achieve a convergence criteria. First, the details of each problem are explained followed by the definition of the convergence criteria adopted. Then, a description of the numerical setup for each simulation is presented and, after that, two different analysis over the COMPLEX method are performed. On one hand, a series of simulations are carried out to investigate a suitable value of the complex factor $\kappa$. Secondly, a comparison of the current proposal with SIMPLE and SIMPLEC is presented for various conditions. 
 
 \subsection{Test problems}\label{Section:problemDescription}
  The evaluation of the COMPLEX method is achieved by solving two typical tests for incompressible and stationary flows. The first of them is the cubic cavity test and the second one is the flow through the Backward Facing Step (BFS) channel.
-\subsubsection{Cavity}
+
+All the simulations use the same numerical schemes. The convective terms are discretized with an upwind scheme and the pressure gradient operator is computed with a Gauss-based formula using linear interpolation to define the face values. The diffusive terms are discretized with a Gauss-based formula where the face gradient is assembled with a first-neighbour stencil. The linear system of equations are solved until a convergence of two order of magnitude is achieved for both the momentum and mass balances. 
+
+Regarding the relaxation factors, the momentum relaxation $\omega_u$ will be a variable of the parametric study. On the other side, the pressure relaxation $\omega_p$ is equal to one for COMPLEX and SIMPLEC, while for SIMPLE is defined as $
+\omega_p = 1 - \omega_u$.
+
+\subsubsection{Cubic cavity}
  A graphical scheme of this problem is depicted in Fig.~\ref{Fig:Cavity}.
 \begin{figure}[t!!!]
 \centering
@@ -1545,17 +1551,17 @@ In this section, the new pressure-velocity coupling strategy is analysed in the 
 \caption{The cubic cavity problem where a fixed tangential velocity is imposed on the upper face.}
 \label{Fig:Cavity}
 \end{figure} 
-There, a tangential fixed velocity of 1 m/s is imposed on the upper face of the cubic domain of length 1 m. The case is solved using to different values of the kinematic viscosity, $\nu = 2.5\, e-3$ m$^2$/s and $\nu = 2.5$ m$^2$/s which defines the Reynolds number of 400 and $0.4$ respectively. For the purposes of this paper, the cavity is discretised with hexahedral cells using three different refinement levels: a coarse mesh with 25 divisions per side (15625 cells), a medium mesh with 50 divisions per side (125000 cells) and a fine mesh with 100 divisions per side (1000000 cells).
+Here, a tangential fixed velocity of 1 m/s is imposed on the upper face of the cubic domain of length 1 m. The case is solved using two different values of the kinematic viscosity, $\nu = 2.5 \times 10^{-3}$ m$^2$/s and $\nu = 2.5$ m$^2$/s which define a Reynolds number of 400 and $0.4$ respectively. For the purposes of this paper, the cavity is discretised with hexahedral cells using three different refinement levels: a coarse mesh with 25 divisions per side (15625 cells), a medium mesh with 50 divisions per side ($1.25 \times 10^{5}$ cells) and a fine mesh with 100 divisions per side ($10^{6}$ cells).
 
 \subsubsection{Backward Facing Step}
-The domain of this test and its dimension are shown in Fig.~\ref{Fig:Geometria3}.
+The domain of this test and its dimensions are shown in Fig.~\ref{Fig:Geometria3}.
 \begin{figure}[t!!!]
 \centering
 \includegraphics[width=12cm]{fig/Cases/Geometria3.pdf}
 \caption{Description of the BFS domain where the dimensions are defined relative to the inlet height $h = 1$ m.}
 \label{Fig:Geometria3}
 \end{figure}
-At the inlet, a constant and normal velocity of 1 m/s of magnitude is set up. Analogously to the cavity case, the problem is simulated with two different viscosity values, $\nu = 5.141\,e-3$ m$^2$/s and $\nu = 5.141$ m$^2$/s which refers to the Reynolds number of 389 and $0.389$ respectively. The BFS is discretized with hexahedral cells using three different mesh sizes as defined in Table~\ref{Table:BFSMeshes} with a variable cell size as plotted in Fig.~\ref{Fig:Factores} where the near wall regions and the step sector are relatively refined.
+At the inlet, a constant and normal velocity of 1 m/s of magnitude is imposed. Analogously to the cavity case, the problem is simulated with two different viscosity values, $\nu = 5.141 \times 10^{-3}$ m$^2$/s and $\nu = 5.141$ m$^2$/s which define a Reynolds number of 389 and $0.389$ respectively. The BFS is discretized with hexahedral cells using three different mesh sizes as defined in Table~\ref{Table:BFSMeshes} with a variable cell size as plotted in Fig.~\ref{Fig:Factores}, where the regions near the wall and the step are more refined than the rest of the domain.
 \begin{table}[b!]
 \centering
 \begin{tabular}{cccccccc}
@@ -1581,7 +1587,7 @@ Fine & 80 & 160 & 30 & 104 & 160 & 60 & 1382400 \\
 \end{figure}
 
 \subsection{Error measurement}
-To analyse the rate of convergence of the different algorithms, an error measure is defined. The error is assumed to be the residual of the discretized Navier-Stokes equations which are computed for each cell $P$ of the FV mesh $\Omega$. Then, the momentum residual writes,
+To analyse the rate of convergence of the different algorithms, an error norm is defined. The residual field of the discretized Navier-Stokes equations which are computed for each cell $P$ of the FV mesh $\Omega$ is considered as the main error measure. Then, the momentum residual are,
 \begin{equation}
 \label{Eq:R1Discretized}
 R_1(P)
@@ -1605,7 +1611,7 @@ p_f
 \qquad \qquad
 \forall P\,\in\,\Omega,
 \end{equation}
-and analogously, the mass residual may be computed as follows,
+and, analogously, the mass residual may be computed as follows,
 \begin{equation}
 R_2(P)
 =
@@ -1616,7 +1622,7 @@ R_2(P)
 \qquad \qquad
 \forall P\,\in\,\Omega,
 \end{equation}
-where the face velocity value $\boldsymbol{u}_f$ is replaced in terms of the momentum equation such as done in Eq.~(\ref{Eq:firstPressureEq}),
+where the face velocity value $\boldsymbol{u}_f$ is replaced in terms of the momentum equation as was done in Eq.~(\ref{Eq:firstPressureEq}),
 \begin{equation}
 \label{Eq:R2Discretized}
 R_2(P)
@@ -1640,7 +1646,7 @@ R_2(P)
 \forall P\,\in\,\Omega.
 \end{equation}
 It is important to highlight that the computations of $R_1$ and $R_2$ are independent of the pressure-velocity coupling strategy employed. These equations are only function of the velocity and pressure values, and of the momentum equation coefficients which are equally assembled for the three pressure-velocity coupling methods studied in this paper. In addition to this, the residuals $R_1$ and $R_2$ are computed at the end of each time step of the simulation. 
-On the basis of their definition, the residuals $R_1$ and $R_2$ are an appropriate indicator to qualify the convergence of the different numerical algorithms by isolating their specific influence. In particular of this paper, the Root Mean Square (RMS) value of them is computed, 
+On the basis of their definition, the residuals $R_1$ and $R_2$ are an appropriate indicator to quantify the convergence of the different numerical algorithms by isolating their specific influence. Here, the Root Mean Square (RMS) value over all the cells of the domain is employed, 
 \begin{align}
 \overline{R}_1
 &=
@@ -1658,34 +1664,23 @@ R_1(P)^2
 R_2(P)^2
 }.
 \end{align}
-Referring to the $\overline{R}_1$ and $\overline{R}_2$, the following convergence criteria is proposed in this work: a numerical simulation will be assumed as converged if both values, $\overline{R}_1$ and $\overline{R}_2$  are below a tolerance of $1e^{-9}$,
+Referring to the $\overline{R}_1$ and $\overline{R}_2$, the following convergence criteria is proposed: a numerical simulation will be assumed as converged if both values, $\overline{R}_1$ and $\overline{R}_2$  are below a tolerance of $10^{-9}$,
 \begin{equation}
 \label{Eq:convergenceCriteria}
 \left\lbrace
 \begin{array}{c}
-\overline{R}_1 \leq 1e^{-9} \\
-\overline{R}_2 \leq 1e^{-9}
+\overline{R}_1 \leq 10^{-9} \\
+\overline{R}_2 \leq 10^{-9}
 \end{array}
 \right..
 \end{equation}
 
-\subsection{Numerical setup}
-The simulations of the different analysis are configured with the same numerical schemes. Namely, the convective terms are discretised with an upwind scheme and the pressure gradient operator is computed with a Gauss-based formula using linear interpolation to define the face values. Respecting the diffusive terms, they are discretized with a Gauss-based formula where the face gradient is assembled with a first-neighbour stencil. The linear system of equations are solved until a convergence of two order of magnitude is achieved for both, the momentum and mass balance systems. 
+%\subsection{Numerical setup}
 
-With reference to the relaxation factors, the momentum relaxation factor $\omega_u$ is a variable of the parametric study. On the other side, the pressure relaxation $\omega_p$ is equal to one in the COMPLEX and SIMPLEC simulations and in the SIMPLE ones it is defined as follows,
-\begin{equation}
-\label{Eq:relaxP}
-\omega_p = 1 - \omega_u.
-\end{equation}
+\subsection{Study of the Complex factor $\kappa$}
+In this section, the influence of $\kappa$ on the convergence rate is analysed in combination with the relaxation factor for the momentum equation $\omega_{u}$, measuring the number of iterations to reach convergence as defined in Eq.~(\ref{Eq:convergenceCriteria}). Here, a series of simulations of the cavity and BFS problems are solved using the medium refinement level. For each case, two different physical configuration are addressed according to the proposed Reynolds numbers. Each one of the four simulations are solved varying the values of $\kappa$ and $\omega_{u}$. The Complex factor ranges from 0 to 1 with a step of $0.05$ (21 values) and the relaxation factor from 0.8 up to 1 with a step of $0.1$ (21 values). Altogether, this parametric study consists of 1764 simulations.
 
-  
-
-\subsection{Study of the complex factor $\kappa$}
-An important parameter of the current numerical method is the complex factor $\kappa$. In this study, the influence  of $\kappa$ on the convergence rate is analysed in combination with the relaxation factor for the momentum equation $\omega_{u}$ where the number of iterations required to reach the convergence criteria of Eq.~(\ref{Eq:convergenceCriteria}) is quantified.
-
-The study solves a serie of simulations of the cavity and BFS problems using the medium refinement levels of the proposed meshes respectively. Furthermore, for each case, two different physical configuration are addressed according to the two Reynolds number proposed. Consequently, four different numerical problems are defined. Each one of this four simulations is solved varying the values of $\kappa$ and $\omega_{u}$. The complex factor is ranged from 0 to 1 by a step of $0.05$ (21 values) and the relaxation factor from 0.8 up to 1 by a step of $0.1$ (21 values) respectively. In combination, this parametric study is composed by 441 simulations for each one of the four numerical problems.
-
-The results of the simulations are presented in the Tables~\ref{Table:Cavity_LowRe}, \ref{Table:BFS_LowRe}, \ref{Table:Cavity_HighRe} and \ref{Table:BFS_HighRe}, and in the Fig.~\ref{Fig:FactorLowRe}. One one hand, the tables present the required number of iterations to reach the convergence as function of $\omega_u$ and $\kappa$. Not all simulations are displayed due to space limitations, the range of $\omega_u$ is shortened from 0.92 to 1 and the $\kappa$ values are listed using a step of 0.1 instead of 0.05. On the other hand, the Fig.~\ref{Fig:FactorLowRe} present the results of the four cases using contour plots. There is one figure per case which plots the relative number of iterations ($RI$) required for each simulation compared with those required for the simulation with the same relaxation factor but with $\kappa = 0$. Formally, the relative iteration index $RI$ for a given pair of values $\omega_u$ and $\kappa$ is computed as follows,
+The results of the simulations are presented in the Tables~\ref{Table:Cavity_LowRe}, \ref{Table:BFS_LowRe}, \ref{Table:Cavity_HighRe} and \ref{Table:BFS_HighRe}, and in Fig.~\ref{Fig:FactorLowRe}. Here, the required number of iterations to reach the convergence as function of $\omega_u$ and $\kappa$ is shown. The tables focus on the results that are closer to the optimal values of $\omega_u$ (between 0.92 and 1) using a $\kappa$ step of 0.1 instead of 0.05. In order to compare the performance of the methods, the relative number of iterations ($RI$) is defined as follows, 
 \begin{equation}
 \label{Eq:relativeIndex}
 RI(\omega_u, \kappa)
@@ -1700,9 +1695,9 @@ NI(\omega_u, 0)
 \times
 100 \%,
 \end{equation}
-where $NI(\omega_u, \kappa)$ is the number of iterations required for convergence using the relaxation value $\omega_u$ and the complex factor $\kappa$ and $NI(\omega_u, 0)$ is the number of iterations required for the convergence using the relaxation value $\omega_u$ and a complex factor equal to $\kappa = 0$.
-
-The Tables~\ref{Table:Cavity_LowRe},~\ref{Table:BFS_LowRe}, and the upper plots of Fig.~\ref{Fig:FactorLowRe} present the relative low Reynolds simulation results  and the Tables~\ref{Table:Cavity_HighRe},~\ref{Table:BFS_HighRe}, and the bottom plots of Fig.~\ref{Fig:FactorLowRe} present the relative high Reynolds ones. 
+where $NI(\omega_u, \kappa)$ is the number of iterations required for convergence using the relaxation value $\omega_u$ and the Complex factor $\kappa$. In this context, $NI(\omega_u, 0)$ is equal to the number of iterations required for convergence of SIMPLEC algorithm. Fig.~\ref{Fig:FactorLowRe} shows $RI$ values for all the studied cases.
+ 
+The Tables~\ref{Table:Cavity_LowRe},~\ref{Table:BFS_LowRe}, and the upper plots of Fig.~\ref{Fig:FactorLowRe} present the results for relative low Reynolds simulations, while Tables~\ref{Table:Cavity_HighRe},~\ref{Table:BFS_HighRe}, and the lower plots of Fig.~\ref{Fig:FactorLowRe} present the results for relative high Reynolds simulations. In general, it is concluded that the addition of the Complex term has no influence over convergence when using low relaxation factors. On the contrary, with high values of $\omega_u$, the addition of the Complex term reduces the number of iterations up to 20 $\%$ approximately. The best results are obtained with values of the Complex factor $\kappa \leq 0.5$, while $\kappa \geq 0.5$ values may induce instabilities. In particular, the BFS problem at Re = 389 presents an extended divergence zone for the highest values of $\omega_u$, followed by a slow convergence zone (coloured in grey) for lower values of $\omega_u$. Despite this behaviour, the simulations are stable and have a maximum convergence rate for low values of $\kappa$.
 \begin{table}[b!!]
 \centering
 \begin{tabular}{c|ccccccccccc}
@@ -1789,14 +1784,13 @@ $\omega_u$/$\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 
 \caption{Isolines of relative iterations as function of the momentum relaxation factor and the complex factor for the Cavity and BFS cases and the values of the Reynolds number employed respectively.}
 \label{Fig:FactorLowRe}
 \end{figure}
-In general, it is concluded that the addition of the complex term does not influence the convergence when using relative low relaxation factors. On the contrary, with relative high values of $\omega_u$, the addition of the complex term reduces the number of iterations required for convergence. This reduction has a maximum value of approximately 20 $\%$ in the total number of iterations. The better results are obtained with values of the complex factor that are below $k = 0.5$. The simulations with high values of the complex factor $(k \geq 0.5)$ may be unstable. In particular, the BFS problem at Re = 389 indicates an extended divergence zone for the highest values of $\omega_u$ which is followed by a slow convergence zone (grey-coloured zone in the figure) for lower values of $\omega_u$. Unlike this last behavour, with lower values of $\kappa$, the simulations are stable and indicate the maximum convergence speed. 
 
-In view of this investigation, it is concluded that a complex factor equal to $\kappa = 0.2$ is adequate to speed up the convergence without losing stability. This last inference is determined based on two different numerical problems (Cavity and BFS) in the range of Reynolds number between $0.4$ and $400$. 
+In view of these results, it is concluded that a Complex factor $\kappa = 0.2$ is adequate to speed up the convergence without losing stability. Thus, the following COMPLEX simulations will be performed using this value. % This last inference is determined based on two different numerical problems (Cavity and BFS) in the range of Reynolds number between $0.4$ and $400$. 
 
  
 \subsection{Comparison of COMPLEX with SIMPLE and SIMPLEC}
-In the next paragraphs, a comparison of the COMPLEX strategy against the SIMPLE and SIMPLEC methods is performed. Here, the COMPLEX	 simulations are solved using a complex factor of $\kappa = 0.2$. 
-Similar as solved in the previous section, the number of iterations required to reach the convergence criteria is measured. Each of the four numerical cases defined in previous section is solved using the coarse, medium and fine mesh levels. As well as the Reynolds number and the mesh refinement, the effect of momentum relaxation factor on the convergence is included into the exploration. Therefore, the simulations are solved varying $\omega_u$ from 0.8 to 1 using a step of 0.1.
+In this section, a comparison of the COMPLEX strategy against SIMPLE and SIMPLEC is performed.
+As in the previous study, the number of iterations to convergence is measured. The four numerical cases defined in the previous section are solved using coarse, medium and fine mesh levels. Moreover, the effect of momentum relaxation is included considering $\omega_u$ values from 0.8 to 1 using a step of 0.1 in this analysis .
 \begin{figure}[t!]
 \centering
 \includegraphics[width=17cm]{fig/Results/complexCoarse.pdf}
@@ -1818,26 +1812,29 @@ Similar as solved in the previous section, the number of iterations required to 
 \label{Fig:complexFine}
 \end{figure}
 
-The results are presented in the Figs.~\ref{Fig:complexCoarse},~\ref{Fig:complexMedium} and \ref{Fig:complexFine} which are respective to the three refinement mesh levels. Each figure includes six bar plots arranged in three rows and two columns. On the right and left columns, the results of the Cavity and BFS simulations are presented respectively. In the first row, the absolute number of iterations at convergence for the COMPLEX method simulations are indicated. Relative to these simulations, the second and third row display the relative number of iterations in percentage for the SIMPLEC and SIMPLE methods respectively,
+The results are presented for to the three mesh refinement levels in Figs.~\ref{Fig:complexCoarse},~\ref{Fig:complexMedium} and \ref{Fig:complexFine}. Each figure includes six bar plots arranged in three rows and two columns. The right column presents the results for the Cavity case while the left one presents the BFS results. The number of iterations for convergence of the COMPLEX method ($NI_X(\omega_u)$) are shown in the first row. The second and third row display the results for SIMPLEC and SIMPLE in relative terms using the $RI$ index,
 \begin{equation}
 RI(\omega_u)
 =
 \dfrac
-{NI_S(\omega_u) - NI_C(\omega_u)}
-{NI_C(\omega_u)}
+{NI_{(S,C)}(\omega_u) - NI_X(\omega_u)}
+{NI_X(\omega_u)}
 \times
 100\%,
 \end{equation}
-where $NI_S(\omega_u)$ is the absolute number of iterations required at convergence for the SIMPLEC or SIMPLE method as appropriate when using a relaxation factor of momentum equal to $\omega_u$ and $NI(\omega_u)_C$. 
- In all plots, the blue bars are respective to the relative low Reynolds simulations while the red ones are respective to the relative high Reynolds ones.   
+where $NI_{(S,C)}(\omega_u)$ is the absolute number of iterations needed to reach convergence for the SIMPLE or SIMPLEC methods for a given relaxation factor $\omega_u$ and $NI_X(\omega_u)$. 
+In all plots, the blue bars represents to the low Reynolds simulations and the red ones represents to high Reynolds simulations.
 
-In general, the difference between COMPLEX and the other studied methods is relevant for high values of the momentum relaxation factor $\omega_u$. Examining the absolute number of iterations of COMPLEX, the  value of $\omega_u$ in which the complex method has the best convergence is coincident with the start point from which the differences between the methods become significant. This last observation may be interpreted as COMPLEX has a lower minimum of the required iterations in order to converge and that the decay of the convergence caused by an excessive value of $\omega_u$ is better handled by the COMPLEX method. An hypothesis for the previous reaction of the methods may be explained by considering that a higher relaxation factor of the momentum equation leads to a higher divergence of the velocity field, since this constraint is naturally not imposed in the momentum balance. With this in mind, the COMPLEX strategy includes a numerical correction for this deviation which helps to an enhanced prediction of the pressure in these conditions.
+In general, the difference between COMPLEX and the other methods is significant for high values of the momentum relaxation factor. Moreover, these differences start becoming relevant where COMPLEX is reaching its minimum number of iterations. This last observation may be interpreted as COMPLEX has a lower minimum of the required iterations in order to converge and that the decay of the convergence caused by an excessive value of $\omega_u$ is better handled by the COMPLEX method. An hypothesis for the previous reaction of the methods may be explained by considering that a higher relaxation factor of the momentum equation leads to a higher divergence of the velocity field, since this constraint is naturally not imposed in the momentum balance. With this in mind, the COMPLEX strategy includes a numerical correction for this deviation which helps to an enhanced prediction of the pressure in these conditions.
+%% Cerrar con la idea que la correccion complex incluye eq de masa y por eso ayuda a mitigar el alejamiento de la divergence-free condition cuando el omega_u aumenta.
 
-The results are sensitive to the mesh refinement level. Analysing the absolute number of iterations of the COMPLEX method, it is observed that the reduction of the number of iterations when increasing the momentum relaxation factor raises up with mesh refinement. This also deviates the minimum iterations point to the right direction in concordance with a higher value of $\omega_u$. 
+%The results are sensitive to the mesh refinement level. Analysing the absolute number of iterations of the COMPLEX method, it is observed that the reduction of the number of iterations when the momentum relaxation factor is increased, also increases as the mesh refined.
+
+The results are sensitive to the mesh refinement level. Analysing the absolute number of iterations of the COMPLEX method, it is observed that the reduction rate of the number of iterations with the relaxation factor grows with mesh refinement. Besides, the minimum iterations point occurs at higher value of $\omega_u$ for finer meshes.
 
 The mesh refinement level affects the relative differences between the methods. The range of $\omega_u$ in which COMPLEX converges better is wider in the coarse mesh than in the fine mesh. Namely, this range start from $\omega_u = 0.85$ in the coarse mesh and from $\omega_u = 0.95$ in the fine one.
 
-In regard to the Reynolds number influence on COMPLEX it may be assert that for the relative high Reynolds number, a less iterations are required to reach the convergence criteria. This property of COMPLEX is also observed when comparing it with SIMPLE and SIMPLEC. Here, the iteration reduction required for convergence is higher for the relative high Reynold problems. A similar effect is also noted in the range in which COMPLEX is more convergent. As pointed out before, the range of advantage of COMPLEX regarding the $\omega_u$ value starts at the point where the iteration number is approaching a minimum. This trend is also observed in the high Reynolds simulations since the wider range of advantage of COMPLEX compared with the low Reynolds problems may be justified since the minimum iterations number occurs with a lower value of $\omega_u$.
+In regard to the Reynolds number influence on COMPLEX, it has been noted that for relative high Reynolds number, less iterations are required to reach the convergence criteria. This property of COMPLEX is also observed when comparing it with SIMPLE and SIMPLEC. Here, the iteration reduction required for convergence is higher for the relative high Reynold problems. A similar effect is also noted in the range in which COMPLEX is more convergent. As pointed out before, the range of advantage of COMPLEX regarding the $\omega_u$ value starts at the point where the iteration number is approaching a minimum. This trend is also observed in the high Reynolds simulations since the wider range of advantage of COMPLEX compared with the low Reynolds problems may be justified since the minimum iterations number occurs with a lower value of $\omega_u$.
 
 %To conclude this analysis, it is remarked that in almost all cases (Cavity or BFS, mesh refinement level $\omega_u$ value, and Reynolds number) the COMPLEX method is superior in terms of convergence than both, the SIMPLE and SIMPLEC method.
 
@@ -1851,7 +1848,7 @@ The stability of the COMPLEX method is analytically studied using a Fourier deco
 
 The COMPLEX formulation was tested for different flow regimes in two three-dimensional problems: a cubic cavity and a BFS test. An exhaustive study of more than 1500 simulations was performed in order to find an optimal range of the Complex relaxation factor $\kappa$, based on the total number of iterations until convergence. From these results, a Complex relaxation factor of $\kappa = 0.2$ was chosen as the most suitable for the problems under study. Following this, the performance of the COMPLEX method was compared with SIMPLE and SIMPLEC for three different mesh refinements and for high and low values of the Reynolds number. The results proved that the COMPLEX method has a better convergence rate for high values of the momentum relaxation factor, which verifies the results of the Fourier analysis. This advantage is more notorious in coarse meshes and for problems with high Reynolds numbers. In these conditions, the performance of this method compared to the standard SIMPLE algorithm are remarkable.
 
-Based on the results of the present work, the current strategy comes as a promising technique to speed up the convergence of segregated algorithms. Its implementation is simple and consists on adding a new term on the pressure equation of the SIMPLEC algorithm. One of the main qualities of the method is that it enforces the conservation of mass. This translates into an improvement in the performance, overcoming SIMPLEC and SIMPLE when the prediction of the velocity is far from verifying the divergence free condition, as it is the case of high relaxation factors or high Reynolds numbers. A challenge for future works consists on improving the approximation given in Eq.~(\ref{eq:gradApprox}) allowing an anisotropic behavior of the velocity correction and preserving the mathematical closure.
+Based on the results of the present work, the current strategy comes as a promising technique to speed up the convergence of segregated algorithms. Its implementation is simple and consists in adding a new term on the pressure equation of the SIMPLEC algorithm. One of the main qualities of the method is that it enforces the conservation of mass. This translates into an improvement in the performance, overcoming SIMPLEC and SIMPLE when the prediction of the velocity is far from verifying the divergence-free condition, as it is the case of high relaxation factors or high Reynolds numbers. A challenge for future works consists on improving the approximation given in Eq.~(\ref{eq:gradApprox}) allowing an anisotropic behavior of the velocity correction and preserving the mathematical closure.
 
 \bibliographystyle{unsrtnat}
 \bibliography{main}
