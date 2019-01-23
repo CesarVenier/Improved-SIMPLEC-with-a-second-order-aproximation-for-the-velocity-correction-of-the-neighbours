@@ -1197,45 +1197,38 @@ where $\kappa$ is the Complex relaxation factor and its value is between 0 and 1
 
 In order to investigate the features of the new method, a stability analysis based on a Fourier decomposition of the error is proposed. This technique has proven to be a powerful tool to determine the numerical and physical conditions that guarantee a stable solution for linearized equations. Moreover, the methodology is extendable for the analysis of multi-variable discrete systems that are addressed by segregation of the variables. The main feature of this approach is to condense the spatial information into a frequency spectrum where only the term of the frequency that produces the highest amplification of the error is taken into account. In this way, the problem is reduced to the analysis of the Fourier coefficients and its evolution in time \cite{hirsch}. 
 
-On the downside, this technique relies on having constant coefficients in the momentum and pressure equations, which will be constant up to the point of the beginning of the second iteration where $a_P$ and $a_N$ are updated with the new velocity field. That means that a sequence of several SIMPLE iterations cannot be studied via Fourier decomposition as a whole. Instead, each iteration need to be studied separately. Another drawback of the Fourier analysis is that only periodic boundary conditions can be considered for the analysis. Nevertheless, this restrictions are the price to pay to have an analytical tool that gives valuable information about the ranges of stability and error damping of each method as a function of just a few parameters. Moreover, since this technique will be used to compare each coupling method under the same conditions, these drawbacks will become irrelevant.
+On the downside, this technique relies on having constant coefficients in the momentum and pressure equations, which will be constant up to the point of the beginning of the second iteration where $a_P$ and $a_N$ are updated with the new velocity field. That means that a sequence of several SIMPLE iterations cannot be studied via a Fourier decomposition as a whole. Instead, each iteration need to be studied separately. Another drawback of the Fourier analysis is that only periodic boundary conditions can be considered for the analysis. Nevertheless, these restrictions are the price to pay to have an analytical tool that gives valuable information about the ranges of stability and error damping of each method as a function of just a few parameters. Moreover, since this technique will be used to compare each coupling method under the same conditions, these drawbacks will become irrelevant.
 
-Many examples of usage of this technique can be found in the literature. Shaw et al. \cite{shaw} used it to study the error damping properties of the SIMPLE algorithm in staggered grids. Then, Miller \cite{miller1} extended this analysis to the investigation of the performance of SIMPLE and SIMPLEC on both collocated and staggered grids. On the other hand, Liu et al. \cite{liu} adopted the same technique to study a large number algorithms of the SIMPLE family. More recently, Miller et al. \cite{miller2} extended this technique for studying Eulerian multiphase flow models, while Venier et al. \cite{venier} studied the stability features of the PISO algorithm for addressing transient and steady state flow problems.
+Many examples of the usage of this technique can be found in the literature. Shaw et al. \cite{shaw} used it to study the error damping properties of the SIMPLE algorithm in staggered grids. Then, Miller \cite{miller1} extended this analysis to the investigation of the performance of SIMPLE and SIMPLEC on both, collocated and staggered grids. On the other hand, Liu et al. \cite{liu} adopted the same technique to study a large number of algorithms of the SIMPLE family. More recently, Miller et al. \cite{miller2} extended this technique to study Eulerian multiphase flow models, while Venier et al. \cite{venier} studied the stability features of the PISO algorithm for addressing transient and steady state flow problems.
 
-Here, a single iteration of the algorithm will be studied, which can be separated into three stages: the momentum predictor, the pressure equation and the velocity update. The equations of each stage (for each method) will be written in its Fourier decomposed form (with only the term with the frequency that produces the highest amplification). In order to do so, first, these equations must be written in terms of the errors of the variables (i.e. pressure and velocity), which are defined as:
+Here, a single iteration of the algorithm will be studied, which can be separated into three stages: the momentum predictor, the pressure equation and the velocity update. The equations of each stage (for each method) will be written in its Fourier decomposed form (with only the term with the frequency that produces the highest amplification). In order to do so, first, these equations are written in terms of the errors of the variables (i.e. pressure and velocity), which are defined as:
 \begin{equation}
-    e^k_{\phi,M} = \phi^{exact}_{M}-\phi_M^{k}
+    e^k_{\phi,M} = \phi^{exact}_{M}-\phi_M^{k},
 \end{equation}
-
-\noindent where $k$ is a given stage of the sequence ($0$ for the initial values, * for the variables after the momentum predictor, ** for the variables after the pressure equation and *** for the variables after the velocity update), $\phi$ is a given variable (pressure or velocity) and $M$ represents the spatial location.
-
-Moreover, the present study will be done for a one-dimensional FVM discretization (see Fig. \ref{fig:4a}) to simplify the analysis and arrive to some preliminary conclusions about the stability features of the method. Later on, all the methods will be tested in benchmark problems and the stability and convergence rate will be fully assessed. 
-
+where $k$ is a given stage of the sequence ($0$ for the initial values, * for the variables after the momentum predictor, ** for the variables after the pressure equation and *** for the variables after the velocity update), $\phi$ is a given variable (pressure or velocity) and $M$ represents the spatial location.
+The present study will be done for a one-dimensional FV discretization (see Fig. \ref{fig:4a}) to simplify the analysis.% and arrive to some preliminary conclusions about the stability features of the method. Later on, all the methods will be tested in benchmark problems and the stability and convergence rate will be fully assessed.
 \begin{figure}[t!]
     \centering
     \includegraphics[width=0.7\textwidth]{fig/cells.eps}
-    \caption{One-dimensional FVM discretization}
+    \caption{One-dimensional FVM discretization.}
     \label{fig:4a}
 \end{figure}
 
 First, the momentum predictor (Eq. (\ref{Eq:MomentumPredictor})) will be rewritten in terms of the error of the variables as follows,
 \begin{equation}
-    \dfrac{\overline{a}_P}{\omega} \; u_P^* + a_E \; u_E^* + a_W \; u_W^* = \dfrac{1-\omega}{\omega} \; \overline{a}_P \; u_P^0 - (\hat{\nabla} p)_P + \Phi_P
+    \dfrac{\overline{a}_P}{\omega} \; u_P^* + a_E \; u_E^* + a_W \; u_W^* = \dfrac{1-\omega}{\omega} \; \overline{a}_P \; u_P^0 - (\hat{\nabla} p)_P + \Phi_P,
 \end{equation}
-
 \begin{equation}
-    \dfrac{\overline{a}_P}{\omega} \; e_{u,P}^* + a_E \; e_{u,E}^* + a_W \; e_{u,W}^* = \dfrac{1-\omega}{\omega} \; \overline{a}_P \; e_{u,P}^0 - \dfrac{S_f}{2} (e^0_{p,E}-e^0_{p,W})
+    \dfrac{\overline{a}_P}{\omega} \; e_{u,P}^* + a_E \; e_{u,E}^* + a_W \; e_{u,W}^* = \dfrac{1-\omega}{\omega} \; \overline{a}_P \; e_{u,P}^0 - \dfrac{S_f}{2} (e^0_{p,E}-e^0_{p,W}),
     \label{eq:MPerror}
 \end{equation}
-
-\noindent where $P$, $W$ and $E$ represents the main cell and neighbour cells respectively on this current FVM stencil (see Fig. \ref{fig:4a}).
-
-Now, the errors can be written in terms of the Fourier decomposition as:
+where $P$, $W$ and $E$ represents the main cell and neighbour cells respectively on this current FVM stencil (see Fig. \ref{fig:4a}).
+Now, the errors may be written in terms of the Fourier decomposition as:
 \begin{equation}
-    e^k_{\phi,M} = \alpha^k_{\phi} \; \text{e}^{\left( i \, \theta \, \frac{x_M}{\Delta x}\right)}
+    e^k_{\phi,M} = \alpha^k_{\phi} \; \text{e}^{\left( i \, \theta \, \frac{x_M}{\Delta x}\right)},
     \label{eq:error}
 \end{equation}
-
-\noindent which, for multivariable systems, becomes:
+which, for multivariable systems, becomes:
 \begin{equation}
 \begin{bmatrix}
 e_u \\
@@ -1255,35 +1248,34 @@ p
 \alpha_u \\
 \alpha_p 
 \end{bmatrix}^{k}
-\; \text{e}^{\left( i \, \theta \, \frac{x_M}{\Delta x}\right)}
+\; \text{e}^{\left( i \, \theta \, \frac{x_M}{\Delta x}\right)},
 \label{eq:fou1}
 \end{equation}
-
-\noindent where $\Delta x$ represents the distance between the centroids of two adjoining cells. 
-
-Replacing each error on Eq. (\ref{eq:MPerror}) for its corresponding Fourier decomposition (as given by Eq. (\ref{eq:error})), the following equation is obtained:
+where $\Delta x$ represents the distance between the centroids of two adjoining cells.
+Replacing each error on Eq.~(\ref{eq:MPerror}) for its corresponding Fourier decomposition, as given by Eq. (\ref{eq:error}), the following equation is obtained:
 \begin{equation}
-    P_u \alpha_u^* = \left( \dfrac{1-\omega}{\omega} \; \overline{a}_P \right) \; \alpha_u^0 + \left(- \dfrac{S_f}{2} \right) \left(\text{e}^{i \theta} -  \text{e}^{-i \theta} \right) \alpha_p^0
+    P_u \alpha_u^* = \left( \dfrac{1-\omega}{\omega} \; \overline{a}_P \right) \; \alpha_u^0 + \left(- \dfrac{S_f}{2} \right) \left(\text{e}^{i \theta} -  \text{e}^{-i \theta} \right) \alpha_p^0,
     \label{eq:MPfou}
 \end{equation}
-
-\noindent where $P_u = \dfrac{\overline{a}_P}{\omega}  + a_E \; \text{e}^{i \theta} + a_W \; \text{e}^{-i \theta}$
-
-This can be rewritten as,
+where,
 \begin{equation}
-     \alpha_u^* = a_1 \alpha_u^0 + b_1 \alpha_p^0
+P_u = \dfrac{\overline{a}_P}{\omega}  + a_E \; \text{e}^{i \theta} + a_W \; \text{e}^{-i \theta}.
+\end{equation}
+
+This may be rewritten as,
+\begin{equation}
+     \alpha_u^* = a_1 \alpha_u^0 + b_1 \alpha_p^0,
     \label{eq:MPfou2}
 \end{equation}
-
-\noindent where:
+where:
 \begin{equation}
 \begin{split}
-     a_1 &= \dfrac{1-\omega}{\omega} \; \overline{a}_P \; P_u^{-1} \\
-     b_1 &= - \left( \dfrac{S_f}{2} \right) \left( \text{e}^{i \theta} -  \text{e}^{-i \theta} \right) \; P_u^{-1}
+     a_1 &= \dfrac{1-\omega}{\omega} \; \overline{a}_P \; P_u^{-1},
+\\
+b_1 &= - \left( \dfrac{S_f}{2} \right) \left( \text{e}^{i \theta} -  \text{e}^{-i \theta} \right) \; P_u^{-1},
 \end{split}
 \end{equation}
-
-\noindent and since $p^* = p^0$, the following amplification system is obtained:
+and since $p^* = p^0$, the following amplification system is obtained:
 \begin{equation}
 \begin{bmatrix}
 \alpha_u \\
@@ -1301,57 +1293,53 @@ a_1 & b_1 \\
 \begin{bmatrix}
 \alpha_u \\
 \alpha_p 
-\end{bmatrix}^{0}
+\end{bmatrix}^{0}.
 \end{equation}
 
-This step of the algorithm, the momentum predictor, is the same for each one of the coupling methods previously described. The next step, the pressure equation and velocity update, will differ from one method to the other, so they will be presented separately. First, the SIMPLE algorithm with pressure relaxation will be presented, followed by the SIMPLEC and COMPLEX algorithms.
+This step of the algorithm, the momentum predictor, is the same for each one of the coupling methods previously described. The next steps, the pressure equation and velocity update, will differ from one method to the other, so they will be explained separately. First, the SIMPLE algorithm with pressure relaxation will be presented, followed by the SIMPLEC and COMPLEX algorithms.
 
-The pressure equation in terms of the errors for the SIMPLE algorithm is obtained from Eq. (\ref{eq:pEqnSIMPLE3}), which, in 1D, becomes,
+The pressure equation in terms of the errors for the SIMPLE algorithm is obtained from Eq.~(\ref{eq:pEqnSIMPLE3}), which, in one-dimensional problems, becomes,
 \begin{equation}
     S_f \; (e_{p,E}^{**} - 2 e_{p,P}^{**} + e_{p,W}^{**}) = 
      -\left(\dfrac{a_E}{2}\right) (e_{u,EE}^* - e_{u,P}^*) 
     -\left(\dfrac{a_W}{2}\right) (e_{u,P}^* - e_{u,WW}^*)  +
-    \left( \dfrac{1-\omega}{\omega} \right) \left(\dfrac{\overline{a}_P}{2}\right) (e_{u,E}^0 - e_{u,W}^0)
+    \left( \dfrac{1-\omega}{\omega} \right) \left(\dfrac{\overline{a}_P}{2}\right) (e_{u,E}^0 - e_{u,W}^0),
 \end{equation}
-
-\noindent and the Fourier decomposition of the error (with pressure relaxation) becomes:
+and the Fourier decomposition of the error (with pressure relaxation) becomes:
 \begin{equation}
 \begin{split}
     \alpha_p^{**} = &\left( \dfrac{\omega_p}{S_f \Psi} \right) 
                     \left[ \left(-\dfrac{a_E}{2} \right) \left(\text{e}^{2 i \theta} - 1 \right) +
                             \left(-\dfrac{a_W}{2} \right) \left(1 - \text{e}^{-2 i \theta}\right)
-                    \right] \alpha_u^{*} \\
+                    \right] \alpha_u^{*}, \\
                     & + \left( \dfrac{\omega_p}{S_f \Psi} \right) 
                     \left[ \left(\dfrac{1-\omega}{\omega} \right) \left(\dfrac{\overline{a}_P}{2} \right) \left(\text{e}^{i \theta} - \text{e}^{- i \theta} \right) 
-                    \right] \alpha_u^{0} \\
-                    & + (1-\omega_p) \; \alpha_p^*    
+                    \right] \alpha_u^{0}, \\
+                    & + (1-\omega_p) \; \alpha_p^*,   
 \end{split}
 \end{equation}
 
 \noindent where $\alpha_u^{**} = \alpha_u^{*}$ and,
 
 \begin{equation}
-    \Psi = \text{e}^{i \theta} - 2 + \text{e}^{- i \theta}
+    \Psi = \text{e}^{i \theta} - 2 + \text{e}^{- i \theta}.
 \end{equation}
 
-For the velocity update (Eq.~(\ref{eq:SIMPLECorr})), the equation for the error may be written as:
+For the velocity update, Eq.~(\ref{eq:SIMPLECorr}), the equation for the error may be written as:
 
 \begin{equation}
     e_{u,P}^{***} = -\dfrac{\omega_u a_E}{\overline{a}_P} e_{u,E}^{*} -\dfrac{\omega_u a_W}{\overline{a}_P} e_{u,W}^{*} +
                    -\dfrac{\omega_u S_f}{2 \overline{a}_P} (e_{p,E}^{**}-e_{p,W}^{**}) +
-                   (1-\omega) \; e_{u,P}^0
+                   (1-\omega) \; e_{u,P}^0,
 \end{equation}
-
-\noindent which, in Fourier terms, becomes:
+which, in Fourier terms, becomes:
 
 \begin{equation}
     \alpha_{u}^{***} = \left[\left(-\dfrac{\omega_u a_E}{\overline{a}_P}\right) \text{e}^{i \theta} + \left(- \dfrac{\omega_u a_W}{\overline{a}_P}\right) \text{e}^{- i \theta}\right] \alpha_u^{**} +
                    \left[\left(-\dfrac{\omega_u S_f}{2 \overline{a}_P}\right) \left(\text{e}^{i \theta}-\text{e}^{-i \theta}\right) \right] \alpha_p^{**} +
-                   (1-\omega) \; \alpha_u^0
+                   (1-\omega) \; \alpha_u^0,
 \end{equation}
-
-\noindent with $\alpha_p^{***}=\alpha_p^{**}$.
-
+with $\alpha_p^{***}=\alpha_p^{**}$.
 Finally, the amplification of the sequence adding the pressure equation is:
 
 \begin{equation}
@@ -1373,10 +1361,9 @@ Finally, the amplification of the sequence adding the pressure equation is:
 \begin{bmatrix}
 \alpha_u \\
 \alpha_p 
-\end{bmatrix}^{0}
+\end{bmatrix}^{0},
 \end{equation}
-
-\noindent and, adding the velocity update amplification contribution, the total amplification matrix ($A^S$) for the SIMPLE algorithm is given by:
+and, adding the velocity update amplification contribution, the total amplification matrix ($A^S$) for the SIMPLE algorithm is given by:
 
 \begin{equation}
 \begin{bmatrix}
@@ -1402,11 +1389,9 @@ Finally, the amplification of the sequence adding the pressure equation is:
 \begin{bmatrix}
 \alpha_u \\
 \alpha_p 
-\end{bmatrix}^{0} 
+\end{bmatrix}^{0},
 \end{equation}
-
-\noindent where:
-
+where,
 \begin{equation}
 [A^S_2]= 
 \begin{bmatrix}
@@ -1430,44 +1415,41 @@ c^S_4 & 0
 \begin{bmatrix}
 a^S_5 & 0 \\
 0 & 0
-\end{bmatrix}
+\end{bmatrix},
 \end{equation}
-
-\noindent and:
-
+and,
 \begin{equation}
 \begin{split}
      c^S_2 &= \left( \dfrac{\omega_p}{S_f \Psi} \right) 
                     \left[ \left(-\dfrac{a_E}{2} \right) \left(\text{e}^{2 i \theta} - 1 \right) +
                             \left(-\dfrac{a_W}{2} \right) \left(1 - \text{e}^{-2 i \theta}\right)
-                    \right] \\
-     d^S_2 &= (1-\omega_p) \\
-     a^S_3 &= \left(-\dfrac{\omega_u a_E}{\overline{a}_P}\right) \text{e}^{i \theta} + \left(- \dfrac{\omega_u a_W}{\overline{a}_P}\right) \text{e}^{- i \theta} \\
-     b^S_3 &= \left(-\dfrac{\omega_u S_f}{2 \overline{a}_P}\right) \left(\text{e}^{i \theta}-\text{e}^{-i \theta}\right) \\ 
+                    \right], \\
+     d^S_2 &= (1-\omega_p), \\
+     a^S_3 &= \left(-\dfrac{\omega_u a_E}{\overline{a}_P}\right) \text{e}^{i \theta} + \left(- \dfrac{\omega_u a_W}{\overline{a}_P}\right) \text{e}^{- i \theta}, \\
+     b^S_3 &= \left(-\dfrac{\omega_u S_f}{2 \overline{a}_P}\right) \left(\text{e}^{i \theta}-\text{e}^{-i \theta}\right), \\ 
      c^S_4 &= \left( \dfrac{\omega_p}{S_f \Psi} \right) 
-                     \left(\dfrac{1-\omega}{\omega} \right) \left(\dfrac{\overline{a}_P}{2} \right) \left(\text{e}^{i \theta} - \text{e}^{- i \theta} \right)  \\
-     a^S_5 &= (1-\omega)      
+                     \left(\dfrac{1-\omega}{\omega} \right) \left(\dfrac{\overline{a}_P}{2} \right) \left(\text{e}^{i \theta} - \text{e}^{- i \theta} \right),  \\
+     a^S_5 &= (1-\omega).     
 \end{split}
 \end{equation}
 
-For each method, the total amplification matrix is always defined as the product of the matrices of each step following the rule:
+For each method, the total amplification matrix is defined as the product of the matrices of each step following the rule:
 
 \begin{equation}
-[A^m] = ([A^m_3] [A^m_2] [A_1] + [A^m_3] [A^m_4] + [A^m_5])
+[A^m] = ([A^m_3] [A^m_2] [A_1] + [A^m_3] [A^m_4] + [A^m_5]),
 \end{equation}
-
-\noindent where the superscript $m$ indicates the coupling method being considered ($S$ for SIMPLE, $C$ for SIMPLEC and $X$ for COMPLEX).
+where the superscript $m$ indicates the coupling method being considered ($S$ for SIMPLE, $C$ for SIMPLEC and $X$ for COMPLEX).
 
 Looking at Eqs.~(\ref{eq:pEqnSIMPLEC2}) and~(\ref{eq:uCorrSIMPLEC}), and taking into account the relation between $\nabla p_P^*$ and the velocity field after the momentum predictor given by Eq. (\ref{Eq:MomentumPredictor}), the amplification of the error for the pressure equation and the velocity update step of SIMPLEC have a few differences compared to the SIMPLE amplification matrices in the following elements:
 
 \begin{equation}
 \begin{split}
-     c^C_2 &= c_2^S + \left(\dfrac{a_E + a_W}{2}\right) (\text{e}^{i    \theta} - \text{e}^{-i \theta}) \\
-     d^C_2 &= 1 \\
-     a^C_3 &= \left(\dfrac{\overline{a}_P}{\omega_u \tilde{a}_P}\right) a_3^S + \dfrac{a_E+a_W}{\tilde{a}_P} \\
-     b^C_3 &= \left(\dfrac{\overline{a}_P}{\omega_u \tilde{a}_P}\right) b_3^S \\ 
-     c^C_4 &= \dfrac{1}{\omega_P} c^S_4 \\
-     a^C_5 &= \left(\dfrac{\overline{a}_P}{\omega_u \tilde{a}_P}\right) a^S_5     
+     c^C_2 &= c_2^S + \left(\dfrac{a_E + a_W}{2}\right) (\text{e}^{i    \theta} - \text{e}^{-i \theta}), \\
+     d^C_2 &= 1, \\
+     a^C_3 &= \left(\dfrac{\overline{a}_P}{\omega_u \tilde{a}_P}\right) a_3^S + \dfrac{a_E+a_W}{\tilde{a}_P}, \\
+     b^C_3 &= \left(\dfrac{\overline{a}_P}{\omega_u \tilde{a}_P}\right) b_3^S, \\ 
+     c^C_4 &= \dfrac{1}{\omega_P} c^S_4, \\
+     a^C_5 &= \left(\dfrac{\overline{a}_P}{\omega_u \tilde{a}_P}\right) a^S_5. 
 \end{split}
 \end{equation}
 
