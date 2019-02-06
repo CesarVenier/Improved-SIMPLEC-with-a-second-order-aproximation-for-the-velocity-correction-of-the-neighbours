@@ -1,0 +1,287 @@
+\begin{thebibliography}{39}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+\providecommand{\bibinfo}[2]{#2}
+\ifx\xfnm\relax \def\xfnm[#1]{\unskip,\space#1}\fi
+%Type = Article
+\bibitem[{Mazhar(2001)}]{mazhar1}
+\bibinfo{author}{Z.~Mazhar},
+\newblock \bibinfo{title}{{A procedure for the treatment of the
+  velocity-pressure coupling problem in incompressible fluid flow}},
+\newblock \bibinfo{journal}{Numerical Heat Transfer: Part B: Fundamentals}
+  \bibinfo{volume}{39} (\bibinfo{year}{2001}) \bibinfo{pages}{91--100}.
+%Type = Article
+\bibitem[{Mazhar(2002)}]{mazhar2}
+\bibinfo{author}{Z.~Mazhar},
+\newblock \bibinfo{title}{{An enhancement to the block implicit procedure for
+  the treatment of the velocity-pressure coupling problem in incompressible
+  fluid flow}},
+\newblock \bibinfo{journal}{Numerical Heat Transfer: Part B: Fundamentals}
+  \bibinfo{volume}{41} (\bibinfo{year}{2002}) \bibinfo{pages}{493--500}.
+%Type = Article
+\bibitem[{Chen and Przekwas(2010)}]{chen}
+\bibinfo{author}{Z.~Chen}, \bibinfo{author}{A.~Przekwas},
+\newblock \bibinfo{title}{{A coupled pressure-based computational method for
+  incompressible/compressible flows}},
+\newblock \bibinfo{journal}{Journal of Computational Physics}
+  \bibinfo{volume}{229} (\bibinfo{year}{2010}) \bibinfo{pages}{9150--9165}.
+%Type = Article
+\bibitem[{Darwish et~al.(2009)Darwish, Sraj, and Moukalled}]{darwish1}
+\bibinfo{author}{M.~Darwish}, \bibinfo{author}{I.~Sraj},
+  \bibinfo{author}{F.~Moukalled},
+\newblock \bibinfo{title}{{A coupled finite volume solver for the solution of
+  incompressible flows on unstructured grids}},
+\newblock \bibinfo{journal}{Journal of Computational Physics}
+  \bibinfo{volume}{228} (\bibinfo{year}{2009}) \bibinfo{pages}{180--201}.
+%Type = Article
+\bibitem[{dar(2014)}]{darwish2}
+\bibinfo{title}{{A fully coupled Navier-Stokes solver for fluid flow at all
+  speeds}, author={Darwish, M and Moukalled, F}},
+\newblock \bibinfo{journal}{Numerical Heat Transfer, Part B: Fundamentals}
+  \bibinfo{volume}{65} (\bibinfo{year}{2014}) \bibinfo{pages}{410--444}.
+%Type = Article
+\bibitem[{Uroi{\'c} and Jasak(2018)}]{uroic}
+\bibinfo{author}{T.~Uroi{\'c}}, \bibinfo{author}{H.~Jasak},
+\newblock \bibinfo{title}{{Block-selective algebraic multigrid for implicitly
+  coupled pressure-velocity system}},
+\newblock \bibinfo{journal}{Computers \& Fluids} \bibinfo{volume}{167}
+  (\bibinfo{year}{2018}) \bibinfo{pages}{100--110}.
+%Type = Book
+\bibitem[{Ferziger and Peric(2012)}]{ferziger}
+\bibinfo{author}{J.~H. Ferziger}, \bibinfo{author}{M.~Peric},
+  \bibinfo{title}{{Computational methods for fluid dynamics}},
+  \bibinfo{publisher}{Springer Science \& Business Media},
+  \bibinfo{year}{2012}.
+%Type = Book
+\bibitem[{Versteeg and Malalasekera(2007)}]{versteeg}
+\bibinfo{author}{H.~K. Versteeg}, \bibinfo{author}{W.~Malalasekera},
+  \bibinfo{title}{{An introduction to {C}omputational {F}luid {D}ynamics: the
+  {F}inite {V}olume {M}ethod}}, \bibinfo{publisher}{Pearson Education},
+  \bibinfo{year}{2007}.
+%Type = Book
+\bibitem[{Moukalled et~al.(2015)Moukalled, Mangani, and Darwish}]{moukalled}
+\bibinfo{author}{F.~Moukalled}, \bibinfo{author}{L.~Mangani},
+  \bibinfo{author}{M.~Darwish}, \bibinfo{title}{{The Finite Volume Method in
+  Computational Fluid Dynamics: An Advanced Introduction with
+  OpenFOAM$^{\text{\tiny{\textregistered}}}$ and Matlab}}, volume
+  \bibinfo{volume}{113}, \bibinfo{publisher}{Springer}, \bibinfo{year}{2015}.
+%Type = Article
+\bibitem[{Wang et~al.(2018)Wang, Wang, Gao, Zhou, and Zhai}]{wang2}
+\bibinfo{author}{H.~Wang}, \bibinfo{author}{H.~Wang}, \bibinfo{author}{F.~Gao},
+  \bibinfo{author}{P.~Zhou}, \bibinfo{author}{Z.~J. Zhai},
+\newblock \bibinfo{title}{{Literature review on pressure--velocity decoupling
+  algorithms applied to built-environment CFD simulation}},
+\newblock \bibinfo{journal}{Building and Environment}  (\bibinfo{year}{2018}).
+%Type = Article
+\bibitem[{Temam(1968)}]{temam1968methode}
+\bibinfo{author}{R.~Temam},
+\newblock \bibinfo{title}{{{Une m{\'e}thode d’approximation de la solution
+  des {\'e}quations de Navier-Stokes}}},
+\newblock \bibinfo{journal}{Bull. Soc. Math. France} \bibinfo{volume}{98}
+  (\bibinfo{year}{1968}) \bibinfo{pages}{115--152}.
+%Type = Article
+\bibitem[{Harten(1977)}]{harten1977artificial}
+\bibinfo{author}{A.~Harten},
+\newblock \bibinfo{title}{{The artificial compression method for computation of
+  shocks and contact discontinuities. I. Single conservation laws}},
+\newblock \bibinfo{journal}{Communications on Pure and Applied Mathematics}
+  \bibinfo{volume}{30} (\bibinfo{year}{1977}) \bibinfo{pages}{611--638}.
+%Type = Article
+\bibitem[{Chorin(1967)}]{chorin1}
+\bibinfo{author}{A.~J. Chorin},
+\newblock \bibinfo{title}{{A numerical method for solving incompressible
+  viscous flow problems}},
+\newblock \bibinfo{journal}{Journal of computational physics}
+  \bibinfo{volume}{2} (\bibinfo{year}{1967}) \bibinfo{pages}{12--26}.
+%Type = Article
+\bibitem[{Chorin(1968)}]{chorin2}
+\bibinfo{author}{A.~J. Chorin},
+\newblock \bibinfo{title}{{Numerical solution of the Navier-Stokes equations}},
+\newblock \bibinfo{journal}{Mathematics of computation} \bibinfo{volume}{22}
+  (\bibinfo{year}{1968}) \bibinfo{pages}{745--762}.
+%Type = Article
+\bibitem[{Kim and Moin(1985)}]{kim}
+\bibinfo{author}{J.~Kim}, \bibinfo{author}{P.~Moin},
+\newblock \bibinfo{title}{{Application of a fractional-step method to
+  incompressible Navier-Stokes equations}},
+\newblock \bibinfo{journal}{Journal of computational physics}
+  \bibinfo{volume}{59} (\bibinfo{year}{1985}) \bibinfo{pages}{308--323}.
+%Type = Article
+\bibitem[{Patankar and Spalding(1972)}]{patankar1972}
+\bibinfo{author}{S.~V. Patankar}, \bibinfo{author}{D.~B. Spalding},
+\newblock \bibinfo{title}{{A calculation procedure for heat, mass and momentum
+  transfer in three-dimensional parabolic flows}},
+\newblock \bibinfo{journal}{International {J}ournal of {H}eat and {M}ass
+  {T}ransfer} \bibinfo{volume}{15} (\bibinfo{year}{1972})
+  \bibinfo{pages}{1787--1806}.
+%Type = Book
+\bibitem[{Patankar(1980)}]{patankar1980}
+\bibinfo{author}{S.~Patankar}, \bibinfo{title}{{Numerical heat transfer and
+  fluid flow}}, \bibinfo{publisher}{CRC press}, \bibinfo{year}{1980}.
+%Type = Article
+\bibitem[{Van~Doormaal and Raithby(1984)}]{vanDoormal}
+\bibinfo{author}{J.~Van~Doormaal}, \bibinfo{author}{G.~Raithby},
+\newblock \bibinfo{title}{{Enhancements of the {SIMPLE} method for predicting
+  incompressible fluid flows}},
+\newblock \bibinfo{journal}{Numerical {H}eat {T}ransfer} \bibinfo{volume}{7}
+  (\bibinfo{year}{1984}) \bibinfo{pages}{147--163}.
+%Type = Article
+\bibitem[{Issa(1986)}]{issa}
+\bibinfo{author}{R.~I. Issa},
+\newblock \bibinfo{title}{{Solution of the implicitly discretised fluid flow
+  equations by operator-splitting}},
+\newblock \bibinfo{journal}{Journal of {C}omputational {P}hysics}
+  \bibinfo{volume}{62} (\bibinfo{year}{1986}) \bibinfo{pages}{40--65}.
+%Type = Article
+\bibitem[{Issa et~al.(1986)Issa, Gosman, and Watkins}]{issa2}
+\bibinfo{author}{R.~I. Issa}, \bibinfo{author}{A.~Gosman},
+  \bibinfo{author}{A.~Watkins},
+\newblock \bibinfo{title}{{The computation of compressible and incompressible
+  recirculating flows by a non-iterative implicit scheme}},
+\newblock \bibinfo{journal}{Journal of {C}omputational {P}hysics}
+  \bibinfo{volume}{62} (\bibinfo{year}{1986}) \bibinfo{pages}{66--82}.
+%Type = Article
+\bibitem[{Tao(2001)}]{tao}
+\bibinfo{author}{W.-Q. Tao, Hiroyuki~Ozoe},
+\newblock \bibinfo{title}{{A modified pressure-correction scheme for the
+  SIMPLER method, MSIMPLER}},
+\newblock \bibinfo{journal}{Numerical Heat Transfer: Part B: Fundamentals}
+  \bibinfo{volume}{39} (\bibinfo{year}{2001}) \bibinfo{pages}{435--449}.
+%Type = Article
+\bibitem[{Qu et~al.(2004)Qu, Tao, and He}]{qu}
+\bibinfo{author}{Z.~Qu}, \bibinfo{author}{W.~Tao}, \bibinfo{author}{Y.~He},
+\newblock \bibinfo{title}{{Implementation of CLEAR algorithm on collocated grid
+  system and application examples}},
+\newblock \bibinfo{journal}{Numerial Heat Transfer} \bibinfo{volume}{47}
+  (\bibinfo{year}{2004}) \bibinfo{pages}{65--96}.
+%Type = Article
+\bibitem[{Cheng et~al.(2007)Cheng, Lee, Low, and Tao}]{cheng2}
+\bibinfo{author}{Y.~Cheng}, \bibinfo{author}{T.~Lee}, \bibinfo{author}{H.~Low},
+  \bibinfo{author}{W.~Tao},
+\newblock \bibinfo{title}{{An efficient and robust numerical scheme for the
+  SIMPLER algorithm on non-orthogonal curvilinear coordinates: CLEARER}},
+\newblock \bibinfo{journal}{Numerical Heat Transfer, Part B: Fundamentals}
+  \bibinfo{volume}{51} (\bibinfo{year}{2007}) \bibinfo{pages}{433--461}.
+%Type = Article
+\bibitem[{Sun et~al.(2008)Sun, Qu, He, and Tao}]{sun}
+\bibinfo{author}{D.~Sun}, \bibinfo{author}{Z.~Qu}, \bibinfo{author}{Y.~He},
+  \bibinfo{author}{W.~Tao},
+\newblock \bibinfo{title}{{An efficient segregated algorithm for incompressible
+  fluid flow and heat transfer problems—IDEAL (inner doubly iterative
+  efficient algorithm for linked equations) Part I: Mathematical formulation
+  and solution procedure}},
+\newblock \bibinfo{journal}{Numerical Heat Transfer, Part B: Fundamentals}
+  \bibinfo{volume}{53} (\bibinfo{year}{2008}) \bibinfo{pages}{1--17}.
+%Type = Article
+\bibitem[{Liu et~al.(2016)Liu, Wang, and Li}]{liu}
+\bibinfo{author}{Y.~Liu}, \bibinfo{author}{F.~Wang}, \bibinfo{author}{Y.-t.
+  Li},
+\newblock \bibinfo{title}{{Fourier analysis of the SIMPLE serials}},
+\newblock \bibinfo{journal}{Numerical Heat Transfer, Part B: Fundamentals}
+  \bibinfo{volume}{69} (\bibinfo{year}{2016}) \bibinfo{pages}{197--216}.
+%Type = Inproceedings
+\bibitem[{Wang et~al.(2012)Wang, Zheng, and Li}]{wang}
+\bibinfo{author}{F.~Wang}, \bibinfo{author}{L.~Zheng}, \bibinfo{author}{Y.~T.
+  Li},
+\newblock \bibinfo{title}{{Fourier analysis of the effect of non-constant terms
+  on the convergence properties of SIMPLE algorithm formulated on a staggered
+  grid}},
+\newblock in: \bibinfo{booktitle}{Applied Mechanics and Materials}, volume
+  \bibinfo{volume}{204}, \bibinfo{organization}{Trans Tech Publ}, pp.
+  \bibinfo{pages}{4688--4693}.
+%Type = Article
+\bibitem[{Li et~al.(2017)Li, Zhang, and Zhai}]{li2017efficient}
+\bibinfo{author}{J.~Li}, \bibinfo{author}{Q.~Zhang}, \bibinfo{author}{Z.-Q.
+  Zhai},
+\newblock \bibinfo{title}{{An efficient SIMPLER-revised algorithm for
+  incompressible flow with unstructured grids}},
+\newblock \bibinfo{journal}{Numerical Heat Transfer, Part B: Fundamentals}
+  \bibinfo{volume}{71} (\bibinfo{year}{2017}) \bibinfo{pages}{425--442}.
+%Type = Article
+\bibitem[{xia(2018)}]{xiao2018consistent}
+\bibinfo{title}{{A consistent SIMPLE algorithm with extra explicit
+  prediction—SIMPLEPC}, author={Xiao, Hui and Wang, Junbo and Liu, Zhichun
+  and Liu, Wei}},
+\newblock \bibinfo{journal}{International Journal of Heat and Mass Transfer}
+  \bibinfo{volume}{120} (\bibinfo{year}{2018}) \bibinfo{pages}{1255--1265}.
+%Type = Article
+\bibitem[{Aoussou et~al.(2018)Aoussou, Lin, and
+  Lermusiaux}]{aoussou2018iterated}
+\bibinfo{author}{J.~Aoussou}, \bibinfo{author}{J.~Lin}, \bibinfo{author}{P.~F.
+  Lermusiaux},
+\newblock \bibinfo{title}{{Iterated pressure-correction projection methods for
+  the unsteady incompressible Navier--Stokes equations}},
+\newblock \bibinfo{journal}{Journal of Computational Physics}
+  \bibinfo{volume}{373} (\bibinfo{year}{2018}) \bibinfo{pages}{940--974}.
+%Type = Article
+\bibitem[{Aguerre et~al.(2018)Aguerre, Pairetti, Venier, Dami{\'a}n, and
+  Nigro}]{aguerre2018oscillation}
+\bibinfo{author}{H.~J. Aguerre}, \bibinfo{author}{C.~I. Pairetti},
+  \bibinfo{author}{C.~M. Venier}, \bibinfo{author}{S.~M. Dami{\'a}n},
+  \bibinfo{author}{N.~M. Nigro},
+\newblock \bibinfo{title}{{An oscillation-free flow solver based on flux
+  reconstruction}},
+\newblock \bibinfo{journal}{Journal of Computational Physics}
+  \bibinfo{volume}{365} (\bibinfo{year}{2018}) \bibinfo{pages}{135--148}.
+%Type = Article
+\bibitem[{Rhie and Chow(1983)}]{rhiechow}
+\bibinfo{author}{C.~Rhie}, \bibinfo{author}{W.~Chow},
+\newblock \bibinfo{title}{{Numerical study of the turbulent flow past an
+  airfoil with trailing edge separation}},
+\newblock \bibinfo{journal}{AIAA Journal} \bibinfo{volume}{21}
+  (\bibinfo{year}{1983}) \bibinfo{pages}{1525--1532}.
+%Type = Phdthesis
+\bibitem[{Jasak(1996)}]{jasak}
+\bibinfo{author}{H.~Jasak}, \bibinfo{title}{Error analysis and estimation for
+  the {F}inite {V}olume {M}ethod with applications to fluid flows}, Ph.D.
+  thesis, Imperial College of Science, Technology and Medicine,
+  \bibinfo{year}{1996}.
+%Type = Phdthesis
+\bibitem[{M{\'a}rquez~Dami{\'a}n(2013)}]{marquez}
+\bibinfo{author}{S.~M{\'a}rquez~Dami{\'a}n}, \bibinfo{title}{An extended
+  mixture model for the simultaneous treatment of short and long scale
+  interfaces}, Ph.D. thesis, Universidad Nacional del Litoral,
+  \bibinfo{year}{2013}.
+%Type = Book
+\bibitem[{Hirsch(2007)}]{hirsch}
+\bibinfo{author}{C.~Hirsch}, \bibinfo{title}{{Numerical Computation of Internal
+  and External Flows: The Fundamentals of Computational Fluid Dynamics}},
+  \bibinfo{publisher}{Butterworth-Heinemann}, \bibinfo{year}{2007}.
+%Type = Article
+\bibitem[{Shaw and Sivaloganathan(1988)}]{shaw}
+\bibinfo{author}{G.~Shaw}, \bibinfo{author}{S.~Sivaloganathan},
+\newblock \bibinfo{title}{{On the smoothing properties of the SIMPLE
+  pressure-correction algorithm}},
+\newblock \bibinfo{journal}{International Journal for Numerical Methods in
+  Fluids} \bibinfo{volume}{8} (\bibinfo{year}{1988}) \bibinfo{pages}{441--461}.
+%Type = Article
+\bibitem[{Miller(1996)}]{miller1}
+\bibinfo{author}{T.~F. Miller},
+\newblock \bibinfo{title}{{Fourier analysis of the {SIMPLE} algorithm
+  formulated on a collocated grid}},
+\newblock \bibinfo{journal}{Numerical Heat Transfer} \bibinfo{volume}{30}
+  (\bibinfo{year}{1996}) \bibinfo{pages}{45--66}.
+%Type = Article
+\bibitem[{Miller and Miller(2003)}]{miller2}
+\bibinfo{author}{T.~F. Miller}, \bibinfo{author}{D.~J. Miller},
+\newblock \bibinfo{title}{{A {F}ourier analysis of the {IPSA/PEA} algorithms
+  applied to multiphase flows with mass transfer}},
+\newblock \bibinfo{journal}{Computers \& fluids} \bibinfo{volume}{32}
+  (\bibinfo{year}{2003}) \bibinfo{pages}{197--221}.
+%Type = Article
+\bibitem[{Venier et~al.(2017)Venier, Pairetti, Damian, and Nigro}]{venier}
+\bibinfo{author}{C.~M. Venier}, \bibinfo{author}{C.~I. Pairetti},
+  \bibinfo{author}{S.~M. Damian}, \bibinfo{author}{N.~M. Nigro},
+\newblock \bibinfo{title}{{On the stability analysis of the PISO algorithm on
+  collocated grids}},
+\newblock \bibinfo{journal}{Computers \& Fluids} \bibinfo{volume}{147}
+  (\bibinfo{year}{2017}) \bibinfo{pages}{25--40}.
+%Type = Article
+\bibitem[{Weller et~al.(1998)Weller, Tabor, Jasak, and Fureby}]{ofpg}
+\bibinfo{author}{H.~G. Weller}, \bibinfo{author}{G.~Tabor},
+  \bibinfo{author}{H.~Jasak}, \bibinfo{author}{C.~Fureby},
+\newblock \bibinfo{title}{{A tensorial approach to computational continuum
+  mechanics using object-oriented techniques}},
+\newblock \bibinfo{journal}{Computers in Physics} \bibinfo{volume}{12}
+  (\bibinfo{year}{1998}) \bibinfo{pages}{620--631}.
+
+\end{thebibliography}

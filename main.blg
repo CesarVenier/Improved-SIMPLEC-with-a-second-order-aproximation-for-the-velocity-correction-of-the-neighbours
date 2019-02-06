@@ -1,0 +1,51 @@
+This is BibTeX, Version 0.99d (TeX Live 2013/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: main.aux
+The style file: model1-num-names.bst.bst
+Database file #1: main.bib
+Warning--to sort, need author or key in darwish2
+Warning--to sort, need author or key in xiao2018consistent
+Warning--empty author in darwish2
+Warning--empty author in xiao2018consistent
+You've used 39 entries,
+            2616 wiz_defined-function locations,
+            848 strings with 11611 characters,
+and the built_in function-call counts, 21432 in all, are:
+= -- 1738
+> -- 762
+< -- 26
++ -- 290
+- -- 249
+* -- 2571
+:= -- 3262
+add.period$ -- 39
+call.type$ -- 39
+change.case$ -- 271
+chr.to.int$ -- 39
+cite$ -- 47
+duplicate$ -- 1365
+empty$ -- 1458
+format.name$ -- 354
+if$ -- 3884
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 309
+newline$ -- 185
+num.names$ -- 148
+pop$ -- 261
+preamble$ -- 1
+purify$ -- 278
+quote$ -- 0
+skip$ -- 406
+stack$ -- 0
+substring$ -- 1240
+swap$ -- 1192
+text.length$ -- 3
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 336
+warning$ -- 4
+while$ -- 174
+width$ -- 0
+write$ -- 499
+(There were 4 warnings)
