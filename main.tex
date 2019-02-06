@@ -1214,7 +1214,7 @@ In this work, a one-dimensional FV discretization is considered to simplify the 
 \end{equation}
 where $k$ is a given stage of the algorithm ($0$ for the initial values, * for the variables after the momentum predictor, ** for the variables after the pressure equation and *** for the variables after the velocity update), $E$ represents the exact solution of the numerical problem, $\phi$ is a given variable (pressure or velocity) and $M$ represents the spatial location.
 % and arrive to some preliminary conclusions about the stability features of the method. Later on, all the methods will be tested in benchmark problems and the stability and convergence rate will be fully assessed.
-\begin{figure}[t!]
+\begin{figure}[b!]
     \centering
     \includegraphics[width=0.7\textwidth]{fig/cells2.eps}
     \caption{One-dimensional FVM discretization.}
@@ -1498,7 +1498,7 @@ Fig.~\ref{fig:1b} shows the sensitivity of the amplification factor to the momen
 This theoretical advantage is very important since it indicates that the good performance of the method holds up even when the convergence rate to the steady-state solution is accelerated by increasing the momentum relaxation factors. 
 
 The analysis is deepened by considering a continuous range of relaxation factors from $0$ to $1$ for the three methods, as shown in Fig. \ref{fig:1c}. These figures show a clear advantage of SIMPLEC over SIMPLE for almost every relaxation factor considered, and a clear advantage of COMPLEX over SIMPLEC for high values of the amplification factor. Here it may be noted that, for very low values of $\omega_u$, all methods tend to the same stability behaviour.
-\begin{figure}[b!]
+\begin{figure}[t!]
     \centering
     \includegraphics[width=\textwidth]{fig/maps_fourier.pdf}
     \caption{Amplification values for SIMPLE (a), SIMPLEC (b) and COMPLEX (c) for different relaxation factors and frequencies}
@@ -1536,14 +1536,14 @@ Here, a tangential fixed velocity of 1 m/s is imposed on the upper face of the c
 
 \subsubsection{Backward Facing Step}
 The domain and dimensions of this test are shown in Fig.~\ref{Fig:Geometria3}.
-\begin{figure}[t!!!]
+\begin{figure}[b!!!]
 \centering
 \includegraphics[width=12cm]{fig/Cases/Geometria3.pdf}
 \caption{Description of the BFS domain where its dimensions are defined relative to the inlet height $h = 1$ m.}
 \label{Fig:Geometria3}
 \end{figure}
 At the inlet, a constant normal velocity of 1 m/s is imposed. The outlet has a constant pressure and the remaining faces of the channel are walls with a non-slip condition. Analogously to the cavity case, the problem is simulated with two different viscosity values, $\nu = 5.141 \times 10^{-3}$ m$^2$/s ($Re=389$) and $\nu = 5.141$ m$^2$/s ($Re=0.389$). The domain is discretized with hexahedral cells using three different mesh sizes as defined in Table~\ref{Table:BFSMeshes} with a variable cell size as shown in Fig.~\ref{Fig:Factores}, where the regions near the wall and the step are more refined than the rest of the domain.
-\begin{table}[b!]
+\begin{table}[t!!!!]
 \centering
 \begin{tabular}{cccccccc}
 \hline 
@@ -1560,7 +1560,7 @@ Fine & 80 & 160 & 30 & 104 & 160 & 60 & 1382400 \\
 \label{Table:BFSMeshes}
 \end{table}
 
-\begin{figure}[b!!!]
+\begin{figure}[t!!!]
 \centering
 \includegraphics[width=16cm]{fig/Cases/Factores.pdf}
 \caption{Variable cell refinement in the BFS.  On the left figure, the cell size grows from the step point up to the inlet and outlet boundaries and from the lateral walls up to the middle longitudinal section. On the right, the cell size in the post-step regions grows from the bottom and upper walls up to the middle height section of the channel.}
@@ -1640,9 +1640,96 @@ Regarding $\overline{R}_1$ and $\overline{R}_2$, the following convergence crite
 \right..
 \end{equation}
 
-It is important to highlight that the residuals are only function of the velocity, pressure, and of the momentum equation coefficients which are equally assembled for the three methods studied. Thus, the computation of $\overline{R}_1$ and $\overline{R}_2$ are independent of the coupling method. 
+It is important to highlight that the residuals are only function of the velocity, pressure, and of the momentum equation coefficients which are equally assembled for the three methods studied. Thus, the computation of $\overline{R}_1$ and $\overline{R}_2$ are independent of the coupling method.
 
 \subsection{Study of the Complex factor $\kappa$}
+\begin{table}[b!!!!]
+\centering
+\begin{tabular}{c|ccccccccccc}
+\hline 
+$\omega_u\,\backslash\:\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 1 \\ 
+\hline 
+1 & div & div & div & div & div & div & div & div & div & div & div \\ 
+0.99 & 1993 & 1702 & 1742 & 1754 & 1747 & 1742 & 1761 & div & div & div & div \\ 
+0.98 & 991 & 842  & 845 & 856 & 866 & 870 & 870 & 868 & 865 & 863 & 864 \\ 
+0.97 & 658 & 551  & 559 & 560 & 565 & 570 & 574 & 575 & 575 & 575 & 573 \\ 
+0.96 & 491 &425  & 414 & 416 & 418 & 421 & 424 & 426 & 427 & 428 & 428 \\ 
+0.95 & 391 & 348 & 327 & 330 & 332 & 333 & 335 & 337 & 338 & 339 & 339 \\ 
+0.94 & 373 & 373 & 373 & 373 & 373 & 373 & 373 & 373 & 373 & 373 & 373 \\ 
+0.93 & 438 & 438 & 438 & 438 & 438 & 438 & 438 & 438 & 438 & 438 & 438 \\ 
+0.92 & 504 & 504 & 504 & 504 & 504 & 504 & 504 & 504 & 504 & 504 & 504 \\ 
+\hline 
+\end{tabular} 
+\caption{Required number of iterations at convergence for the Cavity case with Re = $0.4$}
+\label{Table:Cavity_LowRe}
+\end{table}
+\begin{table}[b!!!!]
+\centering
+\begin{tabular}{c|ccccccccccc}
+\hline 
+$\omega_u\,\backslash\:\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 1 \\ 
+\hline 
+1 & div & div & div & div & div & div & div & div & div & div & div \\ 
+0.99 & 1974 & 1697 & 1753 & 1865 & 1941 & 1993 & div & div & div & div & div \\ 0.98 & 981 & 816 & 844 & 854 & 874 & 904 & 929 & 949 & 966 & 980 & 992 \\ 
+0.97 & 651 & 528 & 550 & 560 & 565 & 571 & 581 & 594 & 606 & 618 & 627 \\ 
+0.96 & 486 & 392 & 403 & 413 & 418 & 421 & 424 & 428 & 435 & 442 & 449 \\ 
+0.95 & 387 & 320 & 317 & 324 & 330 & 333 & 335 & 336 & 339 & 342 & 346 \\ 
+0.94 & 320 & 272 & 259 & 266 & 271 & 274 & 276 & 277 & 278 & 280 & 282 \\ 
+0.93 & 273 & 237 & 220 & 225 & 229 & 232 & 234 & 235 & 236 & 237 & 238 \\ 
+0.92 & 240 & 233 & 233 & 233 & 233 & 233 & 233 & 233 & 233 & 233 & 233 \\ 
+\hline 
+\end{tabular}
+\caption{Required number of iterations at convergence for the BFS case with Re = 0.389}
+\label{Table:BFS_LowRe}
+\end{table}
+\begin{table}[b!!!!]
+\centering
+\begin{tabular}{c|ccccccccccc}
+\hline 
+$\omega_u\,\backslash\:\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 1 \\ 
+\hline 
+1 & div & div & div & div & div & div & div & div & div & div & div \\ 
+0.99 & 1611 & 1321 & 1286 & 1333 & 1357 & div & div & div & div & div & div \\ 
+0.98 & 802 & 693 & 652 & 635 & 648 & 662 & 671 & 678 & 682 & div & div \\ 
+0.97 & 532 & 471 & 448 & 431 & 423 & 427 & 435 & 441 & 446 & 449 & 452 \\ 
+0.96 & 398 & 357 & 342 & 330 & 321 & 317 & 319 & 323 & 327 & 331 & 333 \\ 
+0.95 & 318 & 288 & 277 & 269 & 262 & 257 & 255 & 256 & 258 & 261 & 263 \\ 
+0.94 & 266 & 243 & 235 & 229 & 225 & 221 & 218 & 216 & 215 & 216 & 217 \\ 
+0.93 & 239 & 225 & 218 & 214 & 211 & 211 & 211 & 210 & 210 & 210 & 209 \\ 
+0.92 & 243 & 243 & 242 & 242 & 242 & 241 & 241 & 241 & 241 & 241 & 240 \\ 
+\hline 
+\end{tabular}
+\caption{Required number of iterations at convergence for the Cavity case with Re = 400}
+\label{Table:Cavity_HighRe}
+\end{table}
+\begin{table}[t!!!!]
+\centering
+\begin{tabular}{c|ccccccccccc}
+\hline 
+$\omega_u\,\backslash\:\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 1 \\ 
+\hline 
+1 & div & div & div & div & div & div & div & div & div & div & div \\ 
+0.99 & div & div & div & div & div & div & div & div & div & div & div \\ 
+0.98 & 818 & 624 & 632 & 637 & div & div & div & div & div & div & div \\ 
+0.97 & 540 & 427 & 422 & 428 & 435 & div & div & div & div & div & div \\ 
+0.96 & 403 & 329 & 323 & 327 & 329 & 478 & 3086 & div & div & div & div \\ 
+0.95 & 322 & 272 & 264 & 266 & 268 & 351 & 712 & 4714 & div & div & div \\ 
+0.94 & 269 & 236 & 227 & 226 & 250 & 320 & 483 & 1151 & div & div & div \\ 
+0.93 & 240 & 225 & 218 & 221 & 246 & 299 & 397 & 608 & 1427 & div & div \\ 
+0.92 & 242 & 235 & 230 & 232 & 256 & 292 & 351 & 457 & 696 & 1087 & 8863 \\ 
+\hline 
+\end{tabular}
+\caption{Required number of iterations at convergence for the BFS case with Re = 389}
+\label{Table:BFS_HighRe}
+\end{table}
+
+\begin{figure}[b!!]
+\centering
+\includegraphics[width=16cm]{fig/Results/FactorLowRe.pdf}
+\caption{Isolines of RI as function of the momentum relaxation factor, the Complex factor for the Cavity and BFS cases, and the values of the Reynolds number employed respectively.}
+\label{Fig:FactorLowRe}
+\end{figure}
+
 In this section, the influence of $\kappa$ on the convergence rate is analysed in combination with the relaxation factor for the momentum equation $\omega_{u}$ measuring the number of iterations to reach convergence as defined in Eq.~(\ref{Eq:convergencecriterion}). Here, a series of simulations of the cavity and BFS problems are solved using the medium refinement level. For each case, two different physical configurations are addressed according to the proposed Reynolds numbers. Each simulation is solved varying the values of $\kappa$ and $\omega_{u}$. The Complex factor ranges from 0 to 1 with a step of $0.05$ (21 values) and the relaxation factor ranging from 0.8 up to 1 with a step of $0.1$ (21 values). Altogether, this parametric study consists of 1764 simulations.
 
 In order to compare the performance of the methods, the relative number of iterations ($RI$) is defined as follows, 
@@ -1667,100 +1754,11 @@ The results of the simulations are presented in the Tables~\ref{Table:Cavity_Low
 The Tables~\ref{Table:Cavity_LowRe},~\ref{Table:BFS_LowRe}, and the upper plots of Fig.~\ref{Fig:FactorLowRe} present the results for relative low Reynolds simulations, while Tables~\ref{Table:Cavity_HighRe},~\ref{Table:BFS_HighRe}, and the lower plots of Fig.~\ref{Fig:FactorLowRe} present the results for relative high Reynolds simulations. 
 
 In general, it is concluded that the addition of the Complex term does not influence the convergence when using low relaxation factors. On the contrary, with high values of $\omega_u$, the addition of the Complex term reduces the number of iterations to approximately 20 $\%$. The best results are obtained with values of the Complex factor $\kappa \leq 0.5$, while $\kappa \geq 0.5$ values may induce instabilities. In particular, the BFS problem at Re = 389 presents an extended divergence zone for the highest values of $\omega_u$, followed by a slow convergence zone (coloured in grey) for lower values of $\omega_u$. Despite this behaviour, the simulations are stable and have a maximum convergence rate for low values of $\kappa$.
-\begin{table}[b!!]
-\centering
-\begin{tabular}{c|ccccccccccc}
-\hline 
-$\omega_u\,\backslash\:\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 1 \\ 
-\hline 
-1 & div & div & div & div & div & div & div & div & div & div & div \\ 
-0.99 & 1993 & 1702 & 1742 & 1754 & 1747 & 1742 & 1761 & div & div & div & div \\ 
-0.98 & 991 & 842  & 845 & 856 & 866 & 870 & 870 & 868 & 865 & 863 & 864 \\ 
-0.97 & 658 & 551  & 559 & 560 & 565 & 570 & 574 & 575 & 575 & 575 & 573 \\ 
-0.96 & 491 &425  & 414 & 416 & 418 & 421 & 424 & 426 & 427 & 428 & 428 \\ 
-0.95 & 391 & 348 & 327 & 330 & 332 & 333 & 335 & 337 & 338 & 339 & 339 \\ 
-0.94 & 373 & 373 & 373 & 373 & 373 & 373 & 373 & 373 & 373 & 373 & 373 \\ 
-0.93 & 438 & 438 & 438 & 438 & 438 & 438 & 438 & 438 & 438 & 438 & 438 \\ 
-0.92 & 504 & 504 & 504 & 504 & 504 & 504 & 504 & 504 & 504 & 504 & 504 \\ 
-\hline 
-\end{tabular} 
-\caption{Required number of iterations at convergence for the Cavity case with Re = $0.4$}
-\label{Table:Cavity_LowRe}
-\end{table}
-\begin{table}[b!!]
-\centering
-\begin{tabular}{c|ccccccccccc}
-\hline 
-$\omega_u\,\backslash\:\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 1 \\ 
-\hline 
-1 & div & div & div & div & div & div & div & div & div & div & div \\ 
-0.99 & 1974 & 1697 & 1753 & 1865 & 1941 & 1993 & div & div & div & div & div \\ 
-0.98 & 981 & 816 & 844 & 854 & 874 & 904 & 929 & 949 & 966 & 980 & 992 \\ 
-0.97 & 651 & 528 & 550 & 560 & 565 & 571 & 581 & 594 & 606 & 618 & 627 \\ 
-0.96 & 486 & 392 & 403 & 413 & 418 & 421 & 424 & 428 & 435 & 442 & 449 \\ 
-0.95 & 387 & 320 & 317 & 324 & 330 & 333 & 335 & 336 & 339 & 342 & 346 \\ 
-0.94 & 320 & 272 & 259 & 266 & 271 & 274 & 276 & 277 & 278 & 280 & 282 \\ 
-0.93 & 273 & 237 & 220 & 225 & 229 & 232 & 234 & 235 & 236 & 237 & 238 \\ 
-0.92 & 240 & 233 & 233 & 233 & 233 & 233 & 233 & 233 & 233 & 233 & 233 \\ 
-\hline 
-\end{tabular}
-\caption{Required number of iterations at convergence for the BFS case with Re = 0.389}
-\label{Table:BFS_LowRe}
-\end{table}
-\begin{table}[t!!]
-\centering
-\begin{tabular}{c|ccccccccccc}
-\hline 
-$\omega_u\,\backslash\:\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 1 \\ 
-\hline 
-1 & div & div & div & div & div & div & div & div & div & div & div \\ 
-0.99 & 1611 & 1321 & 1286 & 1333 & 1357 & div & div & div & div & div & div \\ 
-0.98 & 802 & 693 & 652 & 635 & 648 & 662 & 671 & 678 & 682 & div & div \\ 
-0.97 & 532 & 471 & 448 & 431 & 423 & 427 & 435 & 441 & 446 & 449 & 452 \\ 
-0.96 & 398 & 357 & 342 & 330 & 321 & 317 & 319 & 323 & 327 & 331 & 333 \\ 
-0.95 & 318 & 288 & 277 & 269 & 262 & 257 & 255 & 256 & 258 & 261 & 263 \\ 
-0.94 & 266 & 243 & 235 & 229 & 225 & 221 & 218 & 216 & 215 & 216 & 217 \\ 
-0.93 & 239 & 225 & 218 & 214 & 211 & 211 & 211 & 210 & 210 & 210 & 209 \\ 
-0.92 & 243 & 243 & 242 & 242 & 242 & 241 & 241 & 241 & 241 & 241 & 240 \\ 
-\hline 
-\end{tabular}
-\caption{Required number of iterations at convergence for the Cavity case with Re = 400}
-\label{Table:Cavity_HighRe}
-\end{table}
-\begin{table}[t!!]
-\centering
-\begin{tabular}{c|ccccccccccc}
-\hline 
-$\omega_u\,\backslash\:\kappa$ & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 1 \\ 
-\hline 
-1 & div & div & div & div & div & div & div & div & div & div & div \\ 
-0.99 & div & div & div & div & div & div & div & div & div & div & div \\ 
-0.98 & 818 & 624 & 632 & 637 & div & div & div & div & div & div & div \\ 
-0.97 & 540 & 427 & 422 & 428 & 435 & div & div & div & div & div & div \\ 
-0.96 & 403 & 329 & 323 & 327 & 329 & 478 & 3086 & div & div & div & div \\ 
-0.95 & 322 & 272 & 264 & 266 & 268 & 351 & 712 & 4714 & div & div & div \\ 
-0.94 & 269 & 236 & 227 & 226 & 250 & 320 & 483 & 1151 & div & div & div \\ 
-0.93 & 240 & 225 & 218 & 221 & 246 & 299 & 397 & 608 & 1427 & div & div \\ 
-0.92 & 242 & 235 & 230 & 232 & 256 & 292 & 351 & 457 & 696 & 1087 & 8863 \\ 
-\hline 
-\end{tabular}
-\caption{Required number of iterations at convergence for the BFS case with Re = 389}
-\label{Table:BFS_HighRe}
-\end{table}
-\begin{figure}[t!!!!!!!]
-\centering
-\includegraphics[width=17cm]{fig/Results/FactorLowRe.pdf}
-\caption{Isolines of RI as function of the momentum relaxation factor, the Complex factor for the Cavity and BFS cases, and the values of the Reynolds number employed respectively.}
-\label{Fig:FactorLowRe}
-\end{figure}
 
 In view of these results, a Complex factor $\kappa = 0.2$ will be used in the following analysis since it is adequate to speed up the convergence without losing stability. % This last inference is determined based on two different numerical problems (Cavity and BFS) in the range of Reynolds number between $0.4$ and $400$. 
 
- 
 \subsection{Comparison of COMPLEX with SIMPLE and SIMPLEC}
-In this section, a comparison of the COMPLEX strategy against SIMPLE and SIMPLEC is performed.
-As in the previous study, the number of iterations for convergence is measured. The numerical problems defined in the previous section are solved using the coarse, medium and fine mesh levels. Moreover, the effect of momentum relaxation is included considering $\omega_u$ values from 0.8 to 1 using a step of 0.1.
-\begin{figure}[t!]
+\begin{figure}[b!]
 \centering
 \includegraphics[width=17cm]{fig/Results/complexCoarse.pdf}
 \caption{Comparison of the number of iterations required for convergence between COMPLEX, SIMPLEC and SIMPLE algorithms using the coarse mesh refinement level. On the left are the results of the cavity case and on the right, those respective to the BFS.}
@@ -1780,6 +1778,9 @@ As in the previous study, the number of iterations for convergence is measured. 
 \caption{Comparison of the number of iterations required for convergence between COMPLEX, SIMPLEC and SIMPLE algorithms using the fine mesh refinement level. On the left are the results of the cavity case and on the right, those respective to the BFS.}
 \label{Fig:complexFine}
 \end{figure}
+In this section, a comparison of the COMPLEX strategy against SIMPLE and SIMPLEC is performed.
+As in the previous study, the number of iterations for convergence is measured. The numerical problems defined in the previous section are solved using the coarse, medium and fine mesh levels. Moreover, the effect of momentum relaxation is included considering $\omega_u$ values from 0.8 to 1 using a step of 0.1.
+
 
 The results are presented for to the three mesh refinement levels in Figs.~\ref{Fig:complexCoarse},~\ref{Fig:complexMedium} and \ref{Fig:complexFine}. Each figure includes six bar plots arranged in three rows and two columns. The left column presents the results for the cubic cavity case while the right one presents the BFS ones. The number of iterations at convergence of the COMPLEX method, $NI_X(\omega_u)$, is shown in the first row. The second and third row display the results for SIMPLEC and SIMPLE in relative terms using the $RI$ index,
 \begin{equation}
@@ -1794,7 +1795,7 @@ RI(\omega_u)
 where $NI_{(S,C)}(\omega_u)$ is the absolute number of iterations needed at convergence for the SIMPLE or SIMPLEC methods for a given relaxation factor $\omega_u$. 
 In all plots, the blue bars represent the low Reynolds simulations and the red ones represent the high Reynolds simulations.
 
-The results indicate that the difference between COMPLEX and the other methods start becoming relevant when COMPLEX is reaching its minimum number of iterations at convergence (which is the lowest of the three methods). Moreover, it is observed that the convergence for the highest values of $\omega_u$ is better handled by the COMPLEX method. A hypothesis for this behaviour is that higher relaxation factors lead to velocity predictions that are less consistent with the divergence-free condition. For this, the COMPLEX strategy includes a numerical correction which is introduced in the pressure equation.
+The results indicate that, while increasing $\omega_u$, the difference between COMPLEX and the other methods start becoming relevant when COMPLEX approaches  its minimum number of iterations for convergence (which is the lowest of the three methods). Moreover, it is observed that the convergence for the highest values of $\omega_u$ is better handled by the COMPLEX method. A hypothesis for this behaviour is that higher relaxation factors lead to velocity predictions that are less consistent with the divergence-free condition. For this, the COMPLEX strategy includes a numerical correction which is introduced in the pressure equation.
 
 %The results are sensitive to the mesh refinement level. Analysing the absolute number of iterations of the COMPLEX method, it is observed that the reduction of the number of iterations when the momentum relaxation factor is increased, also increases as the mesh refined.
 
@@ -1813,6 +1814,10 @@ Two three-dimensional problems were solved: a cubic cavity and a BFS. First, the
 Based on the results of the present work, the current strategy is a promising technique to speed up the convergence of SIMPLE-based algorithms. Its computational implementation is simple and does not introduce significant computational costs compared to the SIMPLEC method. 
 %The convergence rate of COMPLEX is better than SIMPLEC and SIMPLE when the prediction of the velocity is far from verifying the divergence-free condition, as it is the case of high relaxation factors or high Reynolds numbers.
 A challenge for future works consists of improving the prediction of the velocity derivative, Eq.~(\ref{Eq:scalarMatrix}), by allowing an anisotropic deformation of the velocity correction. %On the other hand, other numerical approaches may be explored to compute the velocity gradient, for example, an expression based on a second derivative of the pressure.
+
+\section*{Acknowledgments}
+The authors would like to thank ANPCyT for their grant PICT 2016-2908 and
+CONICET for the funding through doctoral and postdoctoral scholarships. Also, the authors wish to thank the Universidad Nacional del Litoral, Universidad Tecnológica Nacional and Universidad Nacional de Rosario for their support. 
 
 \bibliographystyle{model1-num-names.bst}
 \bibliography{main}
