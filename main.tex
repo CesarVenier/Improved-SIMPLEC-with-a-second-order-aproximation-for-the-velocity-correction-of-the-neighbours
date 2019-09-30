@@ -56,7 +56,7 @@
 
 %Start of abstract
 \begin{abstract}
-This paper introduces a new pressure-velocity coupling algorithm based on the SIMPLEC method. The new approach considers the neighbour velocity corrections of SIMPLEC as a Taylor series expansion, introducing a first-order term to increase the accuracy of the approximation. The new term includes a velocity gradient which is assumed to be a scalar matrix constrained by means of a mass conservation equation.
+This paper introduces a new pressure-velocity coupling algorithm based on the SIMPLEC method. The new approach considers the neighbour velocity corrections of SIMPLEC as a Taylor series expansion, introducing a first-order term to increase the accuracy of the approximation. The new term includes a velocity correction gradient which is assumed to be a scalar matrix constrained by means of a mass conservation equation.
 The stability of the method is analysed via a Fourier decomposition of the error showing a better convergence rate than SIMPLE and SIMPLEC for high relaxation factors. Afterwards, the new method is tested in two incompressible laminar flow problems where the conclusions of the stability analysis are verified. The current proposal sets a theoretical baseline for further improvements and, in view of the results, it is a promising alternative to improve SIMPLE-based algorithms.
 \end{abstract}
 
@@ -77,7 +77,7 @@ equations at once for all the unknowns \cite{mazhar1, mazhar2, chen, darwish1, d
 
 Under the scope of the projection methods, a new line of strategies was introduced by Patankar and Spalding with the development of the SIMPLE algorithm \cite{patankar1972}. In this method, a pressure equation is derived after introducing the momentum equation into the mass balance. Then, the velocity field is updated based on the momentum equation including the new values of the pressure field. This procedure is iterative and employs relaxation factors to improve the stability and convergence rate of the method. Focusing on these last aspects, further improvements have been developed taking over the years the SIMPLE algorithm as a starting
 point. Among them, the SIMPLER algorithm \cite{patankar1980} enhances the pressure-velocity coupling by solving an additional pressure equation. Another relevant improvement on SIMPLE was proposed by Van Doormal and Raithby \cite{vanDoormal}, who included an approximation of the neighbour velocity corrections to build the pressure equation and the velocity update. This algorithm, called SIMPLEC, suppresses the need for relaxing the pressure field to guarantee stability. In order to solve transient problems, Issa proposed the PISO method \cite{issa,issa2} which consists on including corrector sub-steps to enforce mass conservation without relaxation. Many variants of the SIMPLE method were developed seeking to enhance the robustness and convergence rate of the standard SIMPLE algorithm \cite{tao,qu,cheng2,sun}. Their particular advantages and drawbacks can be found in the literature \cite{moukalled, liu, wang}. Despite the aforementioned efforts to improve SIMPLE-like algorithms, the errors introduced by the decoupling of the variables
-cannot be completely eliminated which makes the topic still relevant nowadays \cite{li2017efficient, xiao2018consistent,aoussou2018iterated,aguerre2018oscillation}.
+cannot be completely eliminated which makes the topic still relevant nowadays \cite{li2017efficient, TUKOVIC201878, ding2017solution,xiao2018consistent, aoussou2018iterated,aguerre2018oscillation}.
 
 The error introduced by the SIMPLE algorithm comes from neglecting the neighbour velocity to decouple pressure and velocity. 
 %If the correction values were known, the discretized system given by the pressure and momentum equations would be equivalent to the original linearized Navier-Stokes problem.
@@ -1518,16 +1518,21 @@ To quantify the overall error damping for a general problem, where the initial s
 \section{Test cases}
 \label{sec:cases}
 
-In this section, the COMPLEX method is analysed in incompressible, laminar and stationary Newtonian flow problems. The numerical performance of the method is compared with SIMPLE and SIMPLEC by measuring the total number of iterations required to achieve a convergence criterion. The details of each problem are explained followed by the definition of the convergence criterion adopted. Two different analysis over the COMPLEX method are performed: first, a series of simulations are carried out to investigate the Complex factor $\kappa$, and then, a comparison of the current proposal with SIMPLE and SIMPLEC is presented for various conditions. 
+In this section, the COMPLEX method is analysed in incompressible, laminar and stationary Newtonian flow problems. The numerical performance of the method is compared with SIMPLE and SIMPLEC by measuring the total number of iterations required to achieve a convergence criterion.
+%U(smoothsolver reltol 0), p(GAMG, GaussSeidel reltol 1e-3), res(u)=res(p)=1e-8 (ver dims). TVD(U): SOU. Grads and ints: linear. ?
+
+The details of each problem are explained followed by the definition of the convergence criterion adopted. Two different analysis over the COMPLEX method are performed: first, a series of simulations are carried out to investigate the Complex factor $\kappa$, and then, a comparison of the current proposal with SIMPLE and SIMPLEC is presented for various conditions. 
 
 \subsection{Problems description}\label{Section:problemDescription}
  The evaluation of the COMPLEX method is performed by solving two tests for incompressible and stationary flows. The first of them is a cubic cavity test and the second one is a Backward Facing Step (BFS) channel.
 
 All the simulations use the same numerical setup. The convective terms are discretised with an upwind scheme and the pressure gradient operator is computed with a Gauss-based formula using linear interpolation to define the face values. The diffusive terms are discretised with a Gauss-based formula where the face gradient is assembled with a first-neighbour stencil. The linear system of equations is solved until the residuals for both momentum and mass balances decrease two orders of magnitude. The momentum relaxation factor $\omega_u$ is a variable of the parametric study. The pressure relaxation factor $\omega_p = 1$ for COMPLEX and SIMPLEC, while for SIMPLE is defined as $\omega_p = 1 - \omega_u$.
 
+Regarding the linear solvers, the momentum balance is solved using a biconjugated algorithm with Gauss-Seidel smoother (\texttt{smoothSolver}). The Poisson problem for the pressure in the mass balance is solved by an Algebraic Multigrid algorithm (\texttt{GAMG}). Further details on the linear solver can be found in OpenFOAM documentation \cite{greenshields2015openfoam}.
+
 \subsubsection{Cubic cavity}
  A graphical scheme of this problem is depicted in Fig.~\ref{Fig:Cavity}.
-\begin{figure}[t!!!]
+\begin{figure}[b!!!]
 \centering
 \includegraphics[width=5cm]{fig/Cases/Cavity.pdf}
 \caption{The cubic cavity problem where a fixed tangential velocity is imposed on the upper face.}
@@ -1537,14 +1542,14 @@ Here, a tangential fixed velocity of 1 m/s is imposed on the upper face of the c
 
 \subsubsection{Backward Facing Step}
 The domain and dimensions of this test are shown in Fig.~\ref{Fig:Geometria3}.
-\begin{figure}[b!!!]
+\begin{figure}[t!!!]
 \centering
 \includegraphics[width=12cm]{fig/Cases/Geometria3.pdf}
 \caption{Description of the BFS domain where its dimensions are defined relative to the inlet height $h = 1$ m.}
 \label{Fig:Geometria3}
 \end{figure}
 At the inlet, a constant normal velocity of 1 m/s is imposed. The outlet has a constant pressure and the remaining faces of the channel are walls with a non-slip condition. Analogously to the cavity case, the problem is simulated with two different viscosity values, $\nu = 5.141 \times 10^{-3}$ m$^2$/s ($Re=389$) and $\nu = 5.141$ m$^2$/s ($Re=0.389$). The domain is discretized with hexahedral cells using three different mesh sizes as defined in Table~\ref{Table:BFSMeshes} with a variable cell size as shown in Fig.~\ref{Fig:Factores}, where the regions near the wall and the step are more refined than the rest of the domain.
-\begin{table}[t!!!!]
+\begin{table}[b!!!!!!]
 \centering
 \begin{tabular}{cccccccc}
 \hline 
@@ -1618,30 +1623,47 @@ Then, the Root Mean Square (RMS) of the $R_1$ and $R_2$ fields are computed,
 &=
 \sqrt
 {
+\frac{1}{V_\Omega}
 \sum_{P\,\in\,\Omega}
-R_1(P)^2
+\left[V_P\;R_1(P)^2\right]
 },
 \\
 \overline{R}_2
 &=
 \sqrt
 {
+\frac{1}{V_\Omega}
 \sum_{P\,\in\,\Omega}
-R_2(P)^2
-}.
+\left[V_P\;R_2(P)^2\right]
+}
 \end{align}
-Regarding $\overline{R}_1$ and $\overline{R}_2$, the following convergence criterion is proposed: a numerical simulation will be considered converged if both values, $\overline{R}_1$ and $\overline{R}_2$  are below a tolerance of $10^{-9}$,
+
+
+It is important to highlight that these values are only function of the velocity, pressure, and of the momentum equation coefficients which are equally assembled for the three methods studied. Thus, the computation of $\overline{R}_1$ and $\overline{R}_2$ are independent of the coupling method.
+
+It is also worth to notice that each of these error norms has its own dimensions,% $[R_1]=$(kg m)/s$^2$ and $[R_2]=$m$^3$/s$^2$.
 \begin{equation}
-\label{Eq:convergencecriterion}
+[\overline{R_1}]
+=
+\frac{\text{kg}\,\text{m}}{\text{s}^2}
+\qquad \qquad
+[\overline{R_2}]
+=
+\frac{\text{m}^3}{\text{s}^2},
+\end{equation}
+and should be normalized to obtain a dimensionless values, named $\tilde{R}_1$ and $\tilde{R}_2$, and define general convergence criteria.
+
+In this context, a numerical simulation will be considered converged if both values, $\tilde{R}_1$ and $\tilde{R}_2$  are below a tolerance of $10^{-9}$,
+\begin{equation} \label{Eq:convergencecriterion}
 \left\lbrace
 \begin{array}{c}
-\overline{R}_1 \leq 10^{-9} \\
-\overline{R}_2 \leq 10^{-9}
+\tilde{R}_1 \leq 10^{-9} \\
+\tilde{R}_2 \leq 10^{-9}
 \end{array}
 \right..
 \end{equation}
 
-It is important to highlight that the residuals are only function of the velocity, pressure, and of the momentum equation coefficients which are equally assembled for the three methods studied. Thus, the computation of $\overline{R}_1$ and $\overline{R}_2$ are independent of the coupling method.
+\CIP{OJO acá, todavía no hice la conversión. Para la cavidad me parece que no hace falta: estamos resolviendo casi adimensionalizada porque lo único distinto de la unidad es la viscosidad (es como tomar $\nu = 1$/Re). En el BFS sí hay que aplicar una corrección: $\tilde{R}_2 = \overline{R}_2/(\overline{u}_{in}\,A_{in})$ y $\tilde{R}_1 = \overline{R}_1/(\overline{p}_{in}\,A_{in})$.}
 
 \subsection{Study of the Complex factor $\kappa$}
 \begin{table}[b!!!!]
@@ -1828,7 +1850,7 @@ A challenge for future works consists of improving the prediction of the velocit
 
 \nolinenumbers
 \section*{Acknowledgments}
-The authors would like to thank ANPCyT for their grant PICT 2016-2908 and
+The authors would like to thank ANPCyT for the grant PICT 2016-2908 and
 CONICET for the funding through doctoral and postdoctoral scholarships. Also, the authors wish to thank the Universidad Nacional del Litoral, Universidad Tecnológica Nacional and Universidad Nacional de Rosario for their support. 
 
 \bibliographystyle{model1-num-names.bst}
