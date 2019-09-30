@@ -1802,6 +1802,16 @@ The results indicate that, while increasing $\omega_u$, the difference between C
 
 For finer meshes, the point of minimum iterations at convergence occurs at a higher value of $\omega_u$ while, for coarser meshes, the range of $\omega_u$ in which COMPLEX converges faster than the other methods is wider. The Reynolds number also affects the convergence of the methods. It is noted that for the relatively high values, fewer iterations are required to reach the convergence criterion with COMPLEX. This advantage is also observed in the comparison with SIMPLE and SIMPLEC, where the relative differences are higher for the relative high Reynolds number.
 
+\subsection{A simple turbulence case}
+The laminar problems solved in the previous section work with a constant viscosity value. In this condition, the COMPLEX method shows a faster convergence rate than SIMPLE and SIMPLEC. Against this background, the next problem aims to evaluate the COMPLEX method by solving a simple turbulent case, where the numerical viscosity may vary over the domain due to turbulence modeling.
+
+The proposed problem studies the flow around a two-dimensional airfoil profile which is located the center of a square domain. 
+The boundaries of the domain are set up with a free-stream  condition where the velocity value is equal to $\boldsymbol{U} = (x,\, y) = (25.75,\, 3.62)$ which is also the initial condition over the whole domain.
+The turbulence is modeled with the Spalart-Almaras method where the turbulent kinematic viscosity at boundaries is configured in $\nu_t = 0.14$. The airfoil walls are set up with a non-slip boundary condition and using a Spalding's law to define $\nu_t$ in the airfoil adjacent cells. 
+
+
+\subsection{Computational Performance}
+
 The COMPLEX algorithm was implemented using the OpenFOAM(R) libraries for the FVM \cite{ofpg}. The current implementation is compared with the OpenFOAM(R) version of SIMPLEC. The analysis shows that each COMPLEX iteration takes 5$\%$ more time than SIMPLEC for both the cavity and the BFS problems. The maximum computational performance is obtained using high values of the momentum relaxation factor. In these conditions, the COMPLEX method saves between 10 and 20$\%$ of iterations which, in the end, leads to higher computational efficiency.
 
 \section{Conclusions}
