@@ -1774,30 +1774,36 @@ where $NI(\omega_u, \kappa)$ is the number of iterations required for convergenc
 
 The results of the simulations are presented in the Tables~\ref{Table:Cavity_LowRe}, \ref{Table:BFS_LowRe}, \ref{Table:Cavity_HighRe} and \ref{Table:BFS_HighRe}, and in Fig.~\ref{Fig:FactorLowRe}. Here, the required number of iterations to reach the convergence as function of $\omega_u$ and $\kappa$ is shown. The tables focus on the results that are closer to the optimal values of $\omega_u$ (between 0.92 and 1) using a $\kappa$ step of 0.1 instead of 0.05. 
  
-The Tables~\ref{Table:Cavity_LowRe},~\ref{Table:BFS_LowRe}, and the upper plots of Fig.~\ref{Fig:FactorLowRe} present the results for relative low Reynolds simulations, while Tables~\ref{Table:Cavity_HighRe},~\ref{Table:BFS_HighRe}, and the lower plots of Fig.~\ref{Fig:FactorLowRe} present the results for relative high Reynolds simulations. 
+The Tables~\ref{Table:Cavity_LowRe},~\ref{Table:BFS_LowRe}, and the upper plots of Fig.~\ref{Fig:FactorLowRe} present the results for relative low Reynolds simulations, while Tables~\ref{Table:Cavity_HighRe},~\ref{Table:BFS_HighRe}, and the lower plots of Fig.~\ref{Fig:FactorLowRe} present the results for relative high Reynolds simulations.
 
-In general, it is concluded that the addition of the Complex term does not influence the convergence when using low relaxation factors. On the contrary, with high values of $\omega_u$, the addition of the Complex term reduces the number of iterations to approximately 20 $\%$. The best results are obtained with values of the Complex factor $\kappa \leq 0.5$, while $\kappa \geq 0.5$ values may induce instabilities. In particular, the BFS problem at Re = 389 presents an extended divergence zone for the highest values of $\omega_u$, followed by a slow convergence zone (coloured in grey) for lower values of $\omega_u$. Despite this behaviour, the simulations are stable and have a maximum convergence rate for low values of $\kappa$.
-
-In view of these results, a Complex factor $\kappa = 0.2$ will be used in the following analysis since it is adequate to speed up the convergence without losing stability. % This last inference is determined based on two different numerical problems (Cavity and BFS) in the range of Reynolds number between $0.4$ and $400$. 
-
-\subsection{Comparison of COMPLEX with SIMPLE and SIMPLEC}
 \begin{figure}[b!]
 \centering
-\includegraphics[width=17cm]{fig/Results/complexCoarse.pdf}
+\includegraphics[width=15cm]{fig/Results/complexCoarse.pdf}
 \caption{Comparison of the number of iterations required for convergence between COMPLEX, SIMPLEC and SIMPLE algorithms using the coarse mesh refinement level. On the left are the results of the cavity case and on the right, those respective to the BFS.}
 \label{Fig:complexCoarse}
 \end{figure}
 
+In general, it is concluded that the addition of the Complex term does not influence the convergence when using low relaxation factors. On the contrary, with high values of $\omega_u$, the addition of the Complex term reduces the number of iterations to approximately 20 $\%$. The best results are obtained with values of the Complex factor $\kappa \leq 0.5$, while $\kappa \geq 0.5$ values may induce instabilities. In particular, the BFS problem at Re = 389 presents an extended divergence zone for the highest values of $\omega_u$, followed by a slow convergence zone (coloured in grey) for lower values of $\omega_u$. Despite this behaviour, the simulations are stable and have a maximum convergence rate for low values of $\kappa$.
+
+
+
+In view of these results, a Complex factor $\kappa = 0.2$ will be used in the following analysis since it is adequate to speed up the convergence without losing stability. % This last inference is determined based on two different numerical problems (Cavity and BFS) in the range of Reynolds number between $0.4$ and $400$.
+
+
+
+\subsection{Comparison of COMPLEX with SIMPLE and SIMPLEC}
+
+
 \begin{figure}[t!]
 \centering
-\includegraphics[width=17cm]{fig/Results/complexMedium.pdf}
+\includegraphics[width=15cm]{fig/Results/complexMedium.pdf}
 \caption{Comparison of the number of iterations required for convergence between COMPLEX, SIMPLEC and SIMPLE algorithms using the medium mesh refinement level. On the left are the results of the cavity case and on the right, those respective to the BFS.}
 \label{Fig:complexMedium}
 \end{figure}
 
 \begin{figure}[t!]
 \centering
-\includegraphics[width=17cm]{fig/Results/complexFine.pdf}
+\includegraphics[width=15cm]{fig/Results/complexFine.pdf}
 \caption{Comparison of the number of iterations required for convergence between COMPLEX, SIMPLEC and SIMPLE algorithms using the fine mesh refinement level. On the left are the results of the cavity case and on the right, those respective to the BFS.}
 \label{Fig:complexFine}
 \end{figure}
@@ -1824,12 +1830,29 @@ The results indicate that, while increasing $\omega_u$, the difference between C
 
 For finer meshes, the point of minimum iterations at convergence occurs at a higher value of $\omega_u$ while, for coarser meshes, the range of $\omega_u$ in which COMPLEX converges faster than the other methods is wider. The Reynolds number also affects the convergence of the methods. It is noted that for the relatively high values, fewer iterations are required to reach the convergence criterion with COMPLEX. This advantage is also observed in the comparison with SIMPLE and SIMPLEC, where the relative differences are higher for the relative high Reynolds number.
 
-\subsection{A simple turbulence case}
-The laminar problems solved in the previous section work with a constant viscosity value. In this condition, the COMPLEX method shows a faster convergence rate than SIMPLE and SIMPLEC. Against this background, the next problem aims to evaluate the COMPLEX method by solving a simple turbulent case, where the numerical viscosity may vary over the domain due to turbulence modeling.
 
-The proposed problem studies the flow around a two-dimensional airfoil profile which is located the center of a square domain. 
-The boundaries of the domain are set up with a free-stream  condition where the velocity value is equal to $\boldsymbol{U} = (x,\, y) = (25.75,\, 3.62)$ which is also the initial condition over the whole domain.
-The turbulence is modeled with the Spalart-Almaras method where the turbulent kinematic viscosity at boundaries is configured in $\nu_t = 0.14$. The airfoil walls are set up with a non-slip boundary condition and using a Spalding's law to define $\nu_t$ in the airfoil adjacent cells. 
+\subsection{A simple turbulence case}
+\begin{figure}[t!]
+\centering
+\includegraphics[width=10cm]{fig/Turbulence/Esquema.pdf}
+\caption{Details of the problem domain and boundary conditions. Note that the airfoil profile is scaled in respecto to the square domain.}
+\label{Fig:Esquema}
+\end{figure}
+
+\begin{figure}[t!]
+\centering
+\includegraphics[width=17cm]{fig/Turbulence/Todos.pdf}
+\caption{}
+\label{Fig:TTodos}
+\end{figure}
+The laminar problems solved in the previous section work with a constant viscosity value. In this condition, the COMPLEX method shows a faster convergence rate than SIMPLE and SIMPLEC. Against this background, the next problem aims to evaluate the COMPLEX method by solving a simple turbulent case, where the numerical viscosity may vary over the domain due to turbulence modeling. Continuing on this line, the proposed problem studies the flow around a two-dimensional airfoil profile which is located the center of a square domain. 
+The boundaries of the domain are set up with a free-stream  condition where the velocity value is equal to $\boldsymbol{U} = (x,\, y) = (25.75,\, 3.62)$ which is also the initial condition over the whole domain. The details of the domain and boundary conditions is presented in Fig.~\ref{Fig:Esquema}.
+
+The flow turbulence is modeled with the Spalart-Almaras method where the turbulent kinematic viscosity at boundaries is configured in $\nu_t = 0.14$. The airfoil walls are set up with a non-slip boundary condition and using a Spalding's law to define $\nu_t$ in the airfoil adjacent cells. The numerical discretization schemes are similar to those described in Section~\ref{Section:problemDescription} but the convective term is solved now with a second order upwind scheme and non-orthogonal corrections are employed iteratively in the pressure equation.
+
+The comparison of the COMPLEX method with SIMPLE and SIMPLEC is presented in Fig.\ref{Fig:TTodos} where the total number of iterations required to reach the convergence criterion of Eqs.~(\ref{Eq:convergencecriterion}) is plotted against the relaxation factor of the momentum equation, as done in the previous laminar problems.
+
+In light of the results obtained, the COMPLEX method shows a better convergence rate than the other two algorithms. In detail, the results are analogous to those obtained in the laminar problems. Nevertheless, a relative worst performance is shown for the SIMPLE method where this simulations uses more than a 100\% of iterations than the COMPLEX and SIMPLEC. Once again, the COMPLEX method advantages SIMPLEC when using high values of the moment relaxation factor which indeed are responsible of the faster simulations in terms of the number of iterations employed.
 
 
 \subsection{Computational Performance}
