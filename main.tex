@@ -1839,18 +1839,20 @@ For finer meshes, the point of minimum iterations at convergence occurs at a hig
 \label{Fig:Esquema}
 \end{figure}
 
-\begin{figure}[t!]
+\begin{figure}[b!]
 \centering
-\includegraphics[width=17cm]{fig/Turbulence/Todos.pdf}
+\includegraphics[width=14cm]{fig/Turbulence/VelocidadPresionEscalas.pdf}
 \caption{}
-\label{Fig:TTodos}
+\label{Fig:VelocidadPresionEscalas}
 \end{figure}
+
+
 %The laminar problems solved in the previous section work with a constant viscosity value. In this condition, the COMPLEX method shows a faster convergence rate than SIMPLE and SIMPLEC. Against this background, the next problem aims to evaluate the COMPLEX method by solving a simple turbulent case, where the numerical viscosity may vary over the domain due to turbulence modeling. Continuing on this line,
 
 The proposed problem studies the flow around a two-dimensional airfoil profile which is located at the center of a square domain. 
 The boundaries of the domain are set up with a free-stream  condition where the ,velocity value is equal to $\boldsymbol{U} = (25.75,\, 3.62)$ m/s which is also the initial condition over the whole domain. The details of the domain and boundary conditions is presented in Fig.~\ref{Fig:Esquema}.
 
-In contrast to the previuos cases, this problem aims to analyze the performance of the method in a context with variable viscosity given by the application of a turbulence model.
+In contrast to the previous cases, this problem aims to analyze the performance of the method in a context with variable viscosity given by the application of a turbulence model.
 
 The flow turbulence is modeled with the Spalart-Almaras method where the turbulent kinematic viscosity at boundaries is $\nu_t = 0.14$. The airfoil walls are set up with a non-slip boundary condition and using a Spalding's law to define $\nu_t$ in the airfoil adjacent cells. The numerical discretization schemes are similar to those described in Section~\ref{Section:problemDescription} but the convective term is solved now with a second order upwind scheme and non-orthogonal corrections are employed iteratively in the pressure equation.
 
@@ -1858,12 +1860,22 @@ The comparison of the COMPLEX method with SIMPLE and SIMPLEC is presented in Fig
 
 As observed for the laminar cases, here the COMPLEX method has a better convergence rate than the other two algorithms. Moreover, in these simulations SIMPLE uses more than a 100\% of iterations than COMPLEX and SIMPLEC. Once again, the COMPLEX method surpasses SIMPLEC for high values of the moment relaxation factor which in turn of leads to faster simulations.
 
-
 \subsection{Computational Performance}
+\begin{figure}[t!]
+\centering
+\includegraphics[width=17cm]{fig/Turbulence/Todos.pdf}
+\caption{}
+\label{Fig:TTodos}
+\end{figure}
 
-The COMPLEX algorithm was implemented using the OpenFOAM(R) libraries for the FVM \cite{ofpg}. The current implementation is compared with the OpenFOAM(R) version of SIMPLEC. The analysis shows that each COMPLEX iteration takes 5$\%$ more time than SIMPLEC for all the studied problems. The maximum computational performance is obtained using high values of the momentum relaxation factor. In these conditions, the COMPLEX method saves between 10 and 20$\%$ of iterations which, in the end, leads to higher computational efficiency.
+The COMPLEX algorithm was implemented using the OpenFOAM(R) libraries for the FVM \cite{ofpg}. The current implementation is compared with the OpenFOAM(R) version of SIMPLEC. The analysis shows that each COMPLEX iteration takes 5$\%$ more time than SIMPLEC for all the studied problems. The maximum computational performance is obtained using high values of the momentum relaxation factor. In these conditions, the COMPLEX method saves between 10 and 20$\%$ of iterations which, in the end, leads to higher computational efficiency. To clarify this point, the Fig.~\ref{Fig:TimesBFS} shows the total simulation time consumed by each method as function of the momentum relaxation factor for the BFS case (coarse mesh, higher Reynolds number). For the particular case showed, the COMPLEX solution is the fastest at $\omega_u = 0.89$.
 
-\CIP{Aquí ponemos la figura? vale la pena?}
+\begin{figure}[b!]
+\centering
+\includegraphics[width=13cm]{fig/Results/TimesBFS-coarse.pdf}
+\caption{Total simulation time as function of the momentum relaxation factor for the SIMPLE, SIMPLEC and COMPLEX method.}
+\label{Fig:TimesBFS}
+\end{figure}
 
 \section{Conclusions}
 \label{sec:conclusions}
