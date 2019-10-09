@@ -1649,11 +1649,9 @@ It is also worth to notice that each of these error norms has its own dimensions
 \qquad \qquad
 [\overline{R_2}]
 =
-\frac{\text{m}^3}{\text{s}^2},
+\frac{\text{m}^3}{\text{s}},
 \end{equation}
-and should be normalized to obtain a dimensionless values, named $\tilde{R}_1$ and $\tilde{R}_2$, and define general convergence criteria.
-
-In this context, a numerical simulation will be considered converged if both values, $\tilde{R}_1$ and $\tilde{R}_2$  are below a tolerance of $10^{-9}$,
+and should be normalized, dividing their values by representative forces and flowrates respectively, to obtain a dimensionless values named $\tilde{R}_1$ and $\tilde{R}_2$ that are a measure of the relative numerical error. In this context, a simulation will be considered converged if both values, $\tilde{R}_1$ and $\tilde{R}_2$  are below a tolerance of $10^{-9}$,
 \begin{equation} \label{Eq:convergencecriterion}
 \left\lbrace
 \begin{array}{c}
@@ -1663,7 +1661,9 @@ In this context, a numerical simulation will be considered converged if both val
 \right..
 \end{equation}
 
-\CIP{OJO acá, todavía no hice la conversión. Para la cavidad me parece que no hace falta: estamos resolviendo casi adimensionalizada porque lo único distinto de la unidad es la viscosidad (es como tomar $\nu = 1$/Re). En el BFS sí hay que aplicar una corrección: $\tilde{R}_2 = \overline{R}_2/(\overline{u}_{in}\,A_{in})$ y $\tilde{R}_1 = \overline{R}_1/(\overline{p}_{in}\,A_{in})$.}
+For the cubic cavity, the magnitude of the normalization values is one. In the Backward Facing Step, the flow rate and the dynamic pressure force over the inlet section are taken as normalization values.
+
+%% Los del cavity quedan igual, porque vale todo 1. Lo del Backward Facing Step cambiaría en 1 orden de magnitud (porque la sección de entrada tiene área h x 35h = 35 m^2). El threshold con el que resolvimos entonces sería \tilde{R}_1 < 10^-9/35.... vale la pena cambiarlo? calculamos de más.4
 
 \subsection{Study of the Complex factor $\kappa$}
 \begin{table}[b!!!!]
