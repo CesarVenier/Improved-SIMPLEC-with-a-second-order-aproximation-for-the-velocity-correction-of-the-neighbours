@@ -57,7 +57,7 @@
 %Start of abstract
 \begin{abstract}
 This paper introduces a new pressure-velocity coupling algorithm based on the SIMPLEC method. The new approach considers the neighbour velocity corrections of SIMPLEC as a Taylor series expansion, introducing a first-order term to increase the accuracy of the approximation. The new term includes a velocity correction gradient which is assumed to be a scalar matrix constrained by means of a mass conservation equation.
-The stability of the method is analysed via a Fourier decomposition of the error showing a better convergence rate than SIMPLE and SIMPLEC for high relaxation factors. Afterwards, the new method is tested in two incompressible laminar flow problems where the conclusions of the stability analysis are verified. The current proposal sets a theoretical baseline for further improvements and, in view of the results, it is a promising alternative to improve SIMPLE-based algorithms.
+The stability of the method is analysed via a Fourier decomposition of the error showing a better convergence rate than SIMPLE and SIMPLEC for high relaxation factors. \textcolor{blue}{The new method is tested in two incompressible laminar flow problems. Then, the analysis is extended to a turbulent flow case. In all cases, the conclusions of the stability analysis are verified.}  The current proposal sets a theoretical baseline for further improvements and, in view of the results, it is a promising alternative to improve SIMPLE-based algorithms.
 \end{abstract}
 
 \begin{keyword}
@@ -83,7 +83,7 @@ The error introduced by the SIMPLE algorithm comes from neglecting the neighbour
 %If the correction values were known, the discretized system given by the pressure and momentum equations would be equivalent to the original linearized Navier-Stokes problem.
 In practice, this approximation requires relaxing the pressure to achieve a stable behaviour towards convergence of the iterative process. Regarding this, the SIMPLEC algorithm considers the neighbour velocity correction equal to the one of the current cell. In other words, it considers the velocity correction as a constant field in the proximity of each cell. This process, in most cases, enhances the ranges of stability avoiding the need to relax the pressure field. The SIMPLEC approximation may be seen as an estimation of the neighbour velocities via a zero-order truncation of a Taylor series expansion. In this context, this work proposes to employ this numerical insight by taking into account a first-order term of the same Taylor series expansion. The approach brings up the need for determining the derivative of the velocity correction, which is a topic of discussion of the present work.
 
-This article is organized as follows. Section 2 describes the SIMPLE and SIMPLEC algorithms and then, in Section 3, the basis and theoretical background of the new method are explained. Subsequently, in Section 4, a stability analysis based on Fourier decomposition is performed for the three mentioned algorithms. Next, in Section 5, a set of laminar flow problems are solved to calibrate and investigate the performance of the new proposal. Finally, a discussion of the results and final comments are presented in the last section.
+This article is organized as follows. Section 2 describes the SIMPLE and SIMPLEC algorithms and then, in Section 3, the basis and theoretical background of the new method are explained. Subsequently, in Section 4, a stability analysis based on Fourier decomposition is performed for the three mentioned algorithms. Next, in Section 5, a set of numerical problems are solved to calibrate and investigate the performance of the new proposal. Finally, a discussion of the results and final comments are presented in the last section.
 
 \section{Theoretical basis of the SIMPLE-based algorithms} \label{sec:theory}
 
@@ -910,7 +910,7 @@ Now, to calculate $\nabla \boldsymbol{u}_P'$, a derivation starts by including t
 \right)_f
 \cdotp \textbf{S}_{f}
 =
-0
+0.
 \end{equation}
 In this last equation, the face values $\left(\boldsymbol{u}_P'\right)_f$ may be expressed as function of $\nabla \boldsymbol{u}_P'$ by considering the following first-order Taylor expansion,
 \begin{equation}
@@ -1119,7 +1119,16 @@ Finally, the face gradient given by Eq.~(\ref{Eq:UFaceGradient}) may be computed
 \right)_f
 \boldsymbol{I}.
 \end{equation}
-
+{\color{blue}It is worth to notice that, as the velocity field $\boldsymbol{u}$ satisfies the divergence free condition, its gradient $\nabla \boldsymbol{u}_P$ is traceless. Hence, following Eq.~(\ref{Eq:massEqSubdivided}), this means that,
+\begin{equation}
+\text{tr}(\nabla \boldsymbol{u}^{*}_P)
++
+\text{tr}(\nabla \boldsymbol{u}^{'}_P)
+=
+0.
+\end{equation}
+Since the velocity prediction $\boldsymbol{u}^{*}$ is generally not divergence free, its gradient is not traceless and neither is the gradient of the velocity correction $\nabla \boldsymbol{u}^{'}$. Therefore, $\alpha_P$ will not be zero in most cases.
+}
 \subsection{Relaxation of the Complex term}
 The approximation given in Eq.~(\ref{eq:gradApprox}) provides the mathematical closure of the numerical problem at the cost of reducing the potential of the original proposal. The physical meaning of using a scalar matrix as an estimate of the velocity correction gradient is that it will introduce an isotropic deformation on the fluid. This may not be true once the velocity field is computed with the new pressure values. Taking this into account, a relaxation of the Complex term $\boldsymbol{\delta}_P$ is proposed in order to avoid an overestimation of $\boldsymbol{u}_N'$. In this sense, a relaxation factor is introduced for the Complex term in Eqs.~(\ref{Eq:pressureComplex}) and (\ref{Eq:velocityComplex}), 
 \begin{equation}
@@ -1640,31 +1649,30 @@ Then, the Root Mean Square (RMS) of the $R_1$ and $R_2$ fields are computed,
 \end{align}
 
 
-It is important to highlight that \textcolor{blue}{these values} are only function of the velocity, pressure, and of the momentum equation coefficients which are equally assembled for the three methods studied. Thus, the computation of $\overline{R}_1$ and $\overline{R}_2$ are independent of the coupling method. It is also worth to notice that each of these error norms has its own dimensions,% $[R_1]=$(kg m)/s$^2$ and $[R_2]=$m$^3$/s$^2$.
+It is important to highlight that \textcolor{blue}{these values} are only function of the velocity, pressure, and of the momentum equation coefficients which are equally assembled for the three methods studied. Thus, the computation of $\overline{R}_1$ and $\overline{R}_2$ are independent of the coupling method. {\color{blue}It is also worth to notice that each of these error norms has its own dimensions,
 \begin{equation}
 [\overline{R_1}]
 =
-\frac{\text{kg}\,\text{m}}{\text{s}^2}
+\text{N}
 \qquad \qquad
 [\overline{R_2}]
 =
-\frac{\text{m}^3}{\text{s}},
+\text{m}^3/\text{s},
 \end{equation}
-and hence represent numerical errors equivalent to forces and flow ates respectively. For both cases, it is acceptable to accept that the simulations have converged if
-% and should be normalized, dividing their values by representative forces and flowrates respectively, to obtain a dimensionless values named $\tilde{R}_1$ and $\tilde{R}_2$ that are a measure of the relative numerical error. In this context, a simulation will be considered converged if both values, $\tilde{R}_1$ and $\tilde{R}_2$  are below a tolerance of $10^{-9}$,
+and hence represent numerical errors equivalent to forces and flow ates respectively. For both cases, the simulations are considered converged if
 \begin{equation} \label{Eq:convergencecriterion}
 \left\lbrace
-\begin{array}{c}
-\overline{R}_1 \leq 10^{-9}\, \text{N} \\
-\overline{R}_2 \leq 10^{-9}\,
-\dfrac{\text{m}^3}{\text{s}}
+\begin{array}{lrc}
+\overline{R}_1 \leq 10^{-9}\,\, \text{N} \\
+\overline{R}_2 \leq 10^{-9}\,\,
+\text{m}^3/\text{s}
 \end{array}
 \right.
 \end{equation}
-These thresholds should be negligible within the context of the problems. For the cubic cavity, the magnitude of the reference values is one. In the Backward Facing Step, the flow rate and the dynamic pressure force over the inlet section are 35 m$^3$/s and $17.5$ N.
+These thresholds should be negligible within the context of the problems. For the cubic cavity, the magnitude of the reference values are 1 m$^3$/s and 1 N for both, the flow rate and force. In the Backward Facing Step, the flow rate and the dynamic pressure force over the inlet section are 35 m$^3$/s and $17.5$ N respectively.}
 
 
-%\CIP{OJO acá, todavía no hice la conversión. Para la cavidad me parece que no hace falta: estamos resolviendo casi adimensionalizada porque lo único distinto de la unidad es la viscosidad (es como tomar $\nu = 1$/Re). En el BFS sí hay que aplicar una corrección: $\tilde{R}_2 = \overline{R}_2/(\overline{u}_{in}\,A_{in})$ y $\tilde{R}_1 = \overline{R}_1/(\overline{p}_{in}\,A_{in})$.}
+
 
 \subsection{Study of the Complex factor $\kappa$}
 \begin{table}[b!!!!]
@@ -1831,17 +1839,14 @@ The results indicate that, while increasing $\omega_u$, the difference between C
 
 For finer meshes, the point of minimum iterations at convergence occurs at a higher value of $\omega_u$ while, for coarser meshes, the range of $\omega_u$ in which COMPLEX converges faster than the other methods is wider. The Reynolds number also affects the convergence of the methods. It is noted that for the relatively high values, fewer iterations are required to reach the convergence criterion with COMPLEX. This advantage is also observed in the comparison with SIMPLE and SIMPLEC, where the relative differences are higher for the relative high Reynolds number.
 
-
-\subsection{Flow around an airfoil at high Reynolds number}
+{\color{blue}
+\subsection{Turbulent flow around an airfoil}
 \begin{figure}[t!]
 \centering
 \includegraphics[width=10cm]{fig/Turbulence/Esquema.pdf}
-\caption{Details of the problem domain and boundary conditions. Note that the airfoil profile is scaled in respect to the square domain.}
+\caption{\textcolor{blue}{Details of the problem domain and boundary conditions. Note that the airfoil profile is scaled in respect to the square domain.}}
 \label{Fig:Esquema}
 \end{figure}
-
-
-%The laminar problems solved in the previous section work with a constant viscosity value. In this condition, the COMPLEX method shows a faster convergence rate than SIMPLE and SIMPLEC. Against this background, the next problem aims to evaluate the COMPLEX method by solving a simple turbulent case, where the numerical viscosity may vary over the domain due to turbulence modeling. Continuing on this line,
 
 The proposed problem studies the flow around a two-dimensional airfoil profile which is located at the center of a square domain. 
 The boundaries of the domain are set up with a free-stream  condition where the ,velocity value is equal to $\boldsymbol{U} = (25.75,\, 3.62)$ m/s which is also the initial condition over the whole domain. The details of the domain and boundary conditions is presented in Fig.~\ref{Fig:Esquema}.
@@ -1853,13 +1858,13 @@ The flow turbulence is modeled with the Spalart-Almaras method where the turbule
 
 The comparison of the COMPLEX method with SIMPLE and SIMPLEC is presented in Fig.\ref{Fig:TTodos} where the total number of iterations required to reach the convergence criterion of Eq.~(\ref{Eq:convergencecriterion}) is plotted against the relaxation factor of the momentum equation, as done in the previous laminar problems.  Two snapshots of the pressure and velocity results are presented in Fig.~\ref{Fig:VelocidadPresionEscalas} which correspond to the COMPLEX simulation with $\omega = 0.89$.
 
-As observed for the laminar cases, here the COMPLEX method has a better convergence rate than the other two algorithms. Moreover, in these simulations SIMPLE uses more than a 100\% of iterations than COMPLEX and SIMPLEC. Once again, the COMPLEX method surpasses SIMPLEC for high values of the moment relaxation factor which in turn of leads to faster simulations.
+As observed for the laminar cases, here the COMPLEX method has a better convergence rate than the other two algorithms. Moreover, in these simulations SIMPLE uses more than a 100\% of iterations than COMPLEX and SIMPLEC. Once again, the COMPLEX method surpasses SIMPLEC for high values of the moment relaxation factor which in turn of leads to faster simulations.}
 
 \subsection{Computational Performance}
 \begin{figure}[t!]
 \centering
 \includegraphics[width=17cm]{fig/Turbulence/Todos.pdf}
-\caption{}
+\caption{\textcolor{blue}{Comparison of the number of iterations required for convergence between COMPLEX, SIMPLEC and SIMPLE algorithms for the airfoil case.}}
 \label{Fig:TTodos}
 \end{figure}
 
@@ -1870,12 +1875,12 @@ As observed for the laminar cases, here the COMPLEX method has a better converge
 \label{Fig:VelocidadPresionEscalas}
 \end{figure}
 
-The COMPLEX algorithm was implemented using the OpenFOAM(R) libraries for the FVM \cite{ofpg}. The current implementation is compared with the OpenFOAM(R) version of SIMPLEC. The analysis shows that each COMPLEX iteration takes 5$\%$ more time than SIMPLEC for all the studied problems. The maximum computational performance is obtained using high values of the momentum relaxation factor. In these conditions, the COMPLEX method saves between 10 and 20$\%$ of iterations which, in the end, leads to higher computational efficiency. To clarify this point, the Fig.~\ref{Fig:TimesBFS} shows the total simulation time consumed by each method as function of the momentum relaxation factor for the BFS case (coarse mesh, higher Reynolds number). For the particular case showed, the COMPLEX solution is the fastest at $\omega_u = 0.89$.
+The COMPLEX algorithm was implemented using the OpenFOAM(R) libraries for the FVM \cite{ofpg}. The current implementation is compared with the OpenFOAM(R) version of SIMPLEC. The analysis shows that each COMPLEX iteration takes 5$\%$ more time than SIMPLEC for all the studied problems. The maximum computational performance is obtained using high values of the momentum relaxation factor. In these conditions, the COMPLEX method saves between 10 and 20$\%$ of iterations which, in the end, leads to higher computational efficiency. \textcolor{blue}{To clarify this point, the Fig.~\ref{Fig:TimesBFS} shows the total simulation time consumed by each method as function of the momentum relaxation factor for the BFS case (coarse mesh, higher Reynolds number). For the particular case showed, the COMPLEX solution is the fastest at $\omega_u = 0.89$.}
 
 \begin{figure}[b!]
 \centering
 \includegraphics[width=13cm]{fig/Results/TimesBFS-coarse.pdf}
-\caption{Total simulation time as function of the momentum relaxation factor for the SIMPLE, SIMPLEC and COMPLEX method.}
+\caption{\textcolor{blue}{Total simulation time as function of the momentum relaxation factor for the SIMPLE, SIMPLEC and COMPLEX method.}}
 \label{Fig:TimesBFS}
 \end{figure}
 
@@ -1885,7 +1890,7 @@ This paper presented a new segregated algorithm to solve incompressible and stat
 
 The stability of the COMPLEX method was compared against SIMPLE and SIMPLEC via a Fourier decomposition of the error in one-dimensional cases. This study showed that, for low momentum relaxation factors, both SIMPLEC and COMPLEX behave similarly but, for high momentum relaxation factors, the COMPLEX method has a better performance in terms of error damping. Thus, under the hypothesis of the Fourier analysis, the current method has a higher convergence rate.
 
-Two three-dimensional laminar flow problems were solved: a cubic cavity and a BFS. First, the optimal value of the Complex relaxation factor was investigated. To do this, an exhaustive study of more than 1500 simulations was performed where the number of iterations at convergence was measured for different values of the momentum relaxation factor, the Complex relaxation factor, and the Reynolds number. Based on the results, a Complex relaxation factor of $\kappa = 0.2$ was chosen as the most suitable for the problems under study. Secondly, the performance of the COMPLEX method was compared with SIMPLE and SIMPLEC. Here, each problem was solved using three different mesh refinements for the low and high values of the Reynolds number. The results proved that the COMPLEX method has a better convergence rate for high values of the momentum relaxation factor which verifies the results of the Fourier analysis. The advantages are more notorious in the coarse meshes and for the problems with relative high Reynolds numbers. %In these conditions, the relative performance against the standard SIMPLE algorithm is remarkable.
+Two three-dimensional \textcolor{blue}{laminar flow problems} were solved: a cubic cavity and a BFS. First, the optimal value of the Complex relaxation factor was investigated. To do this, an exhaustive study of more than 1500 simulations was performed where the number of iterations at convergence was measured for different values of the momentum relaxation factor, the Complex relaxation factor, and the Reynolds number. Based on the results, a Complex relaxation factor of $\kappa = 0.2$ was chosen as the most suitable for the problems under study. Secondly, the performance of the COMPLEX method was compared with SIMPLE and SIMPLEC. Here, each problem was solved using three different mesh refinements for the low and high values of the Reynolds number. The results proved that the COMPLEX method has a better convergence rate for high values of the momentum relaxation factor which verifies the results of the Fourier analysis. The advantages are more notorious in the coarse meshes and for the problems with relative high Reynolds numbers. %In these conditions, the relative performance against the standard SIMPLE algorithm is remarkable.
 {
 \color{blue}
 This analysis was extended to a turbulent flow case around an airfoil using a RANS model. The results agree with the aforementioned observations, proving that the COMPLEX performance remains even for variable viscosity cases.
